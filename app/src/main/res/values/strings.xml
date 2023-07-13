@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">GeoMate</string>
+
+    <!--Placeholders-->
+    <string name="email_placeholder">Enter your email</string>
+    <string name="password_placeholder">Enter your password</string>
+
+    <!--Buttons' texts-->
+    <string name="button_reset_password">Reset password</string>
+    <string name="button_sign_in">Sign in</string>
+    <string name="button_back">Back</string>
+
+    <!--Forgot password screen-->
+    <string name="forgot_password_title">Reset password</string>
+    <string name="forgot_password_subtitle">Enter your account email and we will send an email with further instructions.</string>
+    <string name="forgot_password_footer">Remembered your password?</string>
+
+    <!--Sign in screen-->
+    <string name="sign_in_title">Welcome back</string>
+    <string name="sign_in_subtitle">We happy to see you again. To use your account, you should log in first.</string>
+    <string name="sign_in_footer">Don\'t have an account?</string>
 </resources>

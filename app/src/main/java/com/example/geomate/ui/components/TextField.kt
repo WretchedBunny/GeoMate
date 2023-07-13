@@ -3,6 +3,7 @@ package com.example.geomate.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -34,7 +35,7 @@ import com.example.geomate.ui.theme.GeoMateTheme
 
 data class SupportingButton(
     val text: String,
-    val action: () -> Unit
+    val onClick: () -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,6 +103,7 @@ fun GeoMateTextField(
             },
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
+            modifier = Modifier.fillMaxWidth()
         )
         supportingButton?.let {
             Text(
@@ -110,7 +112,7 @@ fun GeoMateTextField(
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier
                     .align(Alignment.End)
-                    .clickable { it.action() }
+                    .clickable { it.onClick() }
             )
         }
     }
@@ -141,7 +143,7 @@ private fun PasswordTextFieldPreview() {
             placeholder = "Enter your password",
             supportingButton = SupportingButton(
                 text = "Forgot password?",
-                action = { /* Navigation */ }
+                onClick = { /* Navigation */ }
             ),
             visualTransformation = PasswordVisualTransformation()
         )
