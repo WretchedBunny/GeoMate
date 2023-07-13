@@ -7,13 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-
-// TODO: Change "8.dp" to "MaterialTheme.spacing.small" after PR will be accepted and merged
-// TODO: Change "Color(0xFF464845)" to "MaterialTheme.colorScheme.onBackground" after PR will be accepted and merged
+import com.example.geomate.ui.theme.GeoMateTheme
+import com.example.geomate.ui.theme.spacing
 
 @Composable
 fun Header(
@@ -23,19 +20,19 @@ fun Header(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
         modifier = modifier
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineLarge,
-            color = Color(0xFF464845)
+            color = MaterialTheme.colorScheme.onSecondary
         )
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = Color(0xFF464845)
+            color = MaterialTheme.colorScheme.onSecondary
         )
     }
 }
@@ -43,8 +40,10 @@ fun Header(
 @Preview
 @Composable
 private fun HeaderPreview() {
-    Header(
-        title = "Welcome back",
-        subtitle = "We happy to see you again. To use your account, you should log in in first."
-    )
+    GeoMateTheme {
+        Header(
+            title = "Welcome back",
+            subtitle = "We happy to see you again. To use your account, you should log in in first."
+        )
+    }
 }
