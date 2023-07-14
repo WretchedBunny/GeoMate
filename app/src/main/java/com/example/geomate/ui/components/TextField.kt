@@ -1,5 +1,6 @@
 package com.example.geomate.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,17 +39,28 @@ data class SupportingButton(
     val onClick: () -> Unit
 )
 
+data class LeadingIcon(
+    val icon: ImageVector,
+    val onClick: (() -> Unit)? = null
+)
+
+data class TrailingIcon(
+    val icon: ImageVector,
+    val onClick: (() -> Unit)? = null
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeoMateTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null,
+    leadingIcon: LeadingIcon? = null,
+    trailingIcon: TrailingIcon? = null,
     placeholder: String,
     supportingText: String? = null,
     supportingButton: SupportingButton? = null,
+    singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next
 ) {
@@ -64,19 +76,27 @@ fun GeoMateTextField(
             shape = CircleShape,
             leadingIcon = {
                 leadingIcon?.let {
+                    val leadingIconModifier = it.onClick?.let {
+                        Modifier.clickable { it() }
+                    } ?: run { Modifier }
                     Icon(
-                        imageVector = it,
+                        imageVector = it.icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = leadingIconModifier
                     )
                 }
             },
             trailingIcon = {
                 trailingIcon?.let {
+                    val trailingIconModifier = it.onClick?.let {
+                        Modifier.clickable { it() }
+                    } ?: run { Modifier }
                     Icon(
-                        imageVector = it,
+                        imageVector = it.icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = trailingIconModifier
                     )
                 }
             },
@@ -91,7 +111,7 @@ fun GeoMateTextField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            singleLine = true,
+            singleLine = singleLine,
             supportingText = {
                 supportingText?.let {
                     Text(
@@ -118,28 +138,47 @@ fun GeoMateTextField(
     }
 }
 
-@Preview(name = "Email TextField")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun EmailTextFieldPreview() {
     GeoMateTheme {
         GeoMateTextField(
             value = "",
             onValueChange = { },
-            leadingIcon = Icons.Outlined.Email,
+            leadingIcon = LeadingIcon(Icons.Outlined.Email),
             placeholder = "Enter your email"
         )
     }
 }
 
-@Preview(name = "Password TextField")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun PasswordTextFieldPreview() {
     GeoMateTheme {
         GeoMateTextField(
             value = "VeryStrongPassword",
             onValueChange = { },
-            leadingIcon = Icons.Outlined.Lock,
-            trailingIcon = Icons.Outlined.Visibility,
+            leadingIcon = LeadingIcon(Icons.Outlined.Lock),
+            trailingIcon = TrailingIcon(
+                icon = Icons.Outlined.Visibility,
+                onClick = { /* Show/hide password */ }
+            ),
             placeholder = "Enter your password",
             supportingButton = SupportingButton(
                 text = "Forgot password?",
@@ -150,14 +189,22 @@ private fun PasswordTextFieldPreview() {
     }
 }
 
-@Preview(name = "Bio TextField")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun BioTextFieldPreview() {
     GeoMateTheme {
         GeoMateTextField(
             value = "",
             onValueChange = { },
-            leadingIcon = Icons.Outlined.PermContactCalendar,
+            leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
             placeholder = "Describe yourself",
             supportingText = "Optional",
             imeAction = ImeAction.Done

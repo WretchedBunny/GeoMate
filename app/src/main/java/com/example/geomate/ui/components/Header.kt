@@ -1,5 +1,6 @@
 package com.example.geomate.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +40,15 @@ fun Header(
     }
 }
 
-@Preview
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun HeaderPreview() {
     GeoMateTheme {

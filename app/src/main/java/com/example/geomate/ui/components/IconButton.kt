@@ -1,5 +1,6 @@
 package com.example.geomate.ui.components
 
+import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +30,15 @@ fun GeoMateIconButton(
     }
 }
 
-@Preview(name = "Facebook icon button")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun FacebookIconButtonPreview() {
     GeoMateTheme {
@@ -40,7 +49,15 @@ private fun FacebookIconButtonPreview() {
     }
 }
 
-@Preview(name = "Google icon button")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun GoogleIconButtonPreview() {
     GeoMateTheme {
@@ -51,7 +68,15 @@ private fun GoogleIconButtonPreview() {
     }
 }
 
-@Preview(name = "Twitter icon button")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFF7F0
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    backgroundColor = 0xFF2A2A2A
+)
 @Composable
 private fun TwitterIconButtonPreview() {
     GeoMateTheme {

@@ -1,16 +1,14 @@
 package com.example.geomate.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +25,7 @@ import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
@@ -53,12 +52,12 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
             GeoMateTextField(
                 value = email,
                 onValueChange = { newEmail -> email = newEmail },
-                leadingIcon = Icons.Outlined.Email,
+                leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder)
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_reset_password),
-                onClick = { /*TODO: Send email*/ },
+                onClick = { /* TODO: Send email */ },
                 type = ButtonType.Primary
             )
         }
@@ -66,12 +65,12 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
         Footer(
             text = stringResource(id = R.string.forgot_password_footer),
             clickableText = stringResource(id = R.string.button_back),
-            onClick = { /*TODO: Navigate up*/ }
+            onClick = { /* TODO: Navigate up */ }
         )
     }
 }
-
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ForgotPasswordScreenPreview() {
     GeoMateTheme {

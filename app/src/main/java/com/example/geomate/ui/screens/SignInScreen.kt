@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,9 @@ import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.SupportingButton
+import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
@@ -64,37 +67,41 @@ fun SignInScreen(modifier: Modifier = Modifier) {
             GeoMateTextField(
                 value = email,
                 onValueChange = { newEmail -> email = newEmail },
-                leadingIcon = Icons.Outlined.Email,
+                leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder)
             )
             GeoMateTextField(
                 value = password,
                 onValueChange = { newPassword -> password = newPassword },
-                leadingIcon = Icons.Outlined.Lock,
-                trailingIcon = passwordTrailingIcon,
+                leadingIcon = LeadingIcon(Icons.Outlined.Lock),
+                trailingIcon = TrailingIcon(
+                    icon = passwordTrailingIcon,
+                    onClick = { isPasswordVisible = !isPasswordVisible }
+                ),
                 placeholder = stringResource(id = R.string.password_placeholder),
                 supportingButton = SupportingButton(
                     text = "Forgot password?",
-                    onClick = { /*TODO: Navigate to the forgot password screen*/ }
+                    onClick = { /* TODO: Navigate to the forgot password screen */ }
                 ),
                 visualTransformation = passwordVisualTransformation
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_sign_in),
-                onClick = { /*TODO: Authenticate user*/ },
+                onClick = { /* TODO: Authenticate user */ },
                 type = ButtonType.Primary
             )
         }
 
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
-            clickableText = stringResource(id = R.string.button_back),
-            onClick = { /*TODO: Navigate up*/ }
+            clickableText = stringResource(id = R.string.button_sign_up),
+            onClick = { /* TODO: Navigate to sign up */ }
         )
     }
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun SignInScreenPreview() {
     GeoMateTheme {
