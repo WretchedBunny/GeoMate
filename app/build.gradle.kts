@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.geomate"
-        minSdk = 27
+        minSdk = 28
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
 
     // Status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
