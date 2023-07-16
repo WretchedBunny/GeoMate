@@ -1,4 +1,4 @@
-package com.example.geomate.common.ext
+package com.example.geomate.ext
 
 import android.util.Patterns
 
