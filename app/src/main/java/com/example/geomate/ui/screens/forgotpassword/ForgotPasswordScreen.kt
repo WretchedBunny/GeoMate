@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens
+package com.example.geomate.ui.screens.forgotpassword
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

@@ -1,6 +1,11 @@
-package com.example.geomate.ui.screens
+package com.example.geomate.ui.screens.signup
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -38,6 +44,7 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.LeadingIcon
+import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
@@ -45,7 +52,17 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier) {
+fun SignUpScreen(
+    uiState: SignUpUiState,
+    updateEmail: (String) -> Unit,
+    updatePassword: (String) -> Unit,
+    updateFirstName: (String) -> Unit,
+    updateLastName: (String) -> Unit,
+    updateUsername: (String) -> Unit,
+    updateProfilePictureUri: (Uri?) -> Unit,
+    updateDescription: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,6 +85,10 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
         ) {
             when (it) {
                 0 -> EmailAndPasswordStage(
+                    email = uiState.email,
+                    updateEmail = updateEmail,
+                    password = uiState.password,
+                    updatePassword = updatePassword,
                     next = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(1)
@@ -76,6 +97,12 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
                 1 -> PublicInformationStage(
+                    firstName = uiState.firstName,
+                    updateFirstName = updateFirstName,
+                    lastName = uiState.lastName,
+                    updateLastName = updateLastName,
+                    username = uiState.username,
+                    updateUsername  = updateUsername,
                     next = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(2)
@@ -89,6 +116,10 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
                 2 -> OptionalInformationStage(
+                    profilePictureUri = uiState.profilePictureUri,
+                    updateProfilePictureUri = updateProfilePictureUri,
+                    description = uiState.description,
+                    updateDescription = updateDescription,
                     next = { /* TODO: Create user account and navigate to map */ },
                     prev = {
                         coroutineScope.launch {
@@ -111,6 +142,10 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EmailAndPasswordStage(
+    email: String,
+    updateEmail: (String) -> Unit,
+    password: String,
+    updatePassword: (String) -> Unit,
     next: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -119,9 +154,6 @@ private fun EmailAndPasswordStage(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         modifier = modifier
     ) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-
         var isPasswordVisible by remember { mutableStateOf(false) }
         val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
             true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
@@ -130,13 +162,13 @@ private fun EmailAndPasswordStage(
 
         GeoMateTextField(
             value = email,
-            onValueChange = { newEmail -> email = newEmail },
+            onValueChange = updateEmail,
             leadingIcon = LeadingIcon(Icons.Outlined.Email),
             placeholder = stringResource(id = R.string.email_placeholder)
         )
         GeoMateTextField(
             value = password,
-            onValueChange = { newPassword -> password = newPassword },
+            onValueChange = updatePassword,
             leadingIcon = LeadingIcon(Icons.Outlined.Lock),
             trailingIcon = TrailingIcon(
                 icon = passwordTrailingIcon,
@@ -155,6 +187,12 @@ private fun EmailAndPasswordStage(
 
 @Composable
 private fun PublicInformationStage(
+    firstName: String,
+    updateFirstName: (String) -> Unit,
+    lastName: String,
+    updateLastName: (String) -> Unit,
+    username: String,
+    updateUsername: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier
@@ -164,25 +202,21 @@ private fun PublicInformationStage(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         modifier = modifier
     ) {
-        var firstName by remember { mutableStateOf("") }
-        var lastName by remember { mutableStateOf("") }
-        var username by remember { mutableStateOf("") }
-
         GeoMateTextField(
             value = firstName,
-            onValueChange = { newFirstName -> firstName = newFirstName },
+            onValueChange = updateFirstName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.first_name_placeholder)
         )
         GeoMateTextField(
             value = lastName,
-            onValueChange = { newLastName -> lastName = newLastName },
+            onValueChange = updateLastName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.last_name_placeholder)
         )
         GeoMateTextField(
             value = username,
-            onValueChange = { newUsername -> username = newUsername },
+            onValueChange = updateUsername,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.username_placeholder)
         )
@@ -203,22 +237,43 @@ private fun PublicInformationStage(
 
 @Composable
 private fun OptionalInformationStage(
+    profilePictureUri: Uri?,
+    updateProfilePictureUri: (Uri?) -> Unit,
+    description: String,
+    updateDescription: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        updateProfilePictureUri(uri)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         modifier = modifier
     ) {
-        var description by remember { mutableStateOf("") }
+        val bitmap: Bitmap? = profilePictureUri?.run {
+            val source = ImageDecoder.createSource(context.contentResolver, this)
+            ImageDecoder.decodeBitmap(source)
+        }
 
+        ProfilePicturePicker(
+            bitmap = bitmap,
+            openPhotoPicker = { launcher.launch("image/*") },
+            clearProfilePicture = { updateProfilePictureUri(null) }
+        )
         GeoMateTextField(
             value = description,
-            onValueChange = { newDescription -> description = newDescription },
+            onValueChange = updateDescription,
             leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
-            placeholder = stringResource(id = R.string.description_placeholder)
+            placeholder = stringResource(id = R.string.description_placeholder),
+            supportingText = "Optional",
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             GeoMateButton(
@@ -240,7 +295,7 @@ private fun OptionalInformationStage(
 @Composable
 private fun SignUpScreenPreview() {
     GeoMateTheme {
-        SignUpScreen()
+
     }
 }
 
@@ -256,9 +311,7 @@ private fun SignUpScreenPreview() {
 @Composable
 private fun EmailAndPasswordStagePreview() {
     GeoMateTheme {
-        EmailAndPasswordStage(
-            next = { }
-        )
+
     }
 }
 
@@ -274,10 +327,7 @@ private fun EmailAndPasswordStagePreview() {
 @Composable
 private fun PublicInformationStagePreview() {
     GeoMateTheme {
-        PublicInformationStage(
-            next = { },
-            prev = { }
-        )
+
     }
 }
 
@@ -293,9 +343,6 @@ private fun PublicInformationStagePreview() {
 @Composable
 private fun OptionalInformationStagePreview() {
     GeoMateTheme {
-        OptionalInformationStage(
-            next = { },
-            prev = { }
-        )
+
     }
 }
