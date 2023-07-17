@@ -37,7 +37,13 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun SignInScreen(modifier: Modifier = Modifier) {
+fun SignInScreen(
+    uiState: SignInUIState,
+    updateEmail: (String) -> Unit,
+    updatePassword: (String) -> Unit,
+    onSignInClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,9 +61,6 @@ fun SignInScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
-            var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-
             var isPasswordVisible by remember { mutableStateOf(false) }
             val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
                 true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
@@ -65,14 +68,14 @@ fun SignInScreen(modifier: Modifier = Modifier) {
             }
 
             GeoMateTextField(
-                value = email,
-                onValueChange = { newEmail -> email = newEmail },
+                value = uiState.email,
+                onValueChange = updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder)
             )
             GeoMateTextField(
-                value = password,
-                onValueChange = { newPassword -> password = newPassword },
+                value = uiState.password,
+                onValueChange = updatePassword,
                 leadingIcon = LeadingIcon(Icons.Outlined.Lock),
                 trailingIcon = TrailingIcon(
                     icon = passwordTrailingIcon,
@@ -87,7 +90,7 @@ fun SignInScreen(modifier: Modifier = Modifier) {
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_sign_in),
-                onClick = { /* TODO: Authenticate user */ },
+                onClick = onSignInClick,
                 type = ButtonType.Primary
             )
         }
@@ -105,6 +108,11 @@ fun SignInScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SignInScreenPreview() {
     GeoMateTheme {
-        SignInScreen()
+        SignInScreen(
+            uiState = SignInUIState(),
+            updateEmail = { },
+            updatePassword = { },
+            onSignInClick = { }
+        )
     }
 }
