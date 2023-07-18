@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
@@ -26,11 +29,28 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.LeadingIcon
+import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
+fun NavGraphBuilder.forgotPassword(navController: NavController) {
+    composable(Destinations.FORGOT_PASSWORD_ROUTE) {
+        ForgotPasswordScreen(navigateToSignIn = navController::navigateToSignIn)
+    }
+}
+
+fun NavController.navigateToForgotPassword() {
+    navigate(Destinations.FORGOT_PASSWORD_ROUTE) {
+        launchSingleTop = false
+    }
+}
+
 @Composable
-fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
+fun ForgotPasswordScreen(
+    navigateToSignIn: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,15 +85,18 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
         Footer(
             text = stringResource(id = R.string.forgot_password_footer),
             clickableText = stringResource(id = R.string.button_back),
-            onClick = { /* TODO: Navigate up */ }
+            onClick = navigateToSignIn
         )
     }
 }
+
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ForgotPasswordScreenPreview() {
     GeoMateTheme {
-        ForgotPasswordScreen()
+        ForgotPasswordScreen(
+            navigateToSignIn = { }
+        )
     }
 }

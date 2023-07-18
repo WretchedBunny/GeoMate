@@ -76,4 +76,7 @@ dependencies {
 
     // Status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
+    // Jetpack Navigation
+    implementation("androidx.navigation:navigation-compose:2.6.0")
 }

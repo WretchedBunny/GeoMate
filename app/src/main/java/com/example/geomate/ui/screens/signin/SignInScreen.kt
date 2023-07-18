@@ -24,6 +24,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
@@ -33,11 +36,33 @@ import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.SupportingButton
 import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
+import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
+fun NavGraphBuilder.signIn(navController: NavController) {
+    composable(Destinations.SIGN_IN_ROUTE) {
+        SignInScreen(
+            navigateToSignUp = navController::navigateToSignUp,
+            navigateToForgotPassword = navController::navigateToForgotPassword
+        )
+    }
+}
+
+fun NavController.navigateToSignIn() {
+    navigate(Destinations.SIGN_IN_ROUTE) {
+        launchSingleTop = false
+    }
+}
+
 @Composable
-fun SignInScreen(modifier: Modifier = Modifier) {
+fun SignInScreen(
+    navigateToSignUp: () -> Unit,
+    navigateToForgotPassword: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,7 +106,7 @@ fun SignInScreen(modifier: Modifier = Modifier) {
                 placeholder = stringResource(id = R.string.password_placeholder),
                 supportingButton = SupportingButton(
                     text = "Forgot password?",
-                    onClick = { /* TODO: Navigate to the forgot password screen */ }
+                    onClick = navigateToForgotPassword
                 ),
                 visualTransformation = passwordVisualTransformation
             )
@@ -95,7 +120,7 @@ fun SignInScreen(modifier: Modifier = Modifier) {
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),
-            onClick = { /* TODO: Navigate to sign up */ }
+            onClick = navigateToSignUp
         )
     }
 }
@@ -105,6 +130,9 @@ fun SignInScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SignInScreenPreview() {
     GeoMateTheme {
-        SignInScreen()
+        SignInScreen(
+            navigateToSignUp = { },
+            navigateToForgotPassword = { }
+        )
     }
 }
