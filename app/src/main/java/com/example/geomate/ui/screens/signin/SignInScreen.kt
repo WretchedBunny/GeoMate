@@ -41,7 +41,7 @@ fun SignInScreen(
     uiState: SignInUIState,
     updateEmail: (String) -> Unit,
     updatePassword: (String) -> Unit,
-    onSignInClick: () -> Unit,
+    onSignInClick: () -> Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -90,7 +90,14 @@ fun SignInScreen(
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_sign_in),
-                onClick = onSignInClick,
+                onClick = {
+                    val result = onSignInClick()
+                    if (result) {
+                        // TODO: navigate to the map
+                    } else {
+                        // TODO: Display error message
+                    }
+                },
                 type = ButtonType.Primary
             )
         }
@@ -112,7 +119,7 @@ private fun SignInScreenPreview() {
             uiState = SignInUIState(),
             updateEmail = { },
             updatePassword = { },
-            onSignInClick = { }
+            onSignInClick = { true }
         )
     }
 }
