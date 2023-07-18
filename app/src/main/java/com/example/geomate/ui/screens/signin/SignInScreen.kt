@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,9 +43,17 @@ import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
-fun NavGraphBuilder.signIn(navController: NavController) {
+fun NavGraphBuilder.signIn(
+    navController: NavController,
+    viewModel: SignInViewModel
+) {
     composable(Destinations.SIGN_IN_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
         SignInScreen(
+            uiState = uiState,
+            updateEmail = viewModel::updateEmail,
+            updatePassword = viewModel::updatePassword,
+            onSignInClick = viewModel::onSignInClick,
             navigateToSignUp = navController::navigateToSignUp,
             navigateToForgotPassword = navController::navigateToForgotPassword
         )
@@ -59,6 +68,10 @@ fun NavController.navigateToSignIn() {
 
 @Composable
 fun SignInScreen(
+    uiState: SignInUIState,
+    updateEmail: (String) -> Unit,
+    updatePassword: (String) -> Unit,
+    onSignInClick: () -> Boolean,
     navigateToSignUp: () -> Unit,
     navigateToForgotPassword: () -> Unit,
     modifier: Modifier = Modifier
@@ -80,9 +93,6 @@ fun SignInScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
-            var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-
             var isPasswordVisible by remember { mutableStateOf(false) }
             val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
                 true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
@@ -90,14 +100,14 @@ fun SignInScreen(
             }
 
             GeoMateTextField(
-                value = email,
-                onValueChange = { newEmail -> email = newEmail },
+                value = uiState.email,
+                onValueChange = updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder)
             )
             GeoMateTextField(
-                value = password,
-                onValueChange = { newPassword -> password = newPassword },
+                value = uiState.password,
+                onValueChange = updatePassword,
                 leadingIcon = LeadingIcon(Icons.Outlined.Lock),
                 trailingIcon = TrailingIcon(
                     icon = passwordTrailingIcon,
@@ -112,7 +122,14 @@ fun SignInScreen(
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_sign_in),
-                onClick = { /* TODO: Authenticate user */ },
+                onClick = {
+                    val result = onSignInClick()
+                    if (result) {
+                        // TODO: Navigate to the map screen
+                    } else {
+                        // TODO: Display error message
+                    }
+                },
                 type = ButtonType.Primary
             )
         }
@@ -131,6 +148,10 @@ fun SignInScreen(
 private fun SignInScreenPreview() {
     GeoMateTheme {
         SignInScreen(
+            uiState = SignInUIState(),
+            updateEmail = { },
+            updatePassword = { },
+            onSignInClick = { true },
             navigateToSignUp = { },
             navigateToForgotPassword = { }
         )

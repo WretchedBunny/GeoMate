@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.signin.SignInViewModel
 import com.example.geomate.ui.screens.signin.signIn
 import com.example.geomate.ui.screens.signup.SignUpViewModel
 import com.example.geomate.ui.screens.signup.signUp
@@ -11,6 +12,7 @@ import com.example.geomate.ui.theme.GeoMateTheme
 
 @Composable
 fun NavGraph(navController: NavHostController) {
+    val signInViewModel = SignInViewModel()
     val signUpViewModel = SignUpViewModel()
 
     GeoMateTheme {
@@ -19,7 +21,10 @@ fun NavGraph(navController: NavHostController) {
             startDestination = Destinations.SIGN_IN_ROUTE
         ) {
             forgotPassword(navController = navController)
-            signIn(navController = navController)
+            signIn(
+                navController = navController,
+                viewModel = signInViewModel
+            )
             signUp(
                 navController = navController,
                 viewModel = signUpViewModel
