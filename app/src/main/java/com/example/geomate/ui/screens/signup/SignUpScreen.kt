@@ -330,7 +330,16 @@ private fun OptionalInformationStage(
 @Composable
 private fun SignUpScreenPreview() {
     GeoMateTheme {
-
+        SignUpScreen(
+            uiState = SignUpUiState(),
+            updateEmail = { },
+            updatePassword = { },
+            updateFirstName = { },
+            updateLastName = { },
+            updateUsername = { },
+            updateProfilePictureUri = { },
+            updateDescription = { },
+            navigateToSignIn = { })
     }
 }
 
@@ -346,7 +355,13 @@ private fun SignUpScreenPreview() {
 @Composable
 private fun EmailAndPasswordStagePreview() {
     GeoMateTheme {
-
+        EmailAndPasswordStage(
+            email = "",
+            updateEmail = { },
+            password = "",
+            updatePassword = { },
+            next = { }
+        )
     }
 }
 
@@ -362,7 +377,16 @@ private fun EmailAndPasswordStagePreview() {
 @Composable
 private fun PublicInformationStagePreview() {
     GeoMateTheme {
-
+        PublicInformationStage(
+            firstName = "",
+            updateFirstName = { },
+            lastName = "",
+            updateLastName = { },
+            username = "",
+            updateUsername = { },
+            next = { },
+            prev = { }
+        )
     }
 }
 
@@ -378,6 +402,13 @@ private fun PublicInformationStagePreview() {
 @Composable
 private fun OptionalInformationStagePreview() {
     GeoMateTheme {
-
+        OptionalInformationStage(
+            profilePictureUri = Uri.EMPTY,
+            updateProfilePictureUri = { },
+            description = "",
+            updateDescription = { },
+            next = { },
+            prev = { }
+        )
     }
 }

@@ -15,8 +15,7 @@ class SignInViewModel : ViewModel() {
     private val accountService = AccountService(FirebaseAuth.getInstance())
     private var _uiState = MutableStateFlow(SignInUIState())
     val uiState = _uiState.asStateFlow()
-
-
+    
     private val email
         get() = uiState.value.email
     private val password
