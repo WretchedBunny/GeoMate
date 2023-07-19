@@ -50,6 +50,8 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import kotlinx.coroutines.launch
 
+private const val TAG = "SignUpScreen"
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SignUpScreen(
@@ -61,7 +63,8 @@ fun SignUpScreen(
     updateUsername: (String) -> Unit,
     updateProfilePictureUri: (Uri?) -> Unit,
     updateDescription: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onContinueClick: (Int) -> Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -90,19 +93,22 @@ fun SignUpScreen(
                     password = uiState.password,
                     updatePassword = updatePassword,
                     next = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(1)
+                        if (onContinueClick(it)) {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(1)
+                            }
                         }
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
+
                 1 -> PublicInformationStage(
                     firstName = uiState.firstName,
                     updateFirstName = updateFirstName,
                     lastName = uiState.lastName,
                     updateLastName = updateLastName,
                     username = uiState.username,
-                    updateUsername  = updateUsername,
+                    updateUsername = updateUsername,
                     next = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(2)
@@ -115,6 +121,7 @@ fun SignUpScreen(
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
+
                 2 -> OptionalInformationStage(
                     profilePictureUri = uiState.profilePictureUri,
                     updateProfilePictureUri = updateProfilePictureUri,

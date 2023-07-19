@@ -1,8 +1,9 @@
 package com.example.geomate.ui.screens.signin
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.geomate.ext.isValidEmail
+import com.example.geomate.ext.isEmailValid
 import com.example.geomate.service.AccountService
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "SignInViewModel"
-class SignInViewModel : ViewModel(){
+
+class SignInViewModel : ViewModel() {
     private val accountService = AccountService(FirebaseAuth.getInstance())
     private var _uiState = MutableStateFlow(SignInUIState())
     val uiState = _uiState.asStateFlow()
@@ -30,9 +32,9 @@ class SignInViewModel : ViewModel(){
         _uiState.update { it.copy(password = password) }
     }
 
-    fun onSignInClick(){
+    fun onSignInClick() {
         //TODO validate email textField
-        if(!email.isValidEmail()){
+        if (!email.isEmailValid()) {
             //TODO Implement error notification to user
             Log.d(TAG, "The email is not valid. Email looks like this: ${email}")
             return
@@ -49,14 +51,15 @@ class SignInViewModel : ViewModel(){
         Implement SignIn and Account Firebase service
          */
         Log.d(TAG, "Trying to sign in")
-        viewModelScope.launch{accountService.signIn(email, password)}
+        viewModelScope.launch { accountService.signIn(email, password) }
 
         //TODO Implement transfer to mapScreen
         Log.d(TAG, "The SignIn Was Successful")
 
 
     }
-    fun onForgotPasswordClick(){
+
+    fun onForgotPasswordClick() {
         //TODO handle transfer to "forgotPasswordScreen"
     }
 }
