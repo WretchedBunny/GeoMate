@@ -23,11 +23,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.ext.isValidEmail
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
@@ -73,7 +75,11 @@ fun ForgotPasswordScreen(
                 value = email,
                 onValueChange = { newEmail -> email = newEmail },
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
-                placeholder = stringResource(id = R.string.email_placeholder)
+                placeholder = stringResource(id = R.string.email_placeholder),
+                inputValidator = InputValidator(
+                    rule = String::isValidEmail,
+                    errorMessage = stringResource(id = R.string.invalid_email)
+                )
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_reset_password),

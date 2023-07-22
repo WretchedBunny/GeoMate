@@ -47,6 +47,7 @@ import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.TrailingIcon
@@ -109,11 +110,14 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 42.dp, start = 30.dp, end = 30.dp)
         )
 
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f,
+            pageCount = { 3 }
+        )
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
-            pageCount = 3,
             userScrollEnabled = false,
         ) {
             when (it) {
@@ -199,7 +203,11 @@ private fun EmailAndPasswordStage(
             value = email,
             onValueChange = updateEmail,
             leadingIcon = LeadingIcon(Icons.Outlined.Email),
-            placeholder = stringResource(id = R.string.email_placeholder)
+            placeholder = stringResource(id = R.string.email_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = password,
@@ -210,6 +218,10 @@ private fun EmailAndPasswordStage(
                 onClick = { isPasswordVisible = !isPasswordVisible }
             ),
             placeholder = stringResource(id = R.string.password_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            ),
             visualTransformation = passwordVisualTransformation
         )
         GeoMateButton(
@@ -241,19 +253,31 @@ private fun PublicInformationStage(
             value = firstName,
             onValueChange = updateFirstName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.first_name_placeholder)
+            placeholder = stringResource(id = R.string.first_name_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = lastName,
             onValueChange = updateLastName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.last_name_placeholder)
+            placeholder = stringResource(id = R.string.last_name_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = username,
             onValueChange = updateUsername,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.username_placeholder)
+            placeholder = stringResource(id = R.string.username_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             GeoMateButton(

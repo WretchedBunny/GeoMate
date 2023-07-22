@@ -7,5 +7,5 @@ fun String.isValidEmail(): Boolean {
 }
 
 fun String.isValidPassword(): Boolean {
-    return this.isNotBlank() && this.length >= 8
+    return this.trim().length >= 8
 }
