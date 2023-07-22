@@ -69,7 +69,7 @@ fun SignUpScreen(
     updateProfilePictureUri: (Uri?) -> Unit,
     updateDescription: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onContinueClick: (Int) -> Boolean
+    onContinueClick: (Int) -> Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -84,6 +84,9 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 42.dp, start = 30.dp, end = 30.dp)
         )
 
+        val accountService = AccountService(FirebaseAuth.getInstance())
+        val storageService =
+            StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
         val pagerState = rememberPagerState()
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
@@ -115,8 +118,10 @@ fun SignUpScreen(
                     username = uiState.username,
                     updateUsername = updateUsername,
                     next = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(2)
+                        if (onContinueClick(it)) {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(2)
+                            }
                         }
                     },
                     prev = {
@@ -130,9 +135,25 @@ fun SignUpScreen(
                 2 -> OptionalInformationStage(
                     profilePictureUri = uiState.profilePictureUri,
                     updateProfilePictureUri = updateProfilePictureUri,
-                    description = uiState.description,
+                    description = uiState.bio,
                     updateDescription = updateDescription,
-                    next = { /* TODO: Create user account and navigate to map */ },
+                    next = {
+                        coroutineScope.launch {
+                            storageService.addUser(
+                                User(
+                                    email = uiState.email,
+                                    password = uiState.password,
+                                    username = uiState.username,
+                                    firstName = uiState.firstName,
+                                    lastName = uiState.lastName,
+                                    profilePictureUri = uiState.profilePictureUri,
+                                    bio = uiState.bio
+                                )
+                            )
+                            accountService.signUp(uiState.email, uiState.password)
+                            /* TODO navigate to map */
+                        }
+                    },
                     prev = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(1)
@@ -159,7 +180,7 @@ private fun EmailAndPasswordStage(
     password: String,
     updatePassword: (String) -> Unit,
     next: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,7 +228,7 @@ private fun PublicInformationStage(
     updateUsername: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -255,7 +276,7 @@ private fun OptionalInformationStage(
     updateDescription: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 

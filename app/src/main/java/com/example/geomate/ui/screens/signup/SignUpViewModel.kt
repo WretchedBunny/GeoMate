@@ -55,7 +55,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun updateDescription(description: String) {
-        _uiState.update { it.copy(description = description) }
+        _uiState.update { it.copy(bio = description) }
     }
 
     fun onContinueClick(pageNumber: Int): Boolean {
@@ -82,7 +82,7 @@ class SignUpViewModel : ViewModel() {
             1 -> {
                 val isNameValid = firstName.isNotBlank()
                 val isSurnameValid = lastName.isNotBlank()
-                val isUsernameValid = username.isNotBlank()
+                val isUsernameValid = username.isUsernameValid()
 
                 if (!isNameValid) {
                     /*TODO("Provide User with notification about name validation error.") */
