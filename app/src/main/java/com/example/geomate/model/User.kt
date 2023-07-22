@@ -1,13 +1,13 @@
-package com.example.geomate.ui.screens.signup
+package com.example.geomate.model
 
 import android.net.Uri
 
-data class SignUpUiState(
+data class User(
     val email: String = "",
     val password: String = "",
+    val username: String = "",
     val firstName: String = "",
     val lastName: String = "",
-    val username: String = "",
     val profilePictureUri: Uri? = null,
     val bio: String = "",
 )

@@ -78,8 +78,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
 
     // Add the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Declare the dependency for the Cloud Firestore library
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.4.3")

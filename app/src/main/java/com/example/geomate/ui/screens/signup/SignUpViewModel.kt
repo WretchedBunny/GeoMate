@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
+import com.example.geomate.ext.isUsernameValid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +28,7 @@ class SignUpViewModel : ViewModel() {
     private val username
         get() = uiState.value.username
     private val description
-        get() = uiState.value.description
+        get() = uiState.value.bio
 
     fun updateEmail(email: String) {
         _uiState.update { it.copy(email = email) }
@@ -104,6 +105,10 @@ class SignUpViewModel : ViewModel() {
                         "Username for account creation isn't valid."
                     )
                 }
+                return isNameValid && isSurnameValid && isUsernameValid
+            }
+
+            2 -> {
 
             }
         }

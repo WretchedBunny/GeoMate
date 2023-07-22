@@ -38,6 +38,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.R
+import com.example.geomate.model.User
+import com.example.geomate.service.AccountService
+import com.example.geomate.service.StorageService
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -48,6 +51,8 @@ import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 private const val TAG = "SignUpScreen"
