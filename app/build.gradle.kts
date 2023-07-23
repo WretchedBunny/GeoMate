@@ -2,17 +2,16 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-
 }
 
 android {
     namespace = "com.example.geomate"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.geomate"
         minSdk = 28
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -74,7 +73,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // Import the BoM for the Firebase platform
+    // Authentication
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
 
     // Add the dependency for the Firebase Authentication library
@@ -88,4 +88,7 @@ dependencies {
 
     // Status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
+    // Jetpack Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.0-beta02")
 }
