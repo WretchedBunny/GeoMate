@@ -107,10 +107,6 @@ class SignUpViewModel : ViewModel() {
                 }
                 return isNameValid && isSurnameValid && isUsernameValid
             }
-
-            2 -> {
-
-            }
         }
         return TODO("Provide the return value")
     }

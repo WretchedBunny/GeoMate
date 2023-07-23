@@ -166,7 +166,7 @@ fun SignUpScreen(
 
         Footer(
             text = stringResource(id = R.string.sign_up_footer),
-            clickableText = stringResource(id = R.string.button_sign_up),
+            clickableText = stringResource(id = R.string.button_sign_in),
             onClick = { /* TODO: Navigate to sign in */ },
             modifier = Modifier.padding(bottom = 42.dp, start = 30.dp, end = 30.dp)
         )

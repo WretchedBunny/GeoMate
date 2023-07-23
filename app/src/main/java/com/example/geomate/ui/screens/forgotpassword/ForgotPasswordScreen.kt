@@ -30,7 +30,14 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
+fun ForgotPasswordScreen(
+    uiState: ForgotPasswordUiState,
+    updateEmail: (String) -> Unit,
+    onResetClick: () -> Unit,
+    modifier: Modifier = Modifier,
+
+
+    ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,7 +64,7 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
             )
             GeoMateButton(
                 text = stringResource(id = R.string.button_reset_password),
-                onClick = { /* TODO: Send email */ },
+                onClick = onResetClick,
                 type = ButtonType.Primary
             )
         }
@@ -69,11 +76,16 @@ fun ForgotPasswordScreen(modifier: Modifier = Modifier) {
         )
     }
 }
+
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ForgotPasswordScreenPreview() {
     GeoMateTheme {
-        ForgotPasswordScreen()
+        ForgotPasswordScreen(
+            uiState = ForgotPasswordUiState(),
+            updateEmail = { },
+            onResetClick = { }
+        )
     }
 }
