@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,17 +25,49 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.ext.isValidEmail
+import com.example.geomate.ext.isValidPassword
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.SupportingButton
 import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
+import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+
+fun NavGraphBuilder.signIn(
+    navController: NavController,
+    viewModel: SignInViewModel
+) {
+    composable(Destinations.SIGN_IN_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
+        SignInScreen(
+            uiState = uiState,
+            updateEmail = viewModel::updateEmail,
+            updatePassword = viewModel::updatePassword,
+            onSignInClick = viewModel::onSignInClick,
+            navigateToSignUp = navController::navigateToSignUp,
+            navigateToForgotPassword = navController::navigateToForgotPassword
+        )
+    }
+}
+
+fun NavController.navigateToSignIn() {
+    navigate(Destinations.SIGN_IN_ROUTE) {
+        launchSingleTop = false
+    }
+}
 
 @Composable
 fun SignInScreen(
@@ -42,6 +75,8 @@ fun SignInScreen(
     updateEmail: (String) -> Unit,
     updatePassword: (String) -> Unit,
     onSignInClick: () -> Boolean,
+    navigateToSignUp: () -> Unit,
+    navigateToForgotPassword: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -71,7 +106,11 @@ fun SignInScreen(
                 value = uiState.email,
                 onValueChange = updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
-                placeholder = stringResource(id = R.string.email_placeholder)
+                placeholder = stringResource(id = R.string.email_placeholder),
+                inputValidator = InputValidator(
+                    rule = String::isValidEmail,
+                    errorMessage = stringResource(id = R.string.invalid_email)
+                )
             )
             GeoMateTextField(
                 value = uiState.password,
@@ -84,7 +123,11 @@ fun SignInScreen(
                 placeholder = stringResource(id = R.string.password_placeholder),
                 supportingButton = SupportingButton(
                     text = "Forgot password?",
-                    onClick = { /* TODO: Navigate to the forgot password screen */ }
+                    onClick = navigateToForgotPassword
+                ),
+                inputValidator = InputValidator(
+                    rule = String::isValidPassword,
+                    errorMessage = stringResource(id = R.string.invalid_password)
                 ),
                 visualTransformation = passwordVisualTransformation
             )
@@ -93,7 +136,7 @@ fun SignInScreen(
                 onClick = {
                     val result = onSignInClick()
                     if (result) {
-                        // TODO: navigate to the map
+                        // TODO: Navigate to the map screen
                     } else {
                         // TODO: Display error message
                     }
@@ -105,7 +148,7 @@ fun SignInScreen(
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),
-            onClick = { /* TODO: Navigate to sign up */ }
+            onClick = navigateToSignUp
         )
     }
 }
@@ -119,7 +162,9 @@ private fun SignInScreenPreview() {
             uiState = SignInUIState(),
             updateEmail = { },
             updatePassword = { },
-            onSignInClick = { true }
+            onSignInClick = { true },
+            navigateToSignUp = { },
+            navigateToForgotPassword = { }
         )
     }
 }

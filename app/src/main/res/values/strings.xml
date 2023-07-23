@@ -9,6 +9,10 @@
     <string name="username_placeholder">Enter your username</string>
     <string name="description_placeholder">Describe yourself</string>
 
+    <!--Errors-->
+    <string name="invalid_email">Invalid email</string>
+    <string name="invalid_password">Min. 8 characters long</string>
+
     <!--Buttons' texts-->
     <string name="button_reset_password">Reset password</string>
     <string name="button_sign_up">Sign up</string>

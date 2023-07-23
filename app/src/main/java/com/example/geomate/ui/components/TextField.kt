@@ -19,8 +19,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
@@ -30,9 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.ui.theme.GeoMateTheme
-
-// TODO: Figure out the best way to display an error
-// TODO: Decide whether different border color on focus is a good idea
 
 data class SupportingButton(
     val text: String,
@@ -49,6 +52,11 @@ data class TrailingIcon(
     val onClick: (() -> Unit)? = null
 )
 
+data class InputValidator(
+    val rule: (String) -> Boolean,
+    val errorMessage: String
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeoMateTextField(
@@ -60,19 +68,37 @@ fun GeoMateTextField(
     placeholder: String,
     supportingText: String? = null,
     supportingButton: SupportingButton? = null,
+    inputValidator: InputValidator? = null,
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next
 ) {
+    var isValid by remember { mutableStateOf(true) }
+    var wasFocusedOnce by remember { mutableStateOf(false) }
+    var isInFocus by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isInFocus) {
+        if (wasFocusedOnce && !isInFocus) {
+            inputValidator?.let { validator ->
+                isValid = validator.rule(value)
+            }
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(
-            if (supportingText != null) (-16).dp else 0.dp
+            if (supportingText != null || !isValid) (-16).dp else 0.dp
         ),
         modifier = modifier
     ) {
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = {
+                onValueChange(it)
+                if (!isValid) {
+                    isValid = inputValidator?.rule?.invoke(it) ?: true
+                }
+            },
             shape = CircleShape,
             leadingIcon = {
                 leadingIcon?.let {
@@ -109,21 +135,39 @@ fun GeoMateTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                errorBorderColor = Color.Transparent,
+                errorCursorColor = Color.Transparent,
+                errorSupportingTextColor = MaterialTheme.colorScheme.error
             ),
             singleLine = singleLine,
             supportingText = {
-                supportingText?.let {
+                if (!isValid && inputValidator != null) {
                     Text(
-                        text = it,
+                        text = inputValidator.errorMessage,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else if (supportingText != null) {
+                    Text(
+                        text = supportingText,
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontStyle = FontStyle.Italic
                     )
                 }
             },
+            isError = !isValid,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (wasFocusedOnce && !it.isFocused) {
+                        isInFocus = false
+                    } else if (it.isFocused) {
+                        wasFocusedOnce = true
+                        isInFocus = true
+                    }
+                }
         )
         supportingButton?.let {
             Text(
@@ -154,7 +198,7 @@ private fun EmailTextFieldPreview() {
             value = "",
             onValueChange = { },
             leadingIcon = LeadingIcon(Icons.Outlined.Email),
-            placeholder = "Enter your email"
+            placeholder = "Enter your email",
         )
     }
 }

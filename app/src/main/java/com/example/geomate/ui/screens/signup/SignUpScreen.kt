@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,18 +38,50 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
+import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import kotlinx.coroutines.launch
+
+fun NavGraphBuilder.signUp(
+    navController: NavController,
+    viewModel: SignUpViewModel
+) {
+    composable(Destinations.SIGN_UP_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
+        SignUpScreen(
+            uiState = uiState,
+            updateEmail = viewModel::updateEmail,
+            updatePassword = viewModel::updatePassword,
+            updateFirstName = viewModel::updateFirstName,
+            updateLastName = viewModel::updateLastName,
+            updateUsername = viewModel::updateUsername,
+            updateProfilePictureUri = viewModel::updateProfilePictureUri,
+            updateDescription = viewModel::updateDescription,
+            navigateToSignIn = navController::navigateToSignIn
+        )
+    }
+}
+
+fun NavController.navigateToSignUp() {
+    navigate(Destinations.SIGN_UP_ROUTE) {
+        launchSingleTop = false
+    }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,6 +94,7 @@ fun SignUpScreen(
     updateUsername: (String) -> Unit,
     updateProfilePictureUri: (Uri?) -> Unit,
     updateDescription: (String) -> Unit,
+    navigateToSignIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -76,11 +110,14 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 42.dp, start = 30.dp, end = 30.dp)
         )
 
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f,
+            pageCount = { 3 }
+        )
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
-            pageCount = 3,
             userScrollEnabled = false,
         ) {
             when (it) {
@@ -96,13 +133,14 @@ fun SignUpScreen(
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
+
                 1 -> PublicInformationStage(
                     firstName = uiState.firstName,
                     updateFirstName = updateFirstName,
                     lastName = uiState.lastName,
                     updateLastName = updateLastName,
                     username = uiState.username,
-                    updateUsername  = updateUsername,
+                    updateUsername = updateUsername,
                     next = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(2)
@@ -115,6 +153,7 @@ fun SignUpScreen(
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
+
                 2 -> OptionalInformationStage(
                     profilePictureUri = uiState.profilePictureUri,
                     updateProfilePictureUri = updateProfilePictureUri,
@@ -133,8 +172,8 @@ fun SignUpScreen(
 
         Footer(
             text = stringResource(id = R.string.sign_up_footer),
-            clickableText = stringResource(id = R.string.button_sign_up),
-            onClick = { /* TODO: Navigate to sign in */ },
+            clickableText = stringResource(id = R.string.button_sign_in),
+            onClick = navigateToSignIn,
             modifier = Modifier.padding(bottom = 42.dp, start = 30.dp, end = 30.dp)
         )
     }
@@ -164,7 +203,11 @@ private fun EmailAndPasswordStage(
             value = email,
             onValueChange = updateEmail,
             leadingIcon = LeadingIcon(Icons.Outlined.Email),
-            placeholder = stringResource(id = R.string.email_placeholder)
+            placeholder = stringResource(id = R.string.email_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = password,
@@ -175,6 +218,10 @@ private fun EmailAndPasswordStage(
                 onClick = { isPasswordVisible = !isPasswordVisible }
             ),
             placeholder = stringResource(id = R.string.password_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            ),
             visualTransformation = passwordVisualTransformation
         )
         GeoMateButton(
@@ -206,19 +253,31 @@ private fun PublicInformationStage(
             value = firstName,
             onValueChange = updateFirstName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.first_name_placeholder)
+            placeholder = stringResource(id = R.string.first_name_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = lastName,
             onValueChange = updateLastName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.last_name_placeholder)
+            placeholder = stringResource(id = R.string.last_name_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         GeoMateTextField(
             value = username,
             onValueChange = updateUsername,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
-            placeholder = stringResource(id = R.string.username_placeholder)
+            placeholder = stringResource(id = R.string.username_placeholder),
+            inputValidator = InputValidator(
+                rule = { true },
+                errorMessage = ""
+            )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             GeoMateButton(
@@ -295,7 +354,16 @@ private fun OptionalInformationStage(
 @Composable
 private fun SignUpScreenPreview() {
     GeoMateTheme {
-
+        SignUpScreen(
+            uiState = SignUpUiState(),
+            updateEmail = { },
+            updatePassword = { },
+            updateFirstName = { },
+            updateLastName = { },
+            updateUsername = { },
+            updateProfilePictureUri = { },
+            updateDescription = { },
+            navigateToSignIn = { })
     }
 }
 
@@ -311,7 +379,13 @@ private fun SignUpScreenPreview() {
 @Composable
 private fun EmailAndPasswordStagePreview() {
     GeoMateTheme {
-
+        EmailAndPasswordStage(
+            email = "",
+            updateEmail = { },
+            password = "",
+            updatePassword = { },
+            next = { }
+        )
     }
 }
 
@@ -327,7 +401,16 @@ private fun EmailAndPasswordStagePreview() {
 @Composable
 private fun PublicInformationStagePreview() {
     GeoMateTheme {
-
+        PublicInformationStage(
+            firstName = "",
+            updateFirstName = { },
+            lastName = "",
+            updateLastName = { },
+            username = "",
+            updateUsername = { },
+            next = { },
+            prev = { }
+        )
     }
 }
 
@@ -343,6 +426,13 @@ private fun PublicInformationStagePreview() {
 @Composable
 private fun OptionalInformationStagePreview() {
     GeoMateTheme {
-
+        OptionalInformationStage(
+            profilePictureUri = Uri.EMPTY,
+            updateProfilePictureUri = { },
+            description = "",
+            updateDescription = { },
+            next = { },
+            prev = { }
+        )
     }
 }
