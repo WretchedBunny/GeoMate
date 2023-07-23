@@ -29,8 +29,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.ext.isValidEmail
-import com.example.geomate.ext.isValidPassword
+import com.example.geomate.ext.isEmailValid
+import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -48,7 +48,7 @@ import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
-    viewModel: SignInViewModel
+    viewModel: SignInViewModel,
 ) {
     composable(Destinations.SIGN_IN_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
@@ -77,7 +77,7 @@ fun SignInScreen(
     onSignInClick: () -> Boolean,
     navigateToSignUp: () -> Unit,
     navigateToForgotPassword: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -108,7 +108,7 @@ fun SignInScreen(
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 inputValidator = InputValidator(
-                    rule = String::isValidEmail,
+                    rule = String::isEmailValid,
                     errorMessage = stringResource(id = R.string.invalid_email)
                 )
             )
@@ -126,7 +126,7 @@ fun SignInScreen(
                     onClick = navigateToForgotPassword
                 ),
                 inputValidator = InputValidator(
-                    rule = String::isValidPassword,
+                    rule = String::isPasswordValid,
                     errorMessage = stringResource(id = R.string.invalid_password)
                 ),
                 visualTransformation = passwordVisualTransformation

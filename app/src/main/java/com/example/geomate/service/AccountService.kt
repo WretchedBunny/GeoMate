@@ -11,4 +11,9 @@ class AccountService(private val auth: FirebaseAuth) {
     suspend fun signUp(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).await()
     }
+
+    suspend fun sendRecoveryEmail(email: String) {
+        auth.sendPasswordResetEmail(email).await()
+    }
+
 }

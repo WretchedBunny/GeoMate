@@ -42,6 +42,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.model.User
+import com.example.geomate.service.AccountService
+import com.example.geomate.service.StorageService
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -55,6 +58,8 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -115,6 +120,8 @@ fun SignUpScreen(
             initialPageOffsetFraction = 0f,
             pageCount = { 3 }
         )
+        val accountService = AccountService(FirebaseAuth.getInstance())
+        val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
@@ -133,7 +140,6 @@ fun SignUpScreen(
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
-
                 1 -> PublicInformationStage(
                     firstName = uiState.firstName,
                     updateFirstName = updateFirstName,
@@ -157,9 +163,25 @@ fun SignUpScreen(
                 2 -> OptionalInformationStage(
                     profilePictureUri = uiState.profilePictureUri,
                     updateProfilePictureUri = updateProfilePictureUri,
-                    description = uiState.description,
+                    description = uiState.bio,
                     updateDescription = updateDescription,
-                    next = { /* TODO: Create user account and navigate to map */ },
+                    next = {
+                        coroutineScope.launch {
+                            storageService.addUser(
+                                User(
+                                    email = uiState.email,
+                                    password = uiState.password,
+                                    username = uiState.username,
+                                    firstName = uiState.firstName,
+                                    lastName = uiState.lastName,
+                                    profilePictureUri = uiState.profilePictureUri,
+                                    bio = uiState.bio
+                                )
+                            )
+                            accountService.signUp(uiState.email, uiState.password)
+                            /* TODO navigate to map */
+                        }
+                    },
                     prev = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(1)
@@ -186,7 +208,7 @@ private fun EmailAndPasswordStage(
     password: String,
     updatePassword: (String) -> Unit,
     next: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -242,7 +264,7 @@ private fun PublicInformationStage(
     updateUsername: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -302,7 +324,7 @@ private fun OptionalInformationStage(
     updateDescription: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
