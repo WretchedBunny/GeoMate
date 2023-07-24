@@ -10,10 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,12 +30,22 @@ import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
-fun NavGraphBuilder.forgotPassword(navController: NavController) {
+fun NavGraphBuilder.forgotPassword(
+    navController: NavController,
+    viewModel: ForgotPasswordViewModel,
+) {
     composable(Destinations.FORGOT_PASSWORD_ROUTE) {
-        //ForgotPasswordScreen(navigateToSignIn = navController::navigateToSignIn)
+        val uiState by viewModel.uiState.collectAsState()
+        ForgotPasswordScreen(
+            uiState = uiState,
+            updateEmail = viewModel::updateEmail,
+            onResetClick = viewModel::onResetClick,
+            navigateToSignIn = navController::navigateToSignIn
+        )
     }
 }
 
@@ -72,10 +80,9 @@ fun ForgotPasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
-            var email by remember { mutableStateOf("") }
             GeoMateTextField(
-                value = email,
-                onValueChange = { newEmail -> email = newEmail },
+                value = uiState.email,
+                onValueChange = updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 inputValidator = InputValidator(

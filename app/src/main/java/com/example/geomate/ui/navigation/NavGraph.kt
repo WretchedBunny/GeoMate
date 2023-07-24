@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
 import com.example.geomate.ui.screens.signin.SignInViewModel
 import com.example.geomate.ui.screens.signin.signIn
@@ -18,6 +19,7 @@ import com.example.geomate.ui.theme.GeoMateTheme
 fun NavGraph(navController: NavHostController) {
     val signInViewModel = SignInViewModel()
     val signUpViewModel = SignUpViewModel()
+    val forgotPasswordViewModel = ForgotPasswordViewModel()
 
     GeoMateTheme {
         NavHost(
@@ -33,7 +35,10 @@ fun NavGraph(navController: NavHostController) {
                 fadeOut(tween(0, easing = LinearEasing))
             }
         ) {
-            forgotPassword(navController = navController)
+            forgotPassword(
+                navController = navController,
+                viewModel = forgotPasswordViewModel
+            )
             signIn(
                 navController = navController,
                 viewModel = signInViewModel
