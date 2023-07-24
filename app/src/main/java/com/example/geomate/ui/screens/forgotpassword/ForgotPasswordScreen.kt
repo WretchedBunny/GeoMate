@@ -50,6 +50,7 @@ fun NavGraphBuilder.forgotPassword(
 }
 
 fun NavController.navigateToForgotPassword() {
+    popBackStack()
     navigate(Destinations.FORGOT_PASSWORD_ROUTE) {
         launchSingleTop = false
     }

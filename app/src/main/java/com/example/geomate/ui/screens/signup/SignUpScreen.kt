@@ -64,7 +64,7 @@ import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
     navController: NavController,
-    viewModel: SignUpViewModel
+    viewModel: SignUpViewModel,
 ) {
     composable(Destinations.SIGN_UP_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
@@ -83,6 +83,7 @@ fun NavGraphBuilder.signUp(
 }
 
 fun NavController.navigateToSignUp() {
+    popBackStack()
     navigate(Destinations.SIGN_UP_ROUTE) {
         launchSingleTop = false
     }
@@ -100,7 +101,7 @@ fun SignUpScreen(
     updateProfilePictureUri: (Uri?) -> Unit,
     updateDescription: (String) -> Unit,
     navigateToSignIn: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -121,7 +122,8 @@ fun SignUpScreen(
             pageCount = { 3 }
         )
         val accountService = AccountService(FirebaseAuth.getInstance())
-        val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+        val storageService =
+            StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
@@ -140,6 +142,7 @@ fun SignUpScreen(
                     },
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
+
                 1 -> PublicInformationStage(
                     firstName = uiState.firstName,
                     updateFirstName = updateFirstName,
