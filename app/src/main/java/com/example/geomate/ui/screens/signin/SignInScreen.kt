@@ -38,6 +38,7 @@ import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
+import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.SupportingButton
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.navigation.Destinations
@@ -57,6 +58,9 @@ fun NavGraphBuilder.signIn(
             updateEmail = viewModel::updateEmail,
             updatePassword = viewModel::updatePassword,
             onSignInClick = viewModel::onSignInClick,
+            onFacebookClick = { /* TODO: Sign in with facebook */ },
+            onGoogleClick = { /* TODO: Sign in with google */ },
+            onTwitterClick = { /* TODO: Sign in with twitter */ },
             navigateToSignUp = navController::navigateToSignUp,
             navigateToForgotPassword = navController::navigateToForgotPassword
         )
@@ -76,6 +80,9 @@ fun SignInScreen(
     updateEmail: (String) -> Unit,
     updatePassword: (String) -> Unit,
     onSignInClick: () -> Boolean,
+    onFacebookClick: () -> Unit,
+    onGoogleClick: () -> Unit,
+    onTwitterClick: () -> Unit,
     navigateToSignUp: () -> Unit,
     navigateToForgotPassword: () -> Unit,
     modifier: Modifier = Modifier,
@@ -95,54 +102,64 @@ fun SignInScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
         ) {
-            var isPasswordVisible by remember { mutableStateOf(false) }
-            val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
-                true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
-                false -> Pair(Icons.Outlined.Visibility, PasswordVisualTransformation())
-            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+            ) {
+                var isPasswordVisible by remember { mutableStateOf(false) }
+                val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
+                    true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
+                    false -> Pair(Icons.Outlined.Visibility, PasswordVisualTransformation())
+                }
 
-            GeoMateTextField(
-                value = uiState.email,
-                onValueChange = updateEmail,
-                leadingIcon = LeadingIcon(Icons.Outlined.Email),
-                placeholder = stringResource(id = R.string.email_placeholder),
-                inputValidator = InputValidator(
-                    rule = String::isEmailValid,
-                    errorMessage = stringResource(id = R.string.invalid_email)
+                GeoMateTextField(
+                    value = uiState.email,
+                    onValueChange = updateEmail,
+                    leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                    placeholder = stringResource(id = R.string.email_placeholder),
+                    inputValidator = InputValidator(
+                        rule = String::isEmailValid,
+                        errorMessage = stringResource(id = R.string.invalid_email)
+                    )
                 )
-            )
-            GeoMateTextField(
-                value = uiState.password,
-                onValueChange = updatePassword,
-                leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-                trailingIcon = TrailingIcon(
-                    icon = passwordTrailingIcon,
-                    onClick = { isPasswordVisible = !isPasswordVisible }
-                ),
-                placeholder = stringResource(id = R.string.password_placeholder),
-                supportingButton = SupportingButton(
-                    text = "Forgot password?",
-                    onClick = navigateToForgotPassword
-                ),
-                inputValidator = InputValidator(
-                    rule = String::isPasswordValid,
-                    errorMessage = stringResource(id = R.string.invalid_password)
-                ),
-                visualTransformation = passwordVisualTransformation
-            )
-            GeoMateButton(
-                text = stringResource(id = R.string.button_sign_in),
-                onClick = {
-                    val result = onSignInClick()
-                    if (result) {
-                        // TODO: Navigate to the map screen
-                    } else {
-                        // TODO: Display error message
-                    }
-                },
-                type = ButtonType.Primary
+                GeoMateTextField(
+                    value = uiState.password,
+                    onValueChange = updatePassword,
+                    leadingIcon = LeadingIcon(Icons.Outlined.Lock),
+                    trailingIcon = TrailingIcon(
+                        icon = passwordTrailingIcon,
+                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    ),
+                    placeholder = stringResource(id = R.string.password_placeholder),
+                    supportingButton = SupportingButton(
+                        text = stringResource(id = R.string.button_forgot_password),
+                        onClick = navigateToForgotPassword
+                    ),
+                    inputValidator = InputValidator(
+                        rule = String::isPasswordValid,
+                        errorMessage = stringResource(id = R.string.invalid_password)
+                    ),
+                    visualTransformation = passwordVisualTransformation
+                )
+                GeoMateButton(
+                    text = stringResource(id = R.string.button_sign_in),
+                    onClick = {
+                        val result = onSignInClick()
+                        if (result) {
+                            // TODO: Navigate to the map screen
+                        } else {
+                            // TODO: Display error message
+                        }
+                    },
+                    type = ButtonType.Primary
+                )
+            }
+            SocialNetworksRow(
+                onFacebookClick = onFacebookClick,
+                onGoogleClick = onGoogleClick,
+                onTwitterClick = onTwitterClick
             )
         }
 
@@ -164,6 +181,9 @@ private fun SignInScreenPreview() {
             updateEmail = { },
             updatePassword = { },
             onSignInClick = { true },
+            onFacebookClick = { /* TODO: Sign in with facebook */ },
+            onGoogleClick = { /* TODO: Sign in with google */ },
+            onTwitterClick = { /* TODO: Sign in with twitter */ },
             navigateToSignUp = { },
             navigateToForgotPassword = { }
         )

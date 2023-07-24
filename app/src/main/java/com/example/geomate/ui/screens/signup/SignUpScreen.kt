@@ -53,6 +53,7 @@ import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.ProfilePicturePicker
+import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
@@ -77,6 +78,9 @@ fun NavGraphBuilder.signUp(
             updateUsername = viewModel::updateUsername,
             updateProfilePictureUri = viewModel::updateProfilePictureUri,
             updateDescription = viewModel::updateDescription,
+            onFacebookClick = { /* TODO: Sign in with facebook */ },
+            onGoogleClick = { /* TODO: Sign in with google */ },
+            onTwitterClick = { /* TODO: Sign in with twitter */ },
             navigateToSignIn = navController::navigateToSignIn
         )
     }
@@ -100,6 +104,9 @@ fun SignUpScreen(
     updateUsername: (String) -> Unit,
     updateProfilePictureUri: (Uri?) -> Unit,
     updateDescription: (String) -> Unit,
+    onFacebookClick: () -> Unit,
+    onGoogleClick: () -> Unit,
+    onTwitterClick: () -> Unit,
     navigateToSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -140,6 +147,9 @@ fun SignUpScreen(
                             pagerState.animateScrollToPage(1)
                         }
                     },
+                    onFacebookClick = onFacebookClick,
+                    onGoogleClick = onGoogleClick,
+                    onTwitterClick = onTwitterClick,
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
 
@@ -211,48 +221,61 @@ private fun EmailAndPasswordStage(
     password: String,
     updatePassword: (String) -> Unit,
     next: () -> Unit,
+    onFacebookClick: () -> Unit,
+    onGoogleClick: () -> Unit,
+    onTwitterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
         modifier = modifier
     ) {
-        var isPasswordVisible by remember { mutableStateOf(false) }
-        val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
-            true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
-            false -> Pair(Icons.Outlined.Visibility, PasswordVisualTransformation())
-        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+        ) {
+            var isPasswordVisible by remember { mutableStateOf(false) }
+            val (passwordTrailingIcon, passwordVisualTransformation) = when (isPasswordVisible) {
+                true -> Pair(Icons.Outlined.VisibilityOff, VisualTransformation.None)
+                false -> Pair(Icons.Outlined.Visibility, PasswordVisualTransformation())
+            }
 
-        GeoMateTextField(
-            value = email,
-            onValueChange = updateEmail,
-            leadingIcon = LeadingIcon(Icons.Outlined.Email),
-            placeholder = stringResource(id = R.string.email_placeholder),
-            inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+            GeoMateTextField(
+                value = email,
+                onValueChange = updateEmail,
+                leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                placeholder = stringResource(id = R.string.email_placeholder),
+                inputValidator = InputValidator(
+                    rule = { true },
+                    errorMessage = ""
+                )
             )
-        )
-        GeoMateTextField(
-            value = password,
-            onValueChange = updatePassword,
-            leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-            trailingIcon = TrailingIcon(
-                icon = passwordTrailingIcon,
-                onClick = { isPasswordVisible = !isPasswordVisible }
-            ),
-            placeholder = stringResource(id = R.string.password_placeholder),
-            inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
-            ),
-            visualTransformation = passwordVisualTransformation
-        )
-        GeoMateButton(
-            text = stringResource(id = R.string.button_continue),
-            onClick = next,
-            type = ButtonType.Primary
+            GeoMateTextField(
+                value = password,
+                onValueChange = updatePassword,
+                leadingIcon = LeadingIcon(Icons.Outlined.Lock),
+                trailingIcon = TrailingIcon(
+                    icon = passwordTrailingIcon,
+                    onClick = { isPasswordVisible = !isPasswordVisible }
+                ),
+                placeholder = stringResource(id = R.string.password_placeholder),
+                inputValidator = InputValidator(
+                    rule = { true },
+                    errorMessage = ""
+                ),
+                visualTransformation = passwordVisualTransformation
+            )
+            GeoMateButton(
+                text = stringResource(id = R.string.button_continue),
+                onClick = next,
+                type = ButtonType.Primary
+            )
+        }
+        SocialNetworksRow(
+            onFacebookClick = onFacebookClick,
+            onGoogleClick = onGoogleClick,
+            onTwitterClick = onTwitterClick
         )
     }
 }
@@ -388,7 +411,11 @@ private fun SignUpScreenPreview() {
             updateUsername = { },
             updateProfilePictureUri = { },
             updateDescription = { },
-            navigateToSignIn = { })
+            onFacebookClick = { /* TODO: Sign in with facebook */ },
+            onGoogleClick = { /* TODO: Sign in with google */ },
+            onTwitterClick = { /* TODO: Sign in with twitter */ },
+            navigateToSignIn = { }
+        )
     }
 }
 
@@ -409,7 +436,10 @@ private fun EmailAndPasswordStagePreview() {
             updateEmail = { },
             password = "",
             updatePassword = { },
-            next = { }
+            next = { },
+            onFacebookClick = { /* TODO: Sign in with facebook */ },
+            onGoogleClick = { /* TODO: Sign in with google */ },
+            onTwitterClick = { /* TODO: Sign in with twitter */ },
         )
     }
 }
