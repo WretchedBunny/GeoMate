@@ -39,22 +39,22 @@ import com.example.geomate.ui.theme.GeoMateTheme
 
 data class SupportingButton(
     val text: String,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
 )
 
 data class LeadingIcon(
     val icon: ImageVector,
-    val onClick: (() -> Unit)? = null
+    val onClick: (() -> Unit)? = null,
 )
 
 data class TrailingIcon(
     val icon: ImageVector,
-    val onClick: (() -> Unit)? = null
+    val onClick: (() -> Unit)? = null,
 )
 
 data class InputValidator(
     val rule: (String) -> Boolean,
-    val errorMessage: String
+    val errorMessage: String,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ fun GeoMateTextField(
     inputValidator: InputValidator? = null,
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    imeAction: ImeAction = ImeAction.Next
+    imeAction: ImeAction = ImeAction.Next,
 ) {
     var isValid by remember { mutableStateOf(true) }
     var wasFocusedOnce by remember { mutableStateOf(false) }
@@ -135,9 +135,10 @@ fun GeoMateTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
                 focusedBorderColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.onSecondary,
                 unfocusedBorderColor = Color.Transparent,
                 errorBorderColor = Color.Transparent,
-                errorCursorColor = Color.Transparent,
+                errorCursorColor = MaterialTheme.colorScheme.onSecondary,
                 errorSupportingTextColor = MaterialTheme.colorScheme.error
             ),
             singleLine = singleLine,
