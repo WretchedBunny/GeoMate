@@ -42,9 +42,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.model.User
-import com.example.geomate.service.AccountService
-import com.example.geomate.service.StorageService
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -59,8 +56,6 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -77,7 +72,8 @@ fun NavGraphBuilder.signUp(
             updateLastName = viewModel::updateLastName,
             updateUsername = viewModel::updateUsername,
             updateProfilePictureUri = viewModel::updateProfilePictureUri,
-            updateDescription = viewModel::updateDescription,
+            updateBio = viewModel::updateBio,
+            onSignUpClick = viewModel::onSignUpClick,
             onFacebookClick = { /* TODO: Sign in with facebook */ },
             onGoogleClick = { /* TODO: Sign in with google */ },
             onTwitterClick = { /* TODO: Sign in with twitter */ },
@@ -103,7 +99,8 @@ fun SignUpScreen(
     updateLastName: (String) -> Unit,
     updateUsername: (String) -> Unit,
     updateProfilePictureUri: (Uri?) -> Unit,
-    updateDescription: (String) -> Unit,
+    updateBio: (String) -> Unit,
+    onSignUpClick: () -> Boolean,
     onFacebookClick: () -> Unit,
     onGoogleClick: () -> Unit,
     onTwitterClick: () -> Unit,
@@ -128,9 +125,6 @@ fun SignUpScreen(
             initialPageOffsetFraction = 0f,
             pageCount = { 3 }
         )
-        val accountService = AccountService(FirebaseAuth.getInstance())
-        val storageService =
-            StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
         val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
@@ -177,22 +171,13 @@ fun SignUpScreen(
                     profilePictureUri = uiState.profilePictureUri,
                     updateProfilePictureUri = updateProfilePictureUri,
                     description = uiState.bio,
-                    updateDescription = updateDescription,
+                    updateBio = updateBio,
                     next = {
-                        coroutineScope.launch {
-                            storageService.addUser(
-                                User(
-                                    email = uiState.email,
-                                    password = uiState.password,
-                                    username = uiState.username,
-                                    firstName = uiState.firstName,
-                                    lastName = uiState.lastName,
-                                    profilePictureUri = uiState.profilePictureUri,
-                                    bio = uiState.bio
-                                )
-                            )
-                            accountService.signUp(uiState.email, uiState.password)
-                            /* TODO navigate to map */
+                        val result = onSignUpClick()
+                        if (result) {
+                            // TODO: Navigate to the map screen
+                        } else {
+                            // TODO: Display error message
                         }
                     },
                     prev = {
@@ -347,7 +332,7 @@ private fun OptionalInformationStage(
     profilePictureUri: Uri?,
     updateProfilePictureUri: (Uri?) -> Unit,
     description: String,
-    updateDescription: (String) -> Unit,
+    updateBio: (String) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier,
@@ -377,7 +362,7 @@ private fun OptionalInformationStage(
         )
         GeoMateTextField(
             value = description,
-            onValueChange = updateDescription,
+            onValueChange = updateBio,
             leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
             placeholder = stringResource(id = R.string.description_placeholder),
             supportingText = "Optional",
@@ -410,7 +395,8 @@ private fun SignUpScreenPreview() {
             updateLastName = { },
             updateUsername = { },
             updateProfilePictureUri = { },
-            updateDescription = { },
+            updateBio = { },
+            onSignUpClick = { true },
             onFacebookClick = { /* TODO: Sign in with facebook */ },
             onGoogleClick = { /* TODO: Sign in with google */ },
             onTwitterClick = { /* TODO: Sign in with twitter */ },
@@ -485,7 +471,7 @@ private fun OptionalInformationStagePreview() {
             profilePictureUri = Uri.EMPTY,
             updateProfilePictureUri = { },
             description = "",
-            updateDescription = { },
+            updateBio = { },
             next = { },
             prev = { }
         )
