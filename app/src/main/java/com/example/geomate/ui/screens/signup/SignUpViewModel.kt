@@ -2,14 +2,23 @@ package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.geomate.model.User
+import com.example.geomate.service.AccountService
+import com.example.geomate.service.StorageService
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 private const val TAG = "SignUpViewModel"
 
 class SignUpViewModel : ViewModel() {
+    val accountService = AccountService(FirebaseAuth.getInstance())
+    val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
@@ -23,8 +32,10 @@ class SignUpViewModel : ViewModel() {
         get() = uiState.value.lastName
     private val username
         get() = uiState.value.username
-    private val description
+    private val bio
         get() = uiState.value.bio
+    private val profilePictureUri
+        get() = uiState.value.profilePictureUri
 
     fun updateEmail(email: String) {
         _uiState.update { it.copy(email = email) }
@@ -46,11 +57,29 @@ class SignUpViewModel : ViewModel() {
         _uiState.update { it.copy(username = username) }
     }
 
+    fun updateBio(bio: String) {
+        _uiState.update { it.copy(bio = bio) }
+    }
+
     fun updateProfilePictureUri(profilePictureUri: Uri?) {
         _uiState.update { it.copy(profilePictureUri = profilePictureUri) }
     }
 
-    fun updateDescription(description: String) {
-        _uiState.update { it.copy(bio = description) }
+    fun onSignUpClick(): Boolean {
+        viewModelScope.launch {
+            storageService.addUser(
+                User(
+                    email = email,
+                    password = password,
+                    username = username,
+                    firstName = firstName,
+                    lastName = lastName,
+                    profilePictureUri = profilePictureUri,
+                    bio = bio
+                )
+            )
+            accountService.signUp(email, password)
+        }
+        return FirebaseAuth.getInstance().currentUser != null
     }
 }
