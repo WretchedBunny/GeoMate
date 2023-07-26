@@ -12,7 +12,11 @@
     <!--Errors-->
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Min. 8 characters long</string>
-
+    <string name="invalid_password_sign_up">Password must contain: at least one uppercase latin letter, one digit and one special sign</string>
+    <string name="invalid_firstname_sign_up">Name must be within 1 to 30 letters</string>
+    <string name="invalid_lastname_sign_up">Lastname must be within 1 to 30 letters</string>
+    <string name="invalid_username_sign_up">Username may contain uppercase and lowercase letter and underscore</string>
+    
     <!--Buttons' texts-->
     <string name="button_reset_password">Reset password</string>
     <string name="button_sign_up">Sign up</string>

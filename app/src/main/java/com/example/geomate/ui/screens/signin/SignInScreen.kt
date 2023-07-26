@@ -30,7 +30,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
-import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -126,7 +125,7 @@ fun SignInScreen(
                     onClick = navigateToForgotPassword
                 ),
                 inputValidator = InputValidator(
-                    rule = String::isPasswordValid,
+                    rule = { it.length in 8..255 },
                     errorMessage = stringResource(id = R.string.invalid_password)
                 ),
                 visualTransformation = passwordVisualTransformation

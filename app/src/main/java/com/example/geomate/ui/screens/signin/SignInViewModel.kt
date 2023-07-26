@@ -3,7 +3,6 @@ package com.example.geomate.ui.screens.signin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.ext.isEmailValid
-import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.AccountService
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +30,7 @@ class SignInViewModel : ViewModel() {
     }
 
     fun onSignInClick(): Boolean {
-        if (!email.isEmailValid() || !password.isPasswordValid()) {
+        if (!email.isEmailValid()) {
             return false
         }
 
@@ -39,9 +38,5 @@ class SignInViewModel : ViewModel() {
             accountService.signIn(email, password)
         }
         return FirebaseAuth.getInstance().currentUser != null
-    }
-
-    fun onForgotPasswordClick() {
-        //TODO handle transfer to "forgotPasswordScreen"
     }
 }

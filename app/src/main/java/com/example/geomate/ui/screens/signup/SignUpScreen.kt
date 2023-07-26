@@ -42,6 +42,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.ext.isEmailValid
+import com.example.geomate.ext.isPasswordValid
+import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -214,8 +217,8 @@ private fun EmailAndPasswordStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Email),
             placeholder = stringResource(id = R.string.email_placeholder),
             inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+                rule = String::isEmailValid,
+                errorMessage = stringResource(id = R.string.invalid_email)
             )
         )
         GeoMateTextField(
@@ -228,8 +231,8 @@ private fun EmailAndPasswordStage(
             ),
             placeholder = stringResource(id = R.string.password_placeholder),
             inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+                rule = String::isPasswordValid,
+                errorMessage = stringResource(id = R.string.invalid_password_sign_up)
             ),
             visualTransformation = passwordVisualTransformation
         )
@@ -264,8 +267,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.first_name_placeholder),
             inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+                rule = { it.length in 1..30 },
+                errorMessage = stringResource(id = R.string.invalid_firstname_sign_up)
             )
         )
         GeoMateTextField(
@@ -274,8 +277,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.last_name_placeholder),
             inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+                rule = { it.length in 1..30 },
+                errorMessage = stringResource(id = R.string.invalid_lastname_sign_up)
             )
         )
         GeoMateTextField(
@@ -284,8 +287,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.username_placeholder),
             inputValidator = InputValidator(
-                rule = { true },
-                errorMessage = ""
+                rule = String::isUsernameValid,
+                errorMessage = stringResource(id = R.string.invalid_username_sign_up)
             )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
