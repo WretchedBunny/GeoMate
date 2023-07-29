@@ -87,6 +87,9 @@ fun SignInScreen(
     navigateToForgotPassword: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,6 +123,8 @@ fun SignInScreen(
                     leadingIcon = LeadingIcon(Icons.Outlined.Email),
                     placeholder = stringResource(id = R.string.email_placeholder),
                     inputValidator = InputValidator(
+                        isValid = isEmailValid,
+                        updateIsValid = { isEmailValid = it },
                         rule = String::isEmailValid,
                         errorMessage = stringResource(id = R.string.invalid_email)
                     )
@@ -138,6 +143,8 @@ fun SignInScreen(
                         onClick = navigateToForgotPassword
                     ),
                     inputValidator = InputValidator(
+                        isValid = isPasswordValid,
+                        updateIsValid = { isPasswordValid = it },
                         rule = String::isPasswordValid,
                         errorMessage = stringResource(id = R.string.invalid_password)
                     ),
@@ -146,11 +153,15 @@ fun SignInScreen(
                 GeoMateButton(
                     text = stringResource(id = R.string.button_sign_in),
                     onClick = {
-                        val result = onSignInClick()
-                        if (result) {
-                            // TODO: Navigate to the map screen
-                        } else {
-                            // TODO: Display error message
+                        isEmailValid = uiState.email.isEmailValid()
+                        isPasswordValid = uiState.password.isPasswordValid()
+                        if (isEmailValid && isPasswordValid) {
+                            val result = onSignInClick()
+                            if (result) {
+                                // TODO: Navigate to the map screen
+                            } else {
+                                // TODO: Display error message
+                            }
                         }
                     },
                     type = ButtonType.Primary

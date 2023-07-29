@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 private const val TAG = "SignUpViewModel"
 
 class SignUpViewModel : ViewModel() {
-    val accountService = AccountService(FirebaseAuth.getInstance())
-    val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+    private val accountService = AccountService(FirebaseAuth.getInstance())
+    private val storageService =
+        StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 

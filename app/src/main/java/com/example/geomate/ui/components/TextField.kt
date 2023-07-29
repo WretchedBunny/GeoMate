@@ -19,14 +19,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
@@ -53,6 +47,8 @@ data class TrailingIcon(
 )
 
 data class InputValidator(
+    val isValid: Boolean,
+    val updateIsValid: (Boolean) -> Unit,
     val rule: (String) -> Boolean,
     val errorMessage: String,
 )
@@ -73,17 +69,7 @@ fun GeoMateTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next,
 ) {
-    var isValid by remember { mutableStateOf(true) }
-    var wasFocusedOnce by remember { mutableStateOf(false) }
-    var isInFocus by remember { mutableStateOf(false) }
-
-    LaunchedEffect(isInFocus) {
-        if (wasFocusedOnce && !isInFocus) {
-            inputValidator?.let { validator ->
-                isValid = validator.rule(value)
-            }
-        }
-    }
+    val isValid = inputValidator?.isValid ?: true
 
     Column(
         verticalArrangement = Arrangement.spacedBy(
@@ -96,7 +82,9 @@ fun GeoMateTextField(
             onValueChange = {
                 onValueChange(it)
                 if (!isValid) {
-                    isValid = inputValidator?.rule?.invoke(it) ?: true
+                    inputValidator?.updateIsValid?.let { updateIsValid ->
+                        updateIsValid(inputValidator.rule.invoke(it))
+                    }
                 }
             },
             shape = CircleShape,
@@ -159,16 +147,7 @@ fun GeoMateTextField(
             isError = !isValid,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged {
-                    if (wasFocusedOnce && !it.isFocused) {
-                        isInFocus = false
-                    } else if (it.isFocused) {
-                        wasFocusedOnce = true
-                        isInFocus = true
-                    }
-                }
+            modifier = Modifier.fillMaxWidth()
         )
         supportingButton?.let {
             Text(

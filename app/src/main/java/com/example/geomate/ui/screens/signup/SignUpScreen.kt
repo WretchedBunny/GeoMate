@@ -112,6 +112,12 @@ fun SignUpScreen(
     navigateToSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
+    var isFirstNameValid by remember { mutableStateOf(true) }
+    var isLastNameValid by remember { mutableStateOf(true) }
+    var isUsernameValid by remember { mutableStateOf(true) }
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,11 +145,19 @@ fun SignUpScreen(
                 0 -> EmailAndPasswordStage(
                     email = uiState.email,
                     updateEmail = updateEmail,
+                    isEmailValid = isEmailValid,
+                    updateIsEmailValid = { isEmailValid = it },
                     password = uiState.password,
                     updatePassword = updatePassword,
+                    isPasswordValid = isPasswordValid,
+                    updateIsPasswordValid = { isPasswordValid = it },
                     next = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(1)
+                        isEmailValid = uiState.email.isEmailValid()
+                        isPasswordValid = uiState.password.isPasswordValid()
+                        if (isEmailValid && isPasswordValid) {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(1)
+                            }
                         }
                     },
                     onFacebookClick = onFacebookClick,
@@ -155,13 +169,24 @@ fun SignUpScreen(
                 1 -> PublicInformationStage(
                     firstName = uiState.firstName,
                     updateFirstName = updateFirstName,
+                    isFirstNameValid = isFirstNameValid,
+                    updateIsFirstNameValid = { isFirstNameValid = it },
                     lastName = uiState.lastName,
                     updateLastName = updateLastName,
+                    isLastNameValid = isLastNameValid,
+                    updateIsLastNameValid = { isLastNameValid = it },
                     username = uiState.username,
                     updateUsername = updateUsername,
+                    isUsernameValid = isUsernameValid,
+                    updateIsUsernameValid = { isUsernameValid = it },
                     next = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(2)
+                        isFirstNameValid = uiState.firstName.isFirstNameValid()
+                        isLastNameValid = uiState.lastName.isLastNameValid()
+                        isUsernameValid = uiState.username.isUsernameValid()
+                        if (isFirstNameValid && isLastNameValid && isUsernameValid) {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(2)
+                            }
                         }
                     },
                     prev = {
@@ -208,8 +233,12 @@ fun SignUpScreen(
 private fun EmailAndPasswordStage(
     email: String,
     updateEmail: (String) -> Unit,
+    isEmailValid: Boolean,
+    updateIsEmailValid: (Boolean) -> Unit,
     password: String,
     updatePassword: (String) -> Unit,
+    isPasswordValid: Boolean,
+    updateIsPasswordValid: (Boolean) -> Unit,
     next: () -> Unit,
     onFacebookClick: () -> Unit,
     onGoogleClick: () -> Unit,
@@ -237,6 +266,8 @@ private fun EmailAndPasswordStage(
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 inputValidator = InputValidator(
+                    isValid = isEmailValid,
+                    updateIsValid = updateIsEmailValid,
                     rule = String::isEmailValid,
                     errorMessage = stringResource(id = R.string.invalid_email)
                 )
@@ -251,6 +282,8 @@ private fun EmailAndPasswordStage(
                 ),
                 placeholder = stringResource(id = R.string.password_placeholder),
                 inputValidator = InputValidator(
+                    isValid = isPasswordValid,
+                    updateIsValid = updateIsPasswordValid,
                     rule = String::isPasswordValid,
                     errorMessage = stringResource(id = R.string.invalid_password)
                 ),
@@ -274,10 +307,16 @@ private fun EmailAndPasswordStage(
 private fun PublicInformationStage(
     firstName: String,
     updateFirstName: (String) -> Unit,
+    isFirstNameValid: Boolean,
+    updateIsFirstNameValid: (Boolean) -> Unit,
     lastName: String,
     updateLastName: (String) -> Unit,
+    isLastNameValid: Boolean,
+    updateIsLastNameValid: (Boolean) -> Unit,
     username: String,
     updateUsername: (String) -> Unit,
+    isUsernameValid: Boolean,
+    updateIsUsernameValid: (Boolean) -> Unit,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier,
@@ -293,6 +332,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.first_name_placeholder),
             inputValidator = InputValidator(
+                isValid = isFirstNameValid,
+                updateIsValid = updateIsFirstNameValid,
                 rule = String::isFirstNameValid,
                 errorMessage = stringResource(id = R.string.invalid_first_name)
             )
@@ -303,6 +344,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.last_name_placeholder),
             inputValidator = InputValidator(
+                isValid = isLastNameValid,
+                updateIsValid = updateIsLastNameValid,
                 rule = String::isLastNameValid,
                 errorMessage = stringResource(id = R.string.last_name_placeholder)
             )
@@ -313,6 +356,8 @@ private fun PublicInformationStage(
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.username_placeholder),
             inputValidator = InputValidator(
+                isValid = isUsernameValid,
+                updateIsValid = updateIsUsernameValid,
                 rule = String::isUsernameValid, // TODO: Check if username is already taken
                 errorMessage = stringResource(id = R.string.username_placeholder)
             )
@@ -425,8 +470,12 @@ private fun EmailAndPasswordStagePreview() {
         EmailAndPasswordStage(
             email = "",
             updateEmail = { },
+            isEmailValid = true,
+            updateIsEmailValid = { },
             password = "",
             updatePassword = { },
+            isPasswordValid = true,
+            updateIsPasswordValid = { },
             next = { },
             onFacebookClick = { /* TODO: Sign in with facebook */ },
             onGoogleClick = { /* TODO: Sign in with google */ },
@@ -450,10 +499,16 @@ private fun PublicInformationStagePreview() {
         PublicInformationStage(
             firstName = "",
             updateFirstName = { },
+            isFirstNameValid = true,
+            updateIsFirstNameValid = { },
             lastName = "",
             updateLastName = { },
+            isLastNameValid = true,
+            updateIsLastNameValid = { },
             username = "",
             updateUsername = { },
+            isUsernameValid = true,
+            updateIsUsernameValid = { },
             next = { },
             prev = { }
         )
