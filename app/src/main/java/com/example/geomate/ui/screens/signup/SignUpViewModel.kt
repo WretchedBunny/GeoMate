@@ -1,11 +1,11 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.model.User
 import com.example.geomate.service.AccountService
 import com.example.geomate.service.StorageService
+import com.example.geomate.ui.screens.GeoMateViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "SignUpViewModel"
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel : GeoMateViewModel() {
     val accountService = AccountService(FirebaseAuth.getInstance())
     val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -70,7 +70,6 @@ class SignUpViewModel : ViewModel() {
             storageService.addUser(
                 User(
                     email = email,
-                    password = password,
                     username = username,
                     firstName = firstName,
                     lastName = lastName,
@@ -78,7 +77,9 @@ class SignUpViewModel : ViewModel() {
                     bio = bio
                 )
             )
-            accountService.signUp(email, password)
+            launchCatching(block = {
+                accountService.signUp(email, password)
+            })
         }
         return FirebaseAuth.getInstance().currentUser != null
     }
