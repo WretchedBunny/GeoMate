@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -136,8 +137,10 @@ fun SignInScreen(
                     val result = onSignInClick()
                     if (result) {
                         // TODO: Navigate to the map screen
+                        Log.d("SignInScreen", result.toString())
                     } else {
                         // TODO: Display error message
+                        Log.d("SignInScreen", result.toString())
                     }
                 },
                 type = ButtonType.Primary

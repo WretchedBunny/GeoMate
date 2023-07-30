@@ -4,6 +4,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
 class AccountService(private val auth: FirebaseAuth) {
+
+    suspend fun googleSignIn() {
+
+    }
+
     suspend fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).await()
     }
