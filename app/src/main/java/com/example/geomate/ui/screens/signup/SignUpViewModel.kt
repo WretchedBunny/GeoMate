@@ -14,10 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
 class SignUpViewModel : GeoMateViewModel() {
-    val accountService = AccountService(FirebaseAuth.getInstance())
-    val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+    private val accountService = AccountService(FirebaseAuth.getInstance())
+    private val storageService = StorageService(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
