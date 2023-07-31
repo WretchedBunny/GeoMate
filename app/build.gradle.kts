@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.nio.file.Paths
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -14,6 +18,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = ::googleMapsApiKey.invoke() ?: ""
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -91,4 +97,16 @@ dependencies {
 
     // Jetpack Navigation
     implementation("androidx.navigation:navigation-compose:2.7.0-beta02")
+
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:2.7.2")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+}
+
+fun googleMapsApiKey(): Any? {
+    val secrets = Paths.get(projectDir.path, "secrets.properties").toFile()
+    val props = Properties()
+    val fis = FileInputStream(secrets)
+    props.load(fis)
+    return props["GOOGLE_MAPS_API_KEY"]
 }
