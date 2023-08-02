@@ -22,17 +22,16 @@ object GeoMateColors {
     val Red40 = Color(0xFFFF4040)
 }
 
-interface GoeMateColorScheme{
+interface GoeMateColorScheme {
     val primary: Color
     val onPrimary: Color
     val secondary: Color
     val onSecondary: Color
     val surface: Color
-    val surfaceVariant: Color
     val onSurface: Color
+    val surfaceVariant: Color
     val onSurfaceVariant: Color
-    val backgroundLight: Color
-    val backgroundDark: Color
+    val background: Color
     val onBackground: Color
     val error: Color
 }
@@ -43,11 +42,10 @@ object GeoMateLightColorScheme : GoeMateColorScheme {
     override val secondary: Color = GeoMateColors.Beige30
     override val onSecondary: Color = GeoMateColors.Gray50
     override val surface: Color = GeoMateColors.Beige10
-    override val surfaceVariant: Color = GeoMateColors.White
     override val onSurface: Color = GeoMateColors.Gray50
+    override val surfaceVariant: Color = GeoMateColors.White
     override val onSurfaceVariant: Color = GeoMateColors.Gray50
-    override val backgroundLight: Color = GeoMateColors.Beige10
-    override val backgroundDark: Color = GeoMateColors.Beige30
+    override val background: Color = GeoMateColors.Beige10
     override val onBackground: Color = GeoMateColors.Gray50
     override val error: Color = GeoMateColors.Red40
 }
@@ -58,18 +56,17 @@ object GeoMateDarkColorScheme : GoeMateColorScheme {
     override val secondary: Color = GeoMateColors.Gray80
     override val onSecondary: Color = GeoMateColors.White
     override val surface: Color = GeoMateColors.Gray80
-    override val surfaceVariant: Color = GeoMateColors.Gray60
     override val onSurface: Color = GeoMateColors.White
+    override val surfaceVariant: Color = GeoMateColors.Gray60
     override val onSurfaceVariant: Color = GeoMateColors.White
-    override val backgroundLight: Color = GeoMateColors.Gray90
-    override val backgroundDark: Color = GeoMateColors.Gray90
+    override val background: Color = GeoMateColors.Gray90
     override val onBackground: Color = GeoMateColors.White
     override val error: Color = GeoMateColors.Red40
 }
 
 fun mapColors(
     darkTheme: Boolean,
-    colorScheme: GoeMateColorScheme
+    colorScheme: GoeMateColorScheme,
 ) = if (darkTheme) {
     darkColorScheme(
         primary = colorScheme.primary,
@@ -80,7 +77,7 @@ fun mapColors(
         onSurface = colorScheme.onSurface,
         surfaceVariant = colorScheme.surfaceVariant,
         onSurfaceVariant = colorScheme.onSurfaceVariant,
-        background = colorScheme.backgroundLight,
+        background = colorScheme.background,
         onBackground = colorScheme.onBackground,
         error = colorScheme.error
     )
@@ -94,7 +91,7 @@ fun mapColors(
         onSurface = colorScheme.onSurface,
         surfaceVariant = colorScheme.surfaceVariant,
         onSurfaceVariant = colorScheme.onSurfaceVariant,
-        background = colorScheme.backgroundLight,
+        background = colorScheme.background,
         onBackground = colorScheme.onBackground,
         error = colorScheme.error
     )

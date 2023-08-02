@@ -4,6 +4,11 @@
     <!--Texts-->
     <string name="or_continue_with">Or continue with</string>
 
+    <!--Bottom navigation bar-->
+    <string name="navigation_item_map">Map</string>
+    <string name="navigation_item_groups">Groups</string>
+    <string name="navigation_item_social">Social</string>
+
     <!--Placeholders-->
     <string name="email_placeholder">Enter your email</string>
     <string name="password_placeholder">Enter your password</string>

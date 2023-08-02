@@ -89,9 +89,6 @@ dependencies {
     // Add the dependency for the Firebase Authentication library
     implementation("com.google.firebase:firebase-auth-ktx")
 
-    // Declare the dependency for the Cloud Firestore library
-    implementation("com.google.firebase:firebase-firestore-ktx")
-
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.4.3")
 
