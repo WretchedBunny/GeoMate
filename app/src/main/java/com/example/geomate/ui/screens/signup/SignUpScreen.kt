@@ -321,6 +321,8 @@ private fun PublicInformationStage(
     prev: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    //for testing
+    val signUpViewModel = SignUpViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
@@ -358,8 +360,8 @@ private fun PublicInformationStage(
             inputValidator = InputValidator(
                 isValid = isUsernameValid,
                 updateIsValid = updateIsUsernameValid,
-                rule = String::isUsernameValid, // TODO: Check if username is already taken
-                errorMessage = stringResource(id = R.string.invalid_username_sign_up)
+                rule = signUpViewModel::isUsernameTaken, // testing
+                errorMessage = stringResource(id = R.string.invalid_username_taken_sign_up) //testing
             )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {

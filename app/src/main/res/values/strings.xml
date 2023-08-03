@@ -19,7 +19,8 @@
     <string name="invalid_firstname_sign_up">Minimum 2 letters</string>
     <string name="invalid_lastname_sign_up">Minimum 2 letters</string>
     <string name="invalid_username_sign_up">Minimum 5 letters</string>
-
+    <string name="invalid_username_taken_sign_up">Username already taken</string>
+    
     <!--Buttons' texts-->
     <string name="button_reset_password">Reset password</string>
     <string name="button_sign_up">Sign up</string>
