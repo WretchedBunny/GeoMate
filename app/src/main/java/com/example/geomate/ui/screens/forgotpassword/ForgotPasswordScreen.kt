@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -83,8 +84,20 @@ fun ForgotPasswordScreen(
             GeoMateTextField(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
-                leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                leadingIcons = listOf(
+                    LeadingIcon(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = null,
+                                modifier = it
+                            )
+                        }
+                    )
+                ),
                 placeholder = stringResource(id = R.string.email_placeholder),
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
                 inputValidator = InputValidator(
                     isValid = uiState.isEmailValid,
                     updateIsValid = viewModel::updateIsEmailValid,

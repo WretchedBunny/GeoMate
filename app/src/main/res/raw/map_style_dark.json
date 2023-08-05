@@ -11,7 +11,10 @@
     "elementType": "labels.icon",
     "stylers": [
       {
-        "visibility": "off"
+        "saturation": 50
+      },
+      {
+        "visibility": "on"
       }
     ]
   },
@@ -37,9 +40,6 @@
     "stylers": [
       {
         "color": "#757575"
-      },
-      {
-        "visibility": "off"
       }
     ]
   },
@@ -66,14 +66,6 @@
     "stylers": [
       {
         "color": "#bdbdbd"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "stylers": [
-      {
-        "visibility": "off"
       }
     ]
   },
@@ -124,15 +116,6 @@
   },
   {
     "featureType": "road",
-    "elementType": "labels.icon",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
     "elementType": "labels.text.fill",
     "stylers": [
       {
@@ -173,14 +156,6 @@
     "stylers": [
       {
         "color": "#616161"
-      }
-    ]
-  },
-  {
-    "featureType": "transit",
-    "stylers": [
-      {
-        "visibility": "off"
       }
     ]
   },

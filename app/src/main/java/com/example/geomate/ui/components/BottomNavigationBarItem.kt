@@ -1,27 +1,19 @@
 package com.example.geomate.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Map
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,49 +28,29 @@ fun RowScope.BottomNavigationBarItem(
     onClick: () -> Unit,
     icon: ImageVector,
     label: String,
-    notifications: Int? = null,
+    notificationsCount: Int = 0,
 ) {
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
         icon = {
-            Box {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null
+            val (textColor, backgroundColor) = when (selected) {
+                true -> Pair(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.background
                 )
-                notifications?.let {
-                    val (textColor, backgroundColor) = when (selected) {
-                        true -> Pair(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.background
-                        )
 
-                        false -> Pair(
-                            MaterialTheme.colorScheme.background,
-                            MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = 4.dp, y = (-3).dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .clip(CircleShape)
-                                .background(backgroundColor)
-                        )
-                        Text(
-                            text = it.toString(),
-                            color = textColor,
-                            style = MaterialTheme.typography.labelSmall,
-                        )
-                    }
-                }
+                false -> Pair(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.primary
+                )
             }
+            IconWithNotification(
+                icon = icon,
+                notificationsCount = notificationsCount,
+                notificationsForegroundColor = textColor,
+                notificationsBackgroundColor = backgroundColor
+            )
         },
         colors = NavigationBarItemDefaults.colors(
             unselectedIconColor = MaterialTheme.colorScheme.onBackground,
@@ -146,7 +118,7 @@ private fun SocialNotSelectedBottomNavigationBarItemPreview() {
                 onClick = { },
                 icon = Icons.Outlined.Chat,
                 label = stringResource(id = R.string.navigation_item_social),
-                notifications = 3
+                notificationsCount = 3
             )
         }
     }
@@ -174,7 +146,7 @@ private fun SocialSelectedBottomNavigationBarItemPreview() {
                 onClick = { },
                 icon = Icons.Outlined.Chat,
                 label = stringResource(id = R.string.navigation_item_social),
-                notifications = 3
+                notificationsCount = 3
             )
         }
     }

@@ -4,7 +4,9 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.ui.theme.GeoMateTheme
+import com.example.geomate.ui.theme.spacing
 
 data class SupportingButton(
     val text: String,
@@ -37,12 +39,12 @@ data class SupportingButton(
 )
 
 data class LeadingIcon(
-    val icon: ImageVector,
+    val icon: @Composable (Modifier) -> Unit,
     val onClick: (() -> Unit)? = null,
 )
 
 data class TrailingIcon(
-    val icon: ImageVector,
+    val icon: @Composable (Modifier) -> Unit,
     val onClick: (() -> Unit)? = null,
 )
 
@@ -56,15 +58,17 @@ data class InputValidator(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeoMateTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    leadingIcon: LeadingIcon? = null,
-    trailingIcon: TrailingIcon? = null,
+    leadingIcons: List<LeadingIcon>? = null,
+    trailingIcons: List<TrailingIcon>? = null,
     placeholder: String,
     supportingText: String? = null,
     supportingButton: SupportingButton? = null,
     inputValidator: InputValidator? = null,
+    containerColor: Color,
+    contentColor: Color,
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next,
@@ -89,29 +93,35 @@ fun GeoMateTextField(
             },
             shape = CircleShape,
             leadingIcon = {
-                leadingIcon?.let {
-                    val leadingIconModifier = it.onClick?.let {
-                        Modifier.clickable { it() }
-                    } ?: run { Modifier }
-                    Icon(
-                        imageVector = it.icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                        modifier = leadingIconModifier
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    modifier = Modifier.padding(horizontal = 13.dp)
+                ) {
+                    leadingIcons?.forEach { leadingIcon ->
+                        leadingIcon.icon(
+                            if (leadingIcon.onClick != null) {
+                                Modifier.clickable { leadingIcon.onClick.invoke() }
+                            } else {
+                                Modifier
+                            }
+                        )
+                    }
                 }
             },
             trailingIcon = {
-                trailingIcon?.let {
-                    val trailingIconModifier = it.onClick?.let {
-                        Modifier.clickable { it() }
-                    } ?: run { Modifier }
-                    Icon(
-                        imageVector = it.icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                        modifier = trailingIconModifier
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    modifier = Modifier.padding(horizontal = 13.dp)
+                ) {
+                    trailingIcons?.forEach { trailingIcon ->
+                        trailingIcon.icon(
+                            if (trailingIcon.onClick != null) {
+                                Modifier.clickable { trailingIcon.onClick.invoke() }
+                            } else {
+                                Modifier
+                            }
+                        )
+                    }
                 }
             },
             placeholder = {
@@ -121,12 +131,13 @@ fun GeoMateTextField(
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
+                textColor = contentColor,
+                containerColor = containerColor,
                 focusedBorderColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.onSecondary,
+                cursorColor = contentColor,
                 unfocusedBorderColor = Color.Transparent,
                 errorBorderColor = Color.Transparent,
-                errorCursorColor = MaterialTheme.colorScheme.onSecondary,
+                errorCursorColor = contentColor,
                 errorSupportingTextColor = MaterialTheme.colorScheme.error
             ),
             singleLine = singleLine,
@@ -139,7 +150,7 @@ fun GeoMateTextField(
                 } else if (supportingText != null) {
                     Text(
                         text = supportingText,
-                        color = MaterialTheme.colorScheme.onSecondary,
+                        color = contentColor,
                         fontStyle = FontStyle.Italic
                     )
                 }
@@ -153,7 +164,7 @@ fun GeoMateTextField(
             Text(
                 text = it.text,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = contentColor,
                 modifier = Modifier
                     .align(Alignment.End)
                     .clickable { it.onClick() }
@@ -177,7 +188,18 @@ private fun EmailTextFieldPreview() {
         GeoMateTextField(
             value = "",
             onValueChange = { },
-            leadingIcon = LeadingIcon(Icons.Outlined.Email),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Email,
+                            contentDescription = null
+                        )
+                    }
+                )
+            ),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             placeholder = "Enter your email",
         )
     }
@@ -198,16 +220,43 @@ private fun PasswordTextFieldPreview() {
         GeoMateTextField(
             value = "VeryStrongPassword",
             onValueChange = { },
-            leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-            trailingIcon = TrailingIcon(
-                icon = Icons.Outlined.Visibility,
-                onClick = { /* Show/hide password */ }
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null
+                        )
+                    }
+                )
+            ),
+            trailingIcons = listOf(
+                TrailingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Visibility,
+                            contentDescription = null
+                        )
+                    },
+                    onClick = { /* Show/hide password */ }
+                ),
+                TrailingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Visibility,
+                            contentDescription = null
+                        )
+                    },
+                    onClick = { /* Show/hide password */ }
+                )
             ),
             placeholder = "Enter your password",
             supportingButton = SupportingButton(
                 text = "Forgot password?",
                 onClick = { /* Navigation */ }
             ),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             visualTransformation = PasswordVisualTransformation()
         )
     }
@@ -228,9 +277,20 @@ private fun BioTextFieldPreview() {
         GeoMateTextField(
             value = "",
             onValueChange = { },
-            leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.PermContactCalendar,
+                            contentDescription = null
+                        )
+                    }
+                )
+            ),
             placeholder = "Describe yourself",
             supportingText = "Optional",
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             imeAction = ImeAction.Done
         )
     }

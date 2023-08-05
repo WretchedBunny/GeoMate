@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -134,8 +135,20 @@ fun SignInScreen(
                 GeoMateTextField(
                     value = uiState.email,
                     onValueChange = viewModel::updateEmail,
-                    leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                    leadingIcons = listOf(
+                        LeadingIcon(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Email,
+                                    contentDescription = null,
+                                    modifier = it
+                                )
+                            }
+                        )
+                    ),
                     placeholder = stringResource(id = R.string.email_placeholder),
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
                     inputValidator = InputValidator(
                         isValid = uiState.isEmailValid,
                         updateIsValid = viewModel::updateIsEmailValid,
@@ -146,16 +159,36 @@ fun SignInScreen(
                 GeoMateTextField(
                     value = uiState.password,
                     onValueChange = viewModel::updatePassword,
-                    leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-                    trailingIcon = TrailingIcon(
-                        icon = passwordTrailingIcon,
-                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    leadingIcons = listOf(
+                        LeadingIcon(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Lock,
+                                    contentDescription = null,
+                                    modifier = it
+                                )
+                            }
+                        )
+                    ),
+                    trailingIcons = listOf(
+                        TrailingIcon(
+                            icon = {
+                                Icon(
+                                    imageVector = passwordTrailingIcon,
+                                    contentDescription = null,
+                                    modifier = it
+                                )
+                            },
+                            onClick = { isPasswordVisible = !isPasswordVisible }
+                        )
                     ),
                     placeholder = stringResource(id = R.string.password_placeholder),
                     supportingButton = SupportingButton(
                         text = stringResource(id = R.string.button_forgot_password),
                         onClick = navController::navigateToForgotPassword
                     ),
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
                     inputValidator = InputValidator(
                         isValid = uiState.isPasswordValid,
                         updateIsValid = viewModel::updateIsPasswordValid,

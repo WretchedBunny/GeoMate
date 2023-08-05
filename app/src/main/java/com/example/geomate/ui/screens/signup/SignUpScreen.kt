@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.PermContactCalendar
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -244,8 +245,20 @@ private fun EmailAndPasswordStage(
             GeoMateTextField(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
-                leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                leadingIcons = listOf(
+                    LeadingIcon(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = null,
+                                modifier = it
+                            )
+                        }
+                    )
+                ),
                 placeholder = stringResource(id = R.string.email_placeholder),
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
                 inputValidator = InputValidator(
                     isValid = uiState.isEmailValid,
                     updateIsValid = viewModel::updateIsEmailValid,
@@ -256,12 +269,32 @@ private fun EmailAndPasswordStage(
             GeoMateTextField(
                 value = uiState.password,
                 onValueChange = viewModel::updatePassword,
-                leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-                trailingIcon = TrailingIcon(
-                    icon = passwordTrailingIcon,
-                    onClick = { isPasswordVisible = !isPasswordVisible }
+                leadingIcons = listOf(
+                    LeadingIcon(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = null,
+                                modifier = it
+                            )
+                        }
+                    )
+                ),
+                trailingIcons = listOf(
+                    TrailingIcon(
+                        icon = {
+                            Icon(
+                                imageVector = passwordTrailingIcon,
+                                contentDescription = null,
+                                modifier = it
+                            )
+                        },
+                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    )
                 ),
                 placeholder = stringResource(id = R.string.password_placeholder),
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
                 inputValidator = InputValidator(
                     isValid = uiState.isPasswordValid,
                     updateIsValid = viewModel::updateIsPasswordValid,
@@ -307,8 +340,20 @@ private fun PublicInformationStage(
         GeoMateTextField(
             value = uiState.firstName,
             onValueChange = viewModel::updateFirstName,
-            leadingIcon = LeadingIcon(Icons.Outlined.Person),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
+                )
+            ),
             placeholder = stringResource(id = R.string.first_name_placeholder),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isFirstNameValid,
                 updateIsValid = viewModel::updateIsFirstNameValid,
@@ -319,8 +364,20 @@ private fun PublicInformationStage(
         GeoMateTextField(
             value = uiState.lastName,
             onValueChange = viewModel::updateLastName,
-            leadingIcon = LeadingIcon(Icons.Outlined.Person),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
+                )
+            ),
             placeholder = stringResource(id = R.string.last_name_placeholder),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isLastNameValid,
                 updateIsValid = viewModel::updateIsLastNameValid,
@@ -331,8 +388,20 @@ private fun PublicInformationStage(
         GeoMateTextField(
             value = uiState.username,
             onValueChange = viewModel::updateUsername,
-            leadingIcon = LeadingIcon(Icons.Outlined.Person),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
+                )
+            ),
             placeholder = stringResource(id = R.string.username_placeholder),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isUsernameValid,
                 updateIsValid = viewModel::updateIsUsernameValid,
@@ -389,8 +458,20 @@ private fun OptionalInformationStage(
         GeoMateTextField(
             value = uiState.bio,
             onValueChange = viewModel::updateBio,
-            leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
+            leadingIcons = listOf(
+                LeadingIcon(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.PermContactCalendar,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
+                )
+            ),
             placeholder = stringResource(id = R.string.description_placeholder),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             supportingText = "Optional",
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
