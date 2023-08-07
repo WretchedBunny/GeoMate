@@ -16,6 +16,7 @@
     <string name="last_name_placeholder">Enter your surname</string>
     <string name="username_placeholder">Enter your username</string>
     <string name="description_placeholder">Describe yourself</string>
+    <string name="users_search_placeholder">Search for other users</string>
 
     <!--Errors (just stubs, provide detailed errors explanations later)-->
     <string name="invalid_email">Invalid email</string>
@@ -47,4 +48,8 @@
     <string name="sign_up_title">Get started</string>
     <string name="sign_up_subtitle">To create a new account and start using the app enter your details below.</string>
     <string name="sign_up_footer">Already have an account?</string>
+
+    <!--Map screen-->
+    <string name="map_all">All</string>
+
 </resources>
