@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,9 +46,8 @@ fun NavGraphBuilder.forgotPassword(
         val uiState by viewModel.uiState.collectAsState()
         ForgotPasswordScreen(
             uiState = uiState,
-            updateEmail = viewModel::updateEmail,
-            onResetClick = viewModel::onResetClick,
-            navigateToSignIn = navController::navigateToSignIn
+            viewModel = viewModel,
+            navController = navController
         )
     }
 }
@@ -62,9 +62,8 @@ fun NavController.navigateToForgotPassword() {
 @Composable
 fun ForgotPasswordScreen(
     uiState: ForgotPasswordUiState,
-    updateEmail: (String) -> Unit,
-    onResetClick: () -> Unit,
-    navigateToSignIn: () -> Unit,
+    viewModel: ForgotPasswordViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     var isEmailValid by remember { mutableStateOf(true) }
@@ -88,7 +87,7 @@ fun ForgotPasswordScreen(
         ) {
             GeoMateTextField(
                 value = uiState.email,
-                onValueChange = updateEmail,
+                onValueChange = viewModel::updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 inputValidator = InputValidator(
@@ -103,7 +102,7 @@ fun ForgotPasswordScreen(
                 onClick = {
                     isEmailValid = uiState.email.isEmailValid()
                     if (isEmailValid) {
-                        onResetClick()
+                        viewModel.onResetClick()
                     }
                 },
                 type = ButtonType.Primary
@@ -113,7 +112,7 @@ fun ForgotPasswordScreen(
         Footer(
             text = stringResource(id = R.string.forgot_password_footer),
             clickableText = stringResource(id = R.string.button_back),
-            onClick = navigateToSignIn
+            onClick = navController::navigateToSignIn
         )
     }
 }
@@ -125,9 +124,8 @@ private fun ForgotPasswordScreenPreview() {
     GeoMateTheme {
         ForgotPasswordScreen(
             uiState = ForgotPasswordUiState(),
-            updateEmail = { },
-            onResetClick = { },
-            navigateToSignIn = { },
+            viewModel = ForgotPasswordViewModelMock(),
+            navController = NavController(LocalContext.current)
         )
     }
 }

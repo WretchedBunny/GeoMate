@@ -71,18 +71,8 @@ fun NavGraphBuilder.signUp(
         val uiState by viewModel.uiState.collectAsState()
         SignUpScreen(
             uiState = uiState,
-            updateEmail = viewModel::updateEmail,
-            updatePassword = viewModel::updatePassword,
-            updateFirstName = viewModel::updateFirstName,
-            updateLastName = viewModel::updateLastName,
-            updateUsername = viewModel::updateUsername,
-            updateProfilePictureUri = viewModel::updateProfilePictureUri,
-            updateBio = viewModel::updateBio,
-            onSignUpClick = viewModel::onSignUpClick,
-            onFacebookClick = { /* TODO: Sign in with facebook */ },
-            onGoogleClick = { /* TODO: Sign in with google */ },
-            onTwitterClick = { /* TODO: Sign in with twitter */ },
-            navigateToSignIn = navController::navigateToSignIn
+            viewModel = viewModel,
+            navController = navController
         )
     }
 }
@@ -98,18 +88,8 @@ fun NavController.navigateToSignUp() {
 @Composable
 fun SignUpScreen(
     uiState: SignUpUiState,
-    updateEmail: (String) -> Unit,
-    updatePassword: (String) -> Unit,
-    updateFirstName: (String) -> Unit,
-    updateLastName: (String) -> Unit,
-    updateUsername: (String) -> Unit,
-    updateProfilePictureUri: (Uri?) -> Unit,
-    updateBio: (String) -> Unit,
-    onSignUpClick: () -> Boolean,
-    onFacebookClick: () -> Unit,
-    onGoogleClick: () -> Unit,
-    onTwitterClick: () -> Unit,
-    navigateToSignIn: () -> Unit,
+    viewModel: SignUpViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     var isEmailValid by remember { mutableStateOf(true) }
@@ -143,14 +123,8 @@ fun SignUpScreen(
         ) {
             when (it) {
                 0 -> EmailAndPasswordStage(
-                    email = uiState.email,
-                    updateEmail = updateEmail,
-                    isEmailValid = isEmailValid,
-                    updateIsEmailValid = { isEmailValid = it },
-                    password = uiState.password,
-                    updatePassword = updatePassword,
-                    isPasswordValid = isPasswordValid,
-                    updateIsPasswordValid = { isPasswordValid = it },
+                    uiState = uiState,
+                    viewModel = viewModel,
                     next = {
                         isEmailValid = uiState.email.isEmailValid()
                         isPasswordValid = uiState.password.isPasswordValid()
@@ -160,25 +134,12 @@ fun SignUpScreen(
                             }
                         }
                     },
-                    onFacebookClick = onFacebookClick,
-                    onGoogleClick = onGoogleClick,
-                    onTwitterClick = onTwitterClick,
                     modifier = Modifier.padding(horizontal = 30.dp)
                 )
 
                 1 -> PublicInformationStage(
-                    firstName = uiState.firstName,
-                    updateFirstName = updateFirstName,
-                    isFirstNameValid = isFirstNameValid,
-                    updateIsFirstNameValid = { isFirstNameValid = it },
-                    lastName = uiState.lastName,
-                    updateLastName = updateLastName,
-                    isLastNameValid = isLastNameValid,
-                    updateIsLastNameValid = { isLastNameValid = it },
-                    username = uiState.username,
-                    updateUsername = updateUsername,
-                    isUsernameValid = isUsernameValid,
-                    updateIsUsernameValid = { isUsernameValid = it },
+                    uiState = uiState,
+                    viewModel = viewModel,
                     next = {
                         isFirstNameValid = uiState.firstName.isFirstNameValid()
                         isLastNameValid = uiState.lastName.isLastNameValid()
@@ -198,12 +159,10 @@ fun SignUpScreen(
                 )
 
                 2 -> OptionalInformationStage(
-                    profilePictureUri = uiState.profilePictureUri,
-                    updateProfilePictureUri = updateProfilePictureUri,
-                    description = uiState.bio,
-                    updateBio = updateBio,
+                    uiState = uiState,
+                    viewModel = viewModel,
                     next = {
-                        val result = onSignUpClick()
+                        val result = viewModel.onSignUpClick()
                         if (result) {
                             // TODO: Navigate to the map screen
                         } else {
@@ -223,7 +182,7 @@ fun SignUpScreen(
         Footer(
             text = stringResource(id = R.string.sign_up_footer),
             clickableText = stringResource(id = R.string.button_sign_in),
-            onClick = navigateToSignIn,
+            onClick = navController::navigateToSignIn,
             modifier = Modifier.padding(bottom = 42.dp, start = 30.dp, end = 30.dp)
         )
     }
@@ -231,18 +190,9 @@ fun SignUpScreen(
 
 @Composable
 private fun EmailAndPasswordStage(
-    email: String,
-    updateEmail: (String) -> Unit,
-    isEmailValid: Boolean,
-    updateIsEmailValid: (Boolean) -> Unit,
-    password: String,
-    updatePassword: (String) -> Unit,
-    isPasswordValid: Boolean,
-    updateIsPasswordValid: (Boolean) -> Unit,
+    uiState: SignUpUiState,
+    viewModel: SignUpViewModel,
     next: () -> Unit,
-    onFacebookClick: () -> Unit,
-    onGoogleClick: () -> Unit,
-    onTwitterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -261,20 +211,20 @@ private fun EmailAndPasswordStage(
             }
 
             GeoMateTextField(
-                value = email,
-                onValueChange = updateEmail,
+                value = uiState.email,
+                onValueChange = viewModel::updateEmail,
                 leadingIcon = LeadingIcon(Icons.Outlined.Email),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 inputValidator = InputValidator(
-                    isValid = isEmailValid,
-                    updateIsValid = updateIsEmailValid,
+                    isValid = uiState.isEmailValid,
+                    updateIsValid = viewModel::updateIsEmailValid,
                     rule = String::isEmailValid,
                     errorMessage = stringResource(id = R.string.invalid_email)
                 )
             )
             GeoMateTextField(
-                value = password,
-                onValueChange = updatePassword,
+                value = uiState.password,
+                onValueChange = viewModel::updatePassword,
                 leadingIcon = LeadingIcon(Icons.Outlined.Lock),
                 trailingIcon = TrailingIcon(
                     icon = passwordTrailingIcon,
@@ -282,8 +232,8 @@ private fun EmailAndPasswordStage(
                 ),
                 placeholder = stringResource(id = R.string.password_placeholder),
                 inputValidator = InputValidator(
-                    isValid = isPasswordValid,
-                    updateIsValid = updateIsPasswordValid,
+                    isValid = uiState.isPasswordValid,
+                    updateIsValid = viewModel::updateIsPasswordValid,
                     rule = String::isPasswordValid,
                     errorMessage = stringResource(id = R.string.invalid_password)
                 ),
@@ -296,27 +246,17 @@ private fun EmailAndPasswordStage(
             )
         }
         SocialNetworksRow(
-            onFacebookClick = onFacebookClick,
-            onGoogleClick = onGoogleClick,
-            onTwitterClick = onTwitterClick
+            onFacebookClick = viewModel::onFacebookClick,
+            onGoogleClick = viewModel::onGoogleClick,
+            onTwitterClick = viewModel::onTwitterClick
         )
     }
 }
 
 @Composable
 private fun PublicInformationStage(
-    firstName: String,
-    updateFirstName: (String) -> Unit,
-    isFirstNameValid: Boolean,
-    updateIsFirstNameValid: (Boolean) -> Unit,
-    lastName: String,
-    updateLastName: (String) -> Unit,
-    isLastNameValid: Boolean,
-    updateIsLastNameValid: (Boolean) -> Unit,
-    username: String,
-    updateUsername: (String) -> Unit,
-    isUsernameValid: Boolean,
-    updateIsUsernameValid: (Boolean) -> Unit,
+    uiState: SignUpUiState,
+    viewModel: SignUpViewModel,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier,
@@ -327,37 +267,37 @@ private fun PublicInformationStage(
         modifier = modifier
     ) {
         GeoMateTextField(
-            value = firstName,
-            onValueChange = updateFirstName,
+            value = uiState.firstName,
+            onValueChange = viewModel::updateFirstName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.first_name_placeholder),
             inputValidator = InputValidator(
-                isValid = isFirstNameValid,
-                updateIsValid = updateIsFirstNameValid,
+                isValid = uiState.isFirstNameValid,
+                updateIsValid = viewModel::updateIsFirstNameValid,
                 rule = { it.length in 1..30 },
                 errorMessage = stringResource(id = R.string.invalid_firstname_sign_up)
             )
         )
         GeoMateTextField(
-            value = lastName,
-            onValueChange = updateLastName,
+            value = uiState.lastName,
+            onValueChange = viewModel::updateLastName,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.last_name_placeholder),
             inputValidator = InputValidator(
-                isValid = isLastNameValid,
-                updateIsValid = updateIsLastNameValid,
+                isValid = uiState.isLastNameValid,
+                updateIsValid = viewModel::updateIsLastNameValid,
                 rule = { it.length in 1..30 },
                 errorMessage = stringResource(id = R.string.invalid_lastname_sign_up)
             )
         )
         GeoMateTextField(
-            value = username,
-            onValueChange = updateUsername,
+            value = uiState.username,
+            onValueChange = viewModel::updateUsername,
             leadingIcon = LeadingIcon(Icons.Outlined.Person),
             placeholder = stringResource(id = R.string.username_placeholder),
             inputValidator = InputValidator(
-                isValid = isUsernameValid,
-                updateIsValid = updateIsUsernameValid,
+                isValid = uiState.isUsernameValid,
+                updateIsValid = viewModel::updateIsUsernameValid,
                 rule = String::isUsernameValid, // TODO: Check if username is already taken
                 errorMessage = stringResource(id = R.string.invalid_username_sign_up)
             )
@@ -379,10 +319,8 @@ private fun PublicInformationStage(
 
 @Composable
 private fun OptionalInformationStage(
-    profilePictureUri: Uri?,
-    updateProfilePictureUri: (Uri?) -> Unit,
-    description: String,
-    updateBio: (String) -> Unit,
+    uiState: SignUpUiState,
+    viewModel: SignUpViewModel,
     next: () -> Unit,
     prev: () -> Unit,
     modifier: Modifier = Modifier,
@@ -392,7 +330,7 @@ private fun OptionalInformationStage(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        updateProfilePictureUri(uri)
+        viewModel.updateProfilePictureUri(uri)
     }
 
     Column(
@@ -400,7 +338,7 @@ private fun OptionalInformationStage(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         modifier = modifier
     ) {
-        val bitmap: Bitmap? = profilePictureUri?.run {
+        val bitmap: Bitmap? = uiState.profilePictureUri?.run {
             val source = ImageDecoder.createSource(context.contentResolver, this)
             ImageDecoder.decodeBitmap(source)
         }
@@ -408,11 +346,11 @@ private fun OptionalInformationStage(
         ProfilePicturePicker(
             bitmap = bitmap,
             openPhotoPicker = { launcher.launch("image/*") },
-            clearProfilePicture = { updateProfilePictureUri(null) }
+            clearProfilePicture = { viewModel.updateProfilePictureUri(null) }
         )
         GeoMateTextField(
-            value = description,
-            onValueChange = updateBio,
+            value = uiState.bio,
+            onValueChange = viewModel::updateBio,
             leadingIcon = LeadingIcon(Icons.Outlined.PermContactCalendar),
             placeholder = stringResource(id = R.string.description_placeholder),
             supportingText = "Optional",
@@ -439,18 +377,8 @@ private fun SignUpScreenPreview() {
     GeoMateTheme {
         SignUpScreen(
             uiState = SignUpUiState(),
-            updateEmail = { },
-            updatePassword = { },
-            updateFirstName = { },
-            updateLastName = { },
-            updateUsername = { },
-            updateProfilePictureUri = { },
-            updateBio = { },
-            onSignUpClick = { true },
-            onFacebookClick = { /* TODO: Sign in with facebook */ },
-            onGoogleClick = { /* TODO: Sign in with google */ },
-            onTwitterClick = { /* TODO: Sign in with twitter */ },
-            navigateToSignIn = { }
+            viewModel = SignUpViewModelMock(),
+            navController = NavController(LocalContext.current)
         )
     }
 }
@@ -468,18 +396,9 @@ private fun SignUpScreenPreview() {
 private fun EmailAndPasswordStagePreview() {
     GeoMateTheme {
         EmailAndPasswordStage(
-            email = "",
-            updateEmail = { },
-            isEmailValid = true,
-            updateIsEmailValid = { },
-            password = "",
-            updatePassword = { },
-            isPasswordValid = true,
-            updateIsPasswordValid = { },
-            next = { },
-            onFacebookClick = { /* TODO: Sign in with facebook */ },
-            onGoogleClick = { /* TODO: Sign in with google */ },
-            onTwitterClick = { /* TODO: Sign in with twitter */ },
+            uiState = SignUpUiState(),
+            viewModel = SignUpViewModelMock(),
+            next = { }
         )
     }
 }
@@ -497,20 +416,10 @@ private fun EmailAndPasswordStagePreview() {
 private fun PublicInformationStagePreview() {
     GeoMateTheme {
         PublicInformationStage(
-            firstName = "",
-            updateFirstName = { },
-            isFirstNameValid = true,
-            updateIsFirstNameValid = { },
-            lastName = "",
-            updateLastName = { },
-            isLastNameValid = true,
-            updateIsLastNameValid = { },
-            username = "",
-            updateUsername = { },
-            isUsernameValid = true,
-            updateIsUsernameValid = { },
-            next = { },
-            prev = { }
+            uiState = SignUpUiState(),
+            viewModel = SignUpViewModelMock(),
+            prev = { },
+            next = { }
         )
     }
 }
@@ -528,10 +437,8 @@ private fun PublicInformationStagePreview() {
 private fun OptionalInformationStagePreview() {
     GeoMateTheme {
         OptionalInformationStage(
-            profilePictureUri = Uri.EMPTY,
-            updateProfilePictureUri = { },
-            description = "",
-            updateBio = { },
+            uiState = SignUpUiState(),
+            viewModel = SignUpViewModelMock(),
             next = { },
             prev = { }
         )

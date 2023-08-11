@@ -1,6 +1,6 @@
 package com.example.geomate.ui.screens.signin
 
-data class SignInUIState (
+data class SignInUiState(
     val email: String = "",
-    val password: String = ""
+    val password: String = "",
 )

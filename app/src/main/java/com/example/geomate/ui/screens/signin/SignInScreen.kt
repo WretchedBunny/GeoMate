@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -55,14 +56,8 @@ fun NavGraphBuilder.signIn(
         val uiState by viewModel.uiState.collectAsState()
         SignInScreen(
             uiState = uiState,
-            updateEmail = viewModel::updateEmail,
-            updatePassword = viewModel::updatePassword,
-            onSignInClick = viewModel::onSignInClick,
-            onFacebookClick = { /* TODO: Sign in with facebook */ },
-            onGoogleClick = { /* TODO: Sign in with google */ },
-            onTwitterClick = { /* TODO: Sign in with twitter */ },
-            navigateToSignUp = navController::navigateToSignUp,
-            navigateToForgotPassword = navController::navigateToForgotPassword
+            viewModel = viewModel,
+            navController = navController
         )
     }
 }
@@ -76,15 +71,9 @@ fun NavController.navigateToSignIn() {
 
 @Composable
 fun SignInScreen(
-    uiState: SignInUIState,
-    updateEmail: (String) -> Unit,
-    updatePassword: (String) -> Unit,
-    onSignInClick: () -> Boolean,
-    onFacebookClick: () -> Unit,
-    onGoogleClick: () -> Unit,
-    onTwitterClick: () -> Unit,
-    navigateToSignUp: () -> Unit,
-    navigateToForgotPassword: () -> Unit,
+    uiState: SignInUiState,
+    viewModel: SignInViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     var isEmailValid by remember { mutableStateOf(true) }
@@ -119,7 +108,7 @@ fun SignInScreen(
 
                 GeoMateTextField(
                     value = uiState.email,
-                    onValueChange = updateEmail,
+                    onValueChange = viewModel::updateEmail,
                     leadingIcon = LeadingIcon(Icons.Outlined.Email),
                     placeholder = stringResource(id = R.string.email_placeholder),
                     inputValidator = InputValidator(
@@ -131,7 +120,7 @@ fun SignInScreen(
                 )
                 GeoMateTextField(
                     value = uiState.password,
-                    onValueChange = updatePassword,
+                    onValueChange = viewModel::updatePassword,
                     leadingIcon = LeadingIcon(Icons.Outlined.Lock),
                     trailingIcon = TrailingIcon(
                         icon = passwordTrailingIcon,
@@ -140,7 +129,7 @@ fun SignInScreen(
                     placeholder = stringResource(id = R.string.password_placeholder),
                     supportingButton = SupportingButton(
                         text = stringResource(id = R.string.button_forgot_password),
-                        onClick = navigateToForgotPassword
+                        onClick = navController::navigateToForgotPassword
                     ),
                     inputValidator = InputValidator(
                         isValid = isPasswordValid,
@@ -156,7 +145,7 @@ fun SignInScreen(
                         isEmailValid = uiState.email.isEmailValid()
                         isPasswordValid = uiState.password.isPasswordValid()
                         if (isEmailValid && isPasswordValid) {
-                            val result = onSignInClick()
+                            val result = viewModel.onSignInClick()
                             if (result) {
                                 // TODO: Navigate to the map screen
                             } else {
@@ -168,16 +157,16 @@ fun SignInScreen(
                 )
             }
             SocialNetworksRow(
-                onFacebookClick = onFacebookClick,
-                onGoogleClick = onGoogleClick,
-                onTwitterClick = onTwitterClick
+                onFacebookClick = viewModel::onFacebookClick,
+                onGoogleClick = viewModel::onGoogleClick,
+                onTwitterClick = viewModel::onTwitterClick
             )
         }
 
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),
-            onClick = navigateToSignUp
+            onClick = navController::navigateToSignUp
         )
     }
 }
@@ -188,15 +177,9 @@ fun SignInScreen(
 private fun SignInScreenPreview() {
     GeoMateTheme {
         SignInScreen(
-            uiState = SignInUIState(),
-            updateEmail = { },
-            updatePassword = { },
-            onSignInClick = { true },
-            onFacebookClick = { /* TODO: Sign in with facebook */ },
-            onGoogleClick = { /* TODO: Sign in with google */ },
-            onTwitterClick = { /* TODO: Sign in with twitter */ },
-            navigateToSignUp = { },
-            navigateToForgotPassword = { }
+            uiState = SignInUiState(),
+            viewModel = SignInViewModelMock(),
+            navController = NavController(LocalContext.current)
         )
     }
 }

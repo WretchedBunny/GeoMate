@@ -10,4 +10,9 @@ data class SignUpUiState(
     val username: String = "",
     val profilePictureUri: Uri? = null,
     val bio: String = "",
+    val isFirstNameValid: Boolean = true,
+    val isLastNameValid: Boolean = true,
+    val isUsernameValid: Boolean = true,
+    val isEmailValid: Boolean = true,
+    val isPasswordValid: Boolean = true,
 )
