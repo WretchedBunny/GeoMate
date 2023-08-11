@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
     navController: NavController,
-    viewModel: SignUpViewModel,
+    viewModel: SignUpViewModelImpl,
 ) {
     composable(Destinations.SIGN_UP_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
