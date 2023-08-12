@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -63,6 +64,7 @@ import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
@@ -99,6 +101,9 @@ fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -117,7 +122,6 @@ fun SignUpScreen(
             initialPageOffsetFraction = 0f,
             pageCount = { 3 }
         )
-        val coroutineScope = rememberCoroutineScope()
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
@@ -177,9 +181,12 @@ fun SignUpScreen(
                                 )
                             )
                             if (user != null) {
-                                // TODO: Navigate to the map screen
+                                navController.navigateToMap()
                             } else {
-                                // TODO: Display error message
+                                Toast(context).apply {
+                                    setText("Authentication failed!")
+                                    duration = Toast.LENGTH_SHORT
+                                }.show()
                             }
                         }
                     },
@@ -227,6 +234,7 @@ private fun EmailAndPasswordStage(
             }
         }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),

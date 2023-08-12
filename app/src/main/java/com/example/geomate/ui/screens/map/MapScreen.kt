@@ -15,11 +15,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.model.Group
 import com.example.geomate.ui.components.BottomNavigationBar
@@ -37,16 +42,33 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 
+fun NavGraphBuilder.map(
+    viewModel: MapViewModel,
+    navController: NavController,
+) {
+    composable(Destinations.MAP_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
+        MapScreen(
+            uiState = uiState,
+            viewModel = viewModel,
+            navController = navController
+        )
+    }
+}
+
+fun NavController.navigateToMap() {
+    popBackStack()
+    navigate(Destinations.MAP_ROUTE) {
+        launchSingleTop = false
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
     uiState: MapUiState,
-    toggleGroup: (Group) -> Unit,
-    toggleAll: (Boolean) -> Unit,
-    updateSearchQuery: (String) -> Unit,
-    pointCameraOnUser: () -> Unit,
-    navigateToGroups: () -> Unit,
-    navigateToSocial: () -> Unit,
+    viewModel: MapViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -56,15 +78,15 @@ fun MapScreen(
         floatingActionButton = {
             GeoMateFAB(
                 icon = Icons.Outlined.GpsFixed,
-                onClick = pointCameraOnUser
+                onClick = viewModel::pointCameraOnUser
             )
         },
         bottomBar = {
             BottomNavigationBar(
                 currentRoute = Destinations.MAP_ROUTE,
                 navigateToMap = { },
-                navigateToGroups = navigateToGroups,
-                navigateToSocial = navigateToSocial,
+                navigateToGroups = { /* navController::navigateToGroups */ },
+                navigateToSocial = { /* navController::navigateToSocial */ },
             )
         },
         modifier = modifier
@@ -89,7 +111,7 @@ fun MapScreen(
             ) {
                 GeoMateTextField(
                     value = uiState.searchQuery,
-                    onValueChange = updateSearchQuery,
+                    onValueChange = viewModel::updateSearchQuery,
                     leadingIcons = listOf(
                         LeadingIcon(
                             icon = {
@@ -123,8 +145,8 @@ fun MapScreen(
                 ChipsRow(
                     groups = uiState.groups,
                     isAllSelected = uiState.isAllSelected,
-                    toggleGroup = toggleGroup,
-                    toggleAll = toggleAll,
+                    toggleGroup = viewModel::toggleGroup,
+                    toggleAllGroups = viewModel::toggleAllGroups,
                 )
             }
         }
@@ -144,12 +166,8 @@ private fun MapScreenPreview() {
                     Group(name = "Football team", isSelected = false),
                 )
             ),
-            toggleGroup = { },
-            toggleAll = { },
-            updateSearchQuery = { },
-            pointCameraOnUser = { },
-            navigateToGroups = { },
-            navigateToSocial = { }
+            viewModel = MapViewModelMock(),
+            navController = NavController(LocalContext.current)
         )
     }
 }

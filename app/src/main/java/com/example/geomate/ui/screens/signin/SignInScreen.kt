@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -52,12 +53,13 @@ import com.example.geomate.ui.components.SupportingButton
 import com.example.geomate.ui.components.TrailingIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
+import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import kotlinx.coroutines.launch
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -90,6 +92,8 @@ fun SignInScreen(
     val context = LocalContext.current
     val oneTapClient = Identity.getSignInClient(context)
     val coroutineScope = rememberCoroutineScope()
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -105,6 +109,7 @@ fun SignInScreen(
             }
         }
     }
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -200,17 +205,22 @@ fun SignInScreen(
                 GeoMateButton(
                     text = stringResource(id = R.string.button_sign_in),
                     onClick = {
-                        viewModel.updateIsEmailValid(uiState.email.isEmailValid())
-                        viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
-                        if (uiState.isEmailValid && uiState.isPasswordValid) {
+                        isEmailValid = uiState.email.isEmailValid()
+                        isPasswordValid = uiState.password.isPasswordValid()
+                        viewModel.updateIsEmailValid(isEmailValid)
+                        viewModel.updateIsPasswordValid(isPasswordValid)
+                        if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
                                 val user = viewModel.signIn(EmailPasswordAuthentication(
                                     FirebaseAuth.getInstance(), uiState.email, uiState.password
                                 ))
                                 if (user != null) {
-                                    // TODO: Navigate to the map screen
+                                    navController.navigateToMap()
                                 } else {
-                                    // TODO: Display error message
+                                    Toast(context).apply {
+                                        setText("Authentication failed!")
+                                        duration = Toast.LENGTH_SHORT
+                                    }.show()
                                 }
                             }
                         }

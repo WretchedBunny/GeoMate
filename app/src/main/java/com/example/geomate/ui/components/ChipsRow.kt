@@ -21,7 +21,7 @@ fun ChipsRow(
     groups: List<Group>,
     isAllSelected: Boolean,
     toggleGroup: (Group) -> Unit,
-    toggleAll: (Boolean) -> Unit,
+    toggleAllGroups: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyRow(
@@ -33,7 +33,7 @@ fun ChipsRow(
             Chips(
                 text = stringResource(id = R.string.map_all),
                 isSelected = isAllSelected,
-                onClick = { toggleAll(isAllSelected) }
+                onClick = { toggleAllGroups(isAllSelected) }
             )
         }
         items(groups) {
@@ -70,7 +70,7 @@ private fun ChipsRowPreview() {
             ),
             isAllSelected = false,
             toggleGroup = { },
-            toggleAll = { },
+            toggleAllGroups = { },
         )
     }
 }
