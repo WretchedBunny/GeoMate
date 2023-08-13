@@ -92,12 +92,6 @@ fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    var isEmailValid by remember { mutableStateOf(true) }
-    var isPasswordValid by remember { mutableStateOf(true) }
-    var isFirstNameValid by remember { mutableStateOf(true) }
-    var isLastNameValid by remember { mutableStateOf(true) }
-    var isUsernameValid by remember { mutableStateOf(true) }
-
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,8 +120,12 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        isEmailValid = uiState.email.isEmailValid()
-                        isPasswordValid = uiState.password.isPasswordValid()
+                        val isEmailValid = uiState.email.isEmailValid()
+                        viewModel.updateIsEmailValid(isEmailValid)
+
+                        val isPasswordValid = uiState.password.isPasswordValid()
+                        viewModel.updateIsPasswordValid(isEmailValid)
+
                         if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(1)
@@ -141,10 +139,11 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        isFirstNameValid = uiState.firstName.isFirstNameValid()
-                        isLastNameValid = uiState.lastName.isLastNameValid()
-                        isUsernameValid = uiState.username.isUsernameValid()
-                        if (isFirstNameValid && isLastNameValid && isUsernameValid) {
+                        viewModel.updateIsFirstNameValid(uiState.firstName.isFirstNameValid())
+                        viewModel.updateIsLastNameValid(uiState.lastName.isLastNameValid())
+                        viewModel.updateIsUsernameValid(uiState.username.isUsernameValid())
+
+                        if (uiState.isFirstNameValid && uiState.isLastNameValid && uiState.isUsernameValid) {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(2)
                             }

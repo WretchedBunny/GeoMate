@@ -23,6 +23,14 @@ class SignInViewModelImpl(
         _uiState.update { it.copy(password = password) }
     }
 
+    override fun updateIsEmailValid(isEmailValid: Boolean) {
+        _uiState.update { it.copy(isEmailValid = isEmailValid) }
+    }
+
+    override fun updateIsPasswordValid(isPasswordValid: Boolean) {
+        _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
+    }
+
     override fun onSignInClick(): Boolean {
         if (!uiState.value.email.isEmailValid()) {
             return false

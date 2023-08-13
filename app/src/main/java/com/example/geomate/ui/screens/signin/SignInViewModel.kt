@@ -8,6 +8,8 @@ interface SignInViewModel {
     val uiState: StateFlow<SignInUiState>
     fun updateEmail(email: String)
     fun updatePassword(password: String)
+    fun updateIsEmailValid(isEmailValid: Boolean)
+    fun updateIsPasswordValid(isPasswordValid: Boolean)
     fun onSignInClick(): Boolean
     fun onFacebookClick()
     fun onGoogleClick()

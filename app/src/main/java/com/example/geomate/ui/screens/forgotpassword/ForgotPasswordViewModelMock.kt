@@ -8,5 +8,6 @@ class ForgotPasswordViewModelMock : ForgotPasswordViewModel {
     override val accountService = AccountServiceMock()
     override val uiState = MutableStateFlow(ForgotPasswordUiState()).asStateFlow()
     override fun updateEmail(email: String) {}
+    override fun updateIsEmailValid(isEmailValid: Boolean) {}
     override fun onResetClick() {}
 }

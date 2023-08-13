@@ -9,6 +9,8 @@ class SignInViewModelMock : SignInViewModel {
     override val uiState = MutableStateFlow(SignInUiState()).asStateFlow()
     override fun updateEmail(email: String) {}
     override fun updatePassword(password: String) {}
+    override fun updateIsEmailValid(isEmailValid: Boolean) {}
+    override fun updateIsPasswordValid(isPasswordValid: Boolean) {}
     override fun onSignInClick(): Boolean = true
     override fun onFacebookClick() {}
     override fun onGoogleClick() {}

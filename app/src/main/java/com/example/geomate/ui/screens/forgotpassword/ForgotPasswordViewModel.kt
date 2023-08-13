@@ -7,5 +7,6 @@ interface ForgotPasswordViewModel {
     val accountService: AccountService
     val uiState: StateFlow<ForgotPasswordUiState>
     fun updateEmail(email: String)
+    fun updateIsEmailValid(isEmailValid: Boolean)
     fun onResetClick()
 }

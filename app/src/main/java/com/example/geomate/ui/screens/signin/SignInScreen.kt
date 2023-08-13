@@ -76,9 +76,6 @@ fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    var isEmailValid by remember { mutableStateOf(true) }
-    var isPasswordValid by remember { mutableStateOf(true) }
-
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -112,8 +109,8 @@ fun SignInScreen(
                     leadingIcon = LeadingIcon(Icons.Outlined.Email),
                     placeholder = stringResource(id = R.string.email_placeholder),
                     inputValidator = InputValidator(
-                        isValid = isEmailValid,
-                        updateIsValid = { isEmailValid = it },
+                        isValid = uiState.isEmailValid,
+                        updateIsValid = viewModel::updateIsEmailValid,
                         rule = String::isEmailValid,
                         errorMessage = stringResource(id = R.string.invalid_email)
                     )
@@ -132,8 +129,8 @@ fun SignInScreen(
                         onClick = navController::navigateToForgotPassword
                     ),
                     inputValidator = InputValidator(
-                        isValid = isPasswordValid,
-                        updateIsValid = { isPasswordValid = it },
+                        isValid = uiState.isPasswordValid,
+                        updateIsValid = viewModel::updateIsPasswordValid,
                         rule = { it.length in 8..255 },
                         errorMessage = stringResource(id = R.string.invalid_password)
                     ),
@@ -142,9 +139,9 @@ fun SignInScreen(
                 GeoMateButton(
                     text = stringResource(id = R.string.button_sign_in),
                     onClick = {
-                        isEmailValid = uiState.email.isEmailValid()
-                        isPasswordValid = uiState.password.isPasswordValid()
-                        if (isEmailValid && isPasswordValid) {
+                        viewModel.updateIsEmailValid(uiState.email.isEmailValid())
+                        viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
+                        if (uiState.isEmailValid && uiState.isPasswordValid) {
                             val result = viewModel.onSignInClick()
                             if (result) {
                                 // TODO: Navigate to the map screen

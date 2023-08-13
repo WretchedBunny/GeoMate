@@ -17,6 +17,10 @@ class ForgotPasswordViewModelImpl(
         _uiState.update { it.copy(email = email) }
     }
 
+    override fun updateIsEmailValid(isEmailValid: Boolean) {
+        _uiState.update { it.copy(isEmailValid = isEmailValid) }
+    }
+
     override fun onResetClick() {
         launchCatching {
             accountService.sendRecoveryEmail(uiState.value.email)
