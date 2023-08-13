@@ -92,8 +92,6 @@ fun SignInScreen(
     val context = LocalContext.current
     val oneTapClient = Identity.getSignInClient(context)
     val coroutineScope = rememberCoroutineScope()
-    var isEmailValid by remember { mutableStateOf(true) }
-    var isPasswordValid by remember { mutableStateOf(true) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -205,8 +203,8 @@ fun SignInScreen(
                 GeoMateButton(
                     text = stringResource(id = R.string.button_sign_in),
                     onClick = {
-                        isEmailValid = uiState.email.isEmailValid()
-                        isPasswordValid = uiState.password.isPasswordValid()
+                        val isEmailValid = uiState.email.isEmailValid()
+                        val isPasswordValid = uiState.password.isPasswordValid()
                         viewModel.updateIsEmailValid(isEmailValid)
                         viewModel.updateIsPasswordValid(isPasswordValid)
                         if (isEmailValid && isPasswordValid) {
