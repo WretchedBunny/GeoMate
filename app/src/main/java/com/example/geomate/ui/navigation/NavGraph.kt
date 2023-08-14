@@ -36,6 +36,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
     val mapViewModel = MapViewModelImpl(
         application,
+        storageService,
         LocationServices.getFusedLocationProviderClient(LocalContext.current)
     )
 

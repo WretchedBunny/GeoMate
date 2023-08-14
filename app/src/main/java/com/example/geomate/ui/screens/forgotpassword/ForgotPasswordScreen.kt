@@ -85,15 +85,13 @@ fun ForgotPasswordScreen(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
                 leadingIcons = listOf(
-                    LeadingIcon(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Email,
-                                contentDescription = null,
-                                modifier = it
-                            )
-                        }
-                    )
+                    LeadingIcon {
+                        Icon(
+                            imageVector = Icons.Outlined.Email,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
                 ),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 containerColor = MaterialTheme.colorScheme.secondary,

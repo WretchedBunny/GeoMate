@@ -254,15 +254,13 @@ private fun EmailAndPasswordStage(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
                 leadingIcons = listOf(
-                    LeadingIcon(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Email,
-                                contentDescription = null,
-                                modifier = it
-                            )
-                        }
-                    )
+                    LeadingIcon {
+                        Icon(
+                            imageVector = Icons.Outlined.Email,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
                 ),
                 placeholder = stringResource(id = R.string.email_placeholder),
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -278,27 +276,24 @@ private fun EmailAndPasswordStage(
                 value = uiState.password,
                 onValueChange = viewModel::updatePassword,
                 leadingIcons = listOf(
-                    LeadingIcon(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Lock,
-                                contentDescription = null,
-                                modifier = it
-                            )
-                        }
-                    )
+                    LeadingIcon {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
                 ),
                 trailingIcons = listOf(
                     TrailingIcon(
-                        icon = {
-                            Icon(
-                                imageVector = passwordTrailingIcon,
-                                contentDescription = null,
-                                modifier = it
-                            )
-                        },
                         onClick = { isPasswordVisible = !isPasswordVisible }
-                    )
+                    ) {
+                        Icon(
+                            imageVector = passwordTrailingIcon,
+                            contentDescription = null,
+                            modifier = it
+                        )
+                    }
                 ),
                 placeholder = stringResource(id = R.string.password_placeholder),
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -349,15 +344,13 @@ private fun PublicInformationStage(
             value = uiState.firstName,
             onValueChange = viewModel::updateFirstName,
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = null,
-                            modifier = it
-                        )
-                    }
-                )
+                LeadingIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             placeholder = stringResource(id = R.string.first_name_placeholder),
             containerColor = MaterialTheme.colorScheme.secondary,
@@ -373,15 +366,13 @@ private fun PublicInformationStage(
             value = uiState.lastName,
             onValueChange = viewModel::updateLastName,
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = null,
-                            modifier = it
-                        )
-                    }
-                )
+                LeadingIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             placeholder = stringResource(id = R.string.last_name_placeholder),
             containerColor = MaterialTheme.colorScheme.secondary,
@@ -397,15 +388,13 @@ private fun PublicInformationStage(
             value = uiState.username,
             onValueChange = viewModel::updateUsername,
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = null,
-                            modifier = it
-                        )
-                    }
-                )
+                LeadingIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             placeholder = stringResource(id = R.string.username_placeholder),
             containerColor = MaterialTheme.colorScheme.secondary,
@@ -467,15 +456,13 @@ private fun OptionalInformationStage(
             value = uiState.bio,
             onValueChange = viewModel::updateBio,
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.PermContactCalendar,
-                            contentDescription = null,
-                            modifier = it
-                        )
-                    }
-                )
+                LeadingIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.PermContactCalendar,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             placeholder = stringResource(id = R.string.description_placeholder),
             containerColor = MaterialTheme.colorScheme.secondary,

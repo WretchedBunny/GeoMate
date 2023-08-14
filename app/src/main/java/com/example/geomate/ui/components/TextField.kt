@@ -39,13 +39,13 @@ data class SupportingButton(
 )
 
 data class LeadingIcon(
-    val icon: @Composable (Modifier) -> Unit,
     val onClick: (() -> Unit)? = null,
+    val icon: @Composable (Modifier) -> Unit,
 )
 
 data class TrailingIcon(
-    val icon: @Composable (Modifier) -> Unit,
     val onClick: (() -> Unit)? = null,
+    val icon: @Composable (Modifier) -> Unit,
 )
 
 data class InputValidator(

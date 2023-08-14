@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.map
 
 import com.example.geomate.model.Group
+import com.example.geomate.model.User
 import kotlinx.coroutines.flow.StateFlow
 
 interface MapViewModel {
@@ -9,4 +10,5 @@ interface MapViewModel {
     fun toggleGroup(group: Group)
     fun toggleAllGroups(current: Boolean)
     fun pointCameraOnUser()
+    suspend fun getUser(uid: String): User?
 }
