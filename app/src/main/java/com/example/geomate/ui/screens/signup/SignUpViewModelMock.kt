@@ -1,11 +1,14 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
+import com.example.geomate.service.account.AccountService
+import com.example.geomate.service.account.AccountServiceMock
 import com.example.geomate.service.storage.StorageServiceMock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class SignUpViewModelMock : SignUpViewModel {
+class SignUpViewModelMock() : SignUpViewModel {
+    override val accountService: AccountService = AccountServiceMock()
     override val storageService = StorageServiceMock()
     override val uiState = MutableStateFlow(SignUpUiState()).asStateFlow()
     override fun updateEmail(email: String) {}

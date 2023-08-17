@@ -1,6 +1,11 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +53,8 @@ import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import kotlinx.coroutines.launch
+
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -76,6 +84,19 @@ fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            Log.d("SignInScreen", "${result.resultCode}")
+            if (result.resultCode == ComponentActivity.RESULT_OK) {
+                coroutineScope.launch {
+                    val signInResult = viewModel.accountService.signInWithIntent(
+                        intent = result.data ?: return@launch
+                    )
+                    //viewModel.onSignInResult(signInResult)
+                }
+            }
+        }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -155,7 +176,15 @@ fun SignInScreen(
             }
             SocialNetworksRow(
                 onFacebookClick = viewModel::onFacebookClick,
-                onGoogleClick = viewModel::onGoogleClick,
+                onGoogleClick = {
+                    coroutineScope.launch {
+                        val signInIntentSender = viewModel.accountService.googleSignIn()
+                        Log.d("SignInScreen", "${signInIntentSender?.equals(null)}")
+                        launcher.launch(
+                            IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
+                        )
+                    }
+                },
                 onTwitterClick = viewModel::onTwitterClick
             )
         }
