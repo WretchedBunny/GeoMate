@@ -2,7 +2,7 @@ package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
 import com.example.geomate.model.User
-import com.example.geomate.service.account.FirebaseAccountService
+import com.example.geomate.service.account.AccountService
 import com.example.geomate.service.storage.StorageService
 import com.example.geomate.ui.screens.GeoMateViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class SignUpViewModelImpl(
-    override val storageService: StorageService,
+    override val storageService: StorageService, override val accountService: AccountService,
 ) : GeoMateViewModel(), SignUpViewModel {
-    private val accountService = FirebaseAccountService(FirebaseAuth.getInstance())
     private val _uiState = MutableStateFlow(SignUpUiState())
     override val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 

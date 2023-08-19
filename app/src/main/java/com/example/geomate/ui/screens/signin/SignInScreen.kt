@@ -1,6 +1,11 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +38,9 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
+import com.example.geomate.model.Response.Failure
+import com.example.geomate.model.Response.Loading
+import com.example.geomate.model.Response.Success
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -47,6 +56,11 @@ import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.launch
+
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -76,6 +90,42 @@ fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            Log.d("SignInScreen", result.resultCode.toString())
+            if (result.resultCode == ComponentActivity.RESULT_OK) {
+                try {
+                    val googleIdToken =
+                        viewModel.accountService.getGoogleCredentialsWithIntent(result.data)
+                    val googleCredentials =
+                        GoogleAuthProvider.getCredential(googleIdToken.toString(), null)
+                    viewModel.signInWithGoogle(googleCredentials)
+
+                } catch (it: ApiException) {
+                    print(it)
+                }
+            }
+        }
+
+    fun launch() {
+        when (val oneTapSignInResponse = viewModel.oneTapSignInResponse) {
+            is Success -> {
+                Log.d("SignInScreen", "$oneTapSignInResponse")
+
+                oneTapSignInResponse.data?.let { it: BeginSignInResult ->
+                    val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
+                    launcher.launch(intent)
+                }
+            }
+
+            is Failure -> {
+                Log.d("SignInScreen", "${oneTapSignInResponse.e}")
+            }
+
+            Loading -> Log.d("SignInScreen", "Loading")
+        }
+    }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -155,11 +205,15 @@ fun SignInScreen(
             }
             SocialNetworksRow(
                 onFacebookClick = viewModel::onFacebookClick,
-                onGoogleClick = viewModel::onGoogleClick,
+                onGoogleClick = {
+                    coroutineScope.launch {
+                        viewModel.onGoogleClick()
+                        launch()
+                    }
+                },
                 onTwitterClick = viewModel::onTwitterClick
             )
         }
-
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),
