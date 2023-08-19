@@ -38,6 +38,9 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
+import com.example.geomate.model.Response.Failure
+import com.example.geomate.model.Response.Loading
+import com.example.geomate.model.Response.Success
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -53,6 +56,9 @@ import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 
 
@@ -87,16 +93,39 @@ fun SignInScreen(
     val coroutineScope = rememberCoroutineScope()
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            Log.d("SignInScreen", "${result.resultCode}")
+            Log.d("SignInScreen", result.resultCode.toString())
             if (result.resultCode == ComponentActivity.RESULT_OK) {
-                coroutineScope.launch {
-                    val signInResult = viewModel.accountService.signInWithIntent(
-                        intent = result.data ?: return@launch
-                    )
-                    //viewModel.onSignInResult(signInResult)
+                try {
+                    val googleIdToken =
+                        viewModel.accountService.getGoogleCredentialsWithIntent(result.data)
+                    val googleCredentials =
+                        GoogleAuthProvider.getCredential(googleIdToken.toString(), null)
+                    viewModel.signInWithGoogle(googleCredentials)
+
+                } catch (it: ApiException) {
+                    print(it)
                 }
             }
         }
+
+    fun launch() {
+        when (val oneTapSignInResponse = viewModel.oneTapSignInResponse) {
+            is Success -> {
+                Log.d("SignInScreen", "$oneTapSignInResponse")
+
+                oneTapSignInResponse.data?.let { it: BeginSignInResult ->
+                    val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
+                    launcher.launch(intent)
+                }
+            }
+
+            is Failure -> {
+                Log.d("SignInScreen", "${oneTapSignInResponse.e}")
+            }
+
+            Loading -> Log.d("SignInScreen", "Loading")
+        }
+    }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -178,17 +207,13 @@ fun SignInScreen(
                 onFacebookClick = viewModel::onFacebookClick,
                 onGoogleClick = {
                     coroutineScope.launch {
-                        val signInIntentSender = viewModel.accountService.googleSignIn()
-                        Log.d("SignInScreen", "${signInIntentSender?.equals(null)}")
-                        launcher.launch(
-                            IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
-                        )
+                        viewModel.onGoogleClick()
+                        launch()
                     }
                 },
                 onTwitterClick = viewModel::onTwitterClick
             )
         }
-
         Footer(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),

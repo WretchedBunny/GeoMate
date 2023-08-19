@@ -1,8 +1,15 @@
 package com.example.geomate.ui.screens.signin
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.geomate.ext.isEmailValid
+import com.example.geomate.model.Response
+import com.example.geomate.model.Response.Success
 import com.example.geomate.service.account.AccountService
 import com.example.geomate.ui.screens.GeoMateViewModel
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +21,9 @@ class SignInViewModelImpl(
 ) : GeoMateViewModel(), SignInViewModel {
     private val _uiState = MutableStateFlow(SignInUiState())
     override val uiState = _uiState.asStateFlow()
+
+    override var oneTapSignInResponse by mutableStateOf<Response<BeginSignInResult>>(Success(null))
+    override var signInWithGoogleResponse by mutableStateOf<Response<Boolean>>(Success(false))
 
     override fun updateEmail(email: String) {
         _uiState.update { it.copy(email = email) }
@@ -45,13 +55,19 @@ class SignInViewModelImpl(
         TODO("Not yet implemented")
     }
 
-    override fun onGoogleClick() {
-        TODO("Not yet implemented")
-    }
-
     override fun onTwitterClick() {
         TODO("Not yet implemented")
     }
 
+    override suspend fun onGoogleClick() {
+        launchCatching {
+            oneTapSignInResponse = accountService.getBeginSignInResult()
+        }
+    }
 
+    override fun signInWithGoogle(googleCredential: AuthCredential) {
+        launchCatching {
+            signInWithGoogleResponse = accountService.firebaseSignInWithGoogle(googleCredential)
+        }
+    }
 }

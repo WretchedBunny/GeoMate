@@ -23,12 +23,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    val accountService = FirebaseAccountService(
-        FirebaseAuth.getInstance(), Identity.getSignInClient(
-            LocalContext.current
-        )
-    )
     val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
+    val accountService = FirebaseAccountService(
+        FirebaseAuth.getInstance(),
+        Identity.getSignInClient(LocalContext.current),
+        storageService
+    )
 
     val signInViewModel = SignInViewModelImpl(accountService)
     val signUpViewModel = SignUpViewModelImpl(storageService, accountService)
