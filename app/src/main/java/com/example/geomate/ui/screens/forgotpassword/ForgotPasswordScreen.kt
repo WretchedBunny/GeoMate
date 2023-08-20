@@ -89,7 +89,8 @@ fun ForgotPasswordScreen(
                         Icon(
                             imageVector = Icons.Outlined.Email,
                             contentDescription = null,
-                            modifier = it
+                            tint = MaterialTheme.colorScheme.onSecondary,
+                            modifier = it,
                         )
                     }
                 ),

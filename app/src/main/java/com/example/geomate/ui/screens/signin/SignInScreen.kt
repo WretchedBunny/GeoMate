@@ -143,6 +143,7 @@ fun SignInScreen(
                             Icon(
                                 imageVector = Icons.Outlined.Email,
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
                                 modifier = it
                             )
                         }
@@ -165,6 +166,7 @@ fun SignInScreen(
                             Icon(
                                 imageVector = Icons.Outlined.Lock,
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
                                 modifier = it
                             )
                         }
@@ -176,6 +178,7 @@ fun SignInScreen(
                             Icon(
                                 imageVector = passwordTrailingIcon,
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
                                 modifier = it
                             )
                         }

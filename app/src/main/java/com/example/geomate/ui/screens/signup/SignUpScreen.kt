@@ -258,6 +258,7 @@ private fun EmailAndPasswordStage(
                         Icon(
                             imageVector = Icons.Outlined.Email,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondary,
                             modifier = it
                         )
                     }
@@ -280,6 +281,7 @@ private fun EmailAndPasswordStage(
                         Icon(
                             imageVector = Icons.Outlined.Lock,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondary,
                             modifier = it
                         )
                     }
@@ -291,6 +293,7 @@ private fun EmailAndPasswordStage(
                         Icon(
                             imageVector = passwordTrailingIcon,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondary,
                             modifier = it
                         )
                     }
@@ -348,6 +351,7 @@ private fun PublicInformationStage(
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = it
                     )
                 }
@@ -370,6 +374,7 @@ private fun PublicInformationStage(
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = it
                     )
                 }
@@ -392,6 +397,7 @@ private fun PublicInformationStage(
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = it
                     )
                 }
