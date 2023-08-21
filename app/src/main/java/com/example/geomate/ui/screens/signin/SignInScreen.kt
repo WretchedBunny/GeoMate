@@ -47,10 +47,9 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
-import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.SupportingButton
-import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.map.navigateToMap
@@ -139,7 +138,7 @@ fun SignInScreen(
                     value = uiState.email,
                     onValueChange = viewModel::updateEmail,
                     leadingIcons = listOf(
-                        LeadingIcon {
+                        TextFieldIcon {
                             Icon(
                                 imageVector = Icons.Outlined.Email,
                                 contentDescription = null,
@@ -149,8 +148,6 @@ fun SignInScreen(
                         }
                     ),
                     placeholder = stringResource(id = R.string.email_placeholder),
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
                     inputValidator = InputValidator(
                         isValid = uiState.isEmailValid,
                         updateIsValid = viewModel::updateIsEmailValid,
@@ -162,7 +159,7 @@ fun SignInScreen(
                     value = uiState.password,
                     onValueChange = viewModel::updatePassword,
                     leadingIcons = listOf(
-                        LeadingIcon {
+                        TextFieldIcon {
                             Icon(
                                 imageVector = Icons.Outlined.Lock,
                                 contentDescription = null,
@@ -172,7 +169,7 @@ fun SignInScreen(
                         }
                     ),
                     trailingIcons = listOf(
-                        TrailingIcon(
+                        TextFieldIcon(
                             onClick = { isPasswordVisible = !isPasswordVisible }
                         ) {
                             Icon(
@@ -188,8 +185,6 @@ fun SignInScreen(
                         text = stringResource(id = R.string.button_forgot_password),
                         onClick = navController::navigateToForgotPassword
                     ),
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
                     inputValidator = InputValidator(
                         isValid = uiState.isPasswordValid,
                         updateIsValid = viewModel::updateIsPasswordValid,

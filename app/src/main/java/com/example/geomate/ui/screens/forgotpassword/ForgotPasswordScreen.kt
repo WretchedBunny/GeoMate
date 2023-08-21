@@ -30,7 +30,7 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
-import com.example.geomate.ui.components.LeadingIcon
+import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
@@ -85,7 +85,7 @@ fun ForgotPasswordScreen(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
                 leadingIcons = listOf(
-                    LeadingIcon {
+                    TextFieldIcon {
                         Icon(
                             imageVector = Icons.Outlined.Email,
                             contentDescription = null,
@@ -95,8 +95,6 @@ fun ForgotPasswordScreen(
                     }
                 ),
                 placeholder = stringResource(id = R.string.email_placeholder),
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary,
                 inputValidator = InputValidator(
                     isValid = uiState.isEmailValid,
                     updateIsValid = viewModel::updateIsEmailValid,

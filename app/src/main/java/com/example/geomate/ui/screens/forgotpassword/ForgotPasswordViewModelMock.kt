@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class ForgotPasswordViewModelMock : ForgotPasswordViewModel {
     override val accountService = AccountServiceMock()
     override val uiState = MutableStateFlow(ForgotPasswordUiState()).asStateFlow()
-    override fun updateEmail(email: String) {}
-    override fun updateIsEmailValid(isEmailValid: Boolean) {}
-    override fun onResetClick() {}
+    override fun updateEmail(email: String) { TODO() }
+    override fun updateIsEmailValid(isEmailValid: Boolean) { TODO() }
+    override fun onResetClick() { TODO() }
 }

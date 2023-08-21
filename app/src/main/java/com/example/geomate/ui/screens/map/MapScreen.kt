@@ -1,11 +1,14 @@
 package com.example.geomate.ui.screens.map
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GpsFixed
 import androidx.compose.material.icons.outlined.Notifications
@@ -24,9 +27,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -38,8 +44,7 @@ import com.example.geomate.ui.components.ChipsRow
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.IconWithNotification
-import com.example.geomate.ui.components.LeadingIcon
-import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
@@ -133,7 +138,7 @@ fun MapScreen(
                     value = uiState.searchQuery,
                     onValueChange = viewModel::updateSearchQuery,
                     leadingIcons = listOf(
-                        LeadingIcon {
+                        TextFieldIcon {
                             Icon(
                                 imageVector = Icons.Outlined.Search,
                                 contentDescription = null,
@@ -142,7 +147,7 @@ fun MapScreen(
                         }
                     ),
                     trailingIcons = listOf(
-                        TrailingIcon(
+                        TextFieldIcon(
                             onClick = { /* TODO: Navigate to the notification screen */ }
                         ) {
                             IconWithNotification(
@@ -153,19 +158,22 @@ fun MapScreen(
                                 modifier = it,
                             )
                         },
-//                        TrailingIcon(
-//                            onClick = { /* TODO: Navigate to the profile screen */ }
-//                        ) {
-//                            // TODO: Parse uri from firestore
-//                            val drawableId =
-//                                if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
-//                                else R.drawable.profile_picture_placeholder_light
-//                            Image(
-//                                painter = painterResource(id = drawableId),
-//                                contentDescription = null,
-//                                modifier = it
-//                            )
-//                        }
+                        TextFieldIcon(
+                            onClick = { /* TODO: Navigate to the profile screen */ }
+                        ) { modifier ->
+                            // TODO: Get download uri from BucketService if exists
+                            //  download user's profile picture and cache it
+                            val drawableId =
+                                if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
+                                else R.drawable.profile_picture_placeholder_light
+                            Image(
+                                painter = painterResource(id = drawableId),
+                                contentDescription = null,
+                                modifier = modifier
+                                    .size(25.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
                     ),
                     placeholder = stringResource(id = R.string.users_search_placeholder),
                     containerColor = MaterialTheme.colorScheme.background,

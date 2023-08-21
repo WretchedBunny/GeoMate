@@ -83,6 +83,7 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
     // Authentication
     implementation("com.google.android.gms:play-services-auth:20.6.0")

@@ -59,10 +59,9 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
-import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.ProfilePicturePicker
 import com.example.geomate.ui.components.SocialNetworksRow
-import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signin.navigateToSignIn
@@ -254,7 +253,7 @@ private fun EmailAndPasswordStage(
                 value = uiState.email,
                 onValueChange = viewModel::updateEmail,
                 leadingIcons = listOf(
-                    LeadingIcon {
+                    TextFieldIcon {
                         Icon(
                             imageVector = Icons.Outlined.Email,
                             contentDescription = null,
@@ -277,7 +276,7 @@ private fun EmailAndPasswordStage(
                 value = uiState.password,
                 onValueChange = viewModel::updatePassword,
                 leadingIcons = listOf(
-                    LeadingIcon {
+                    TextFieldIcon {
                         Icon(
                             imageVector = Icons.Outlined.Lock,
                             contentDescription = null,
@@ -287,7 +286,7 @@ private fun EmailAndPasswordStage(
                     }
                 ),
                 trailingIcons = listOf(
-                    TrailingIcon(
+                    TextFieldIcon(
                         onClick = { isPasswordVisible = !isPasswordVisible }
                     ) {
                         Icon(
@@ -347,7 +346,7 @@ private fun PublicInformationStage(
             value = uiState.firstName,
             onValueChange = viewModel::updateFirstName,
             leadingIcons = listOf(
-                LeadingIcon {
+                TextFieldIcon {
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
@@ -357,8 +356,6 @@ private fun PublicInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.first_name_placeholder),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isFirstNameValid,
                 updateIsValid = viewModel::updateIsFirstNameValid,
@@ -370,7 +367,7 @@ private fun PublicInformationStage(
             value = uiState.lastName,
             onValueChange = viewModel::updateLastName,
             leadingIcons = listOf(
-                LeadingIcon {
+                TextFieldIcon {
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
@@ -380,8 +377,6 @@ private fun PublicInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.last_name_placeholder),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isLastNameValid,
                 updateIsValid = viewModel::updateIsLastNameValid,
@@ -393,7 +388,7 @@ private fun PublicInformationStage(
             value = uiState.username,
             onValueChange = viewModel::updateUsername,
             leadingIcons = listOf(
-                LeadingIcon {
+                TextFieldIcon {
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
@@ -403,8 +398,6 @@ private fun PublicInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.username_placeholder),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             inputValidator = InputValidator(
                 isValid = uiState.isUsernameValid,
                 updateIsValid = viewModel::updateIsUsernameValid,
@@ -462,7 +455,7 @@ private fun OptionalInformationStage(
             value = uiState.bio,
             onValueChange = viewModel::updateBio,
             leadingIcons = listOf(
-                LeadingIcon {
+                TextFieldIcon {
                     Icon(
                         imageVector = Icons.Outlined.PermContactCalendar,
                         contentDescription = null,
@@ -471,8 +464,6 @@ private fun OptionalInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.description_placeholder),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             supportingText = "Optional",
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {

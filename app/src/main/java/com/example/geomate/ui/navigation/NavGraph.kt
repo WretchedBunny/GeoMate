@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.service.account.FirebaseAccountService
+import com.example.geomate.service.bucket.FirebaseBucketService
 import com.example.geomate.service.storage.FirebaseStorageService
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModelImpl
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
@@ -23,6 +24,7 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun NavGraph(application: Application, navController: NavHostController) {
@@ -31,8 +33,9 @@ fun NavGraph(application: Application, navController: NavHostController) {
         FirebaseAuth.getInstance(),
         storageService
     )
+    val bucketService = FirebaseBucketService(FirebaseStorage.getInstance())
     val signInViewModel = SignInViewModelImpl(storageService)
-    val signUpViewModel = SignUpViewModelImpl(storageService)
+    val signUpViewModel = SignUpViewModelImpl(storageService, bucketService)
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
     val mapViewModel = MapViewModelImpl(
         application,

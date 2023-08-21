@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
+import com.example.geomate.service.bucket.BucketServiceMock
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageServiceMock
 import com.google.firebase.auth.FirebaseUser
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class SignUpViewModelMock : SignUpViewModel {
     override val storageService = StorageServiceMock()
+    override val bucketService = BucketServiceMock()
     override val uiState = MutableStateFlow(SignUpUiState()).asStateFlow()
     override fun updateEmail(email: String) {}
     override fun updatePassword(password: String) {}

@@ -1,18 +1,24 @@
 package com.example.geomate.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PermContactCalendar
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,13 +29,16 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.geomate.R
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
@@ -38,12 +47,7 @@ data class SupportingButton(
     val onClick: () -> Unit,
 )
 
-data class LeadingIcon(
-    val onClick: (() -> Unit)? = null,
-    val icon: @Composable (Modifier) -> Unit,
-)
-
-data class TrailingIcon(
+data class TextFieldIcon(
     val onClick: (() -> Unit)? = null,
     val icon: @Composable (Modifier) -> Unit,
 )
@@ -61,14 +65,14 @@ fun GeoMateTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    leadingIcons: List<LeadingIcon>? = null,
-    trailingIcons: List<TrailingIcon>? = null,
+    leadingIcons: List<TextFieldIcon> = listOf(),
+    trailingIcons: List<TextFieldIcon> = listOf(),
     placeholder: String,
     supportingText: String? = null,
     supportingButton: SupportingButton? = null,
     inputValidator: InputValidator? = null,
-    containerColor: Color,
-    contentColor: Color,
+    containerColor: Color = MaterialTheme.colorScheme.secondary,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondary,
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next,
@@ -94,10 +98,11 @@ fun GeoMateTextField(
             shape = CircleShape,
             leadingIcon = {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 13.dp)
                 ) {
-                    leadingIcons?.forEach { leadingIcon ->
+                    leadingIcons.forEach { leadingIcon ->
                         leadingIcon.icon(
                             if (leadingIcon.onClick != null) {
                                 Modifier.clickable { leadingIcon.onClick.invoke() }
@@ -110,10 +115,11 @@ fun GeoMateTextField(
             },
             trailingIcon = {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 13.dp)
                 ) {
-                    trailingIcons?.forEach { trailingIcon ->
+                    trailingIcons.forEach { trailingIcon ->
                         trailingIcon.icon(
                             if (trailingIcon.onClick != null) {
                                 Modifier.clickable { trailingIcon.onClick.invoke() }
@@ -158,7 +164,7 @@ fun GeoMateTextField(
             isError = !isValid,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         )
         supportingButton?.let {
             Text(
@@ -189,17 +195,14 @@ private fun EmailTextFieldPreview() {
             value = "",
             onValueChange = { },
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Email,
-                            contentDescription = null
-                        )
-                    }
-                )
+                TextFieldIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Email,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             placeholder = "Enter your email",
         )
     }
@@ -221,30 +224,31 @@ private fun PasswordTextFieldPreview() {
             value = "VeryStrongPassword",
             onValueChange = { },
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Lock,
-                            contentDescription = null
-                        )
-                    }
-                )
+                TextFieldIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Lock,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             trailingIcons = listOf(
-                TrailingIcon(
+                TextFieldIcon(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Visibility,
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = it
                         )
                     },
-                    onClick = { /* Show/hide password */ }
+                    onClick = { /* Show/hide password */ },
                 ),
-                TrailingIcon(
+                TextFieldIcon(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Visibility,
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = it
                         )
                     },
                     onClick = { /* Show/hide password */ }
@@ -255,8 +259,6 @@ private fun PasswordTextFieldPreview() {
                 text = "Forgot password?",
                 onClick = { /* Navigation */ }
             ),
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
             visualTransformation = PasswordVisualTransformation()
         )
     }
@@ -278,19 +280,61 @@ private fun BioTextFieldPreview() {
             value = "",
             onValueChange = { },
             leadingIcons = listOf(
-                LeadingIcon(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.PermContactCalendar,
-                            contentDescription = null
-                        )
-                    }
-                )
+                TextFieldIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.PermContactCalendar,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                }
             ),
             placeholder = "Describe yourself",
             supportingText = "Optional",
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
+            imeAction = ImeAction.Done
+        )
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun SearchBarTextFieldPreview() {
+    GeoMateTheme {
+        GeoMateTextField(
+            value = "",
+            onValueChange = { },
+            leadingIcons = listOf(
+                TextFieldIcon {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = null,
+                        modifier = it
+                    )
+                },
+            ),
+            trailingIcons = listOf(
+                TextFieldIcon {
+                    IconWithNotification(
+                        icon = Icons.Outlined.Notifications,
+                        notificationsCount = 4,
+                        notificationsForegroundColor = MaterialTheme.colorScheme.onPrimary,
+                        notificationsBackgroundColor = MaterialTheme.colorScheme.primary
+                    )
+                },
+                TextFieldIcon {
+                    val drawableId =
+                        if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
+                        else R.drawable.profile_picture_placeholder_light
+                    Image(
+                        painter = painterResource(id = drawableId),
+                        contentDescription = null,
+                        modifier = it.size(25.dp).clip(CircleShape),
+                    )
+                }
+            ),
+            placeholder = "Search for a user",
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
             imeAction = ImeAction.Done
         )
     }
