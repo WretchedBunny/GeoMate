@@ -2,6 +2,7 @@ package com.example.geomate.ui.screens.signin
 
 import com.example.geomate.model.Response
 import com.example.geomate.service.account.AccountServiceMock
+import com.example.geomate.service.account.Authentication
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ class SignInViewModelMock : SignInViewModel {
     override fun updatePassword(password: String) {}
     override fun updateIsEmailValid(isEmailValid: Boolean) {}
     override fun updateIsPasswordValid(isPasswordValid: Boolean) {}
-    override fun onSignInClick(): Boolean = true
+    override fun onSignInClick(authentication: Authentication): Boolean = true
     override fun onFacebookClick() {}
     override suspend fun onGoogleClick() {}
     override fun onTwitterClick() {}

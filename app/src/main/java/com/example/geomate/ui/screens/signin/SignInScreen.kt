@@ -41,6 +41,7 @@ import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.model.Response.Failure
 import com.example.geomate.model.Response.Loading
 import com.example.geomate.model.Response.Success
+import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -58,6 +59,7 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 
@@ -192,7 +194,11 @@ fun SignInScreen(
                         viewModel.updateIsEmailValid(uiState.email.isEmailValid())
                         viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
                         if (uiState.isEmailValid && uiState.isPasswordValid) {
-                            val result = viewModel.onSignInClick()
+                            val result = viewModel.onSignInClick(
+                                EmailPasswordAuthentication(
+                                    FirebaseAuth.getInstance(), uiState.email, uiState.password
+                                )
+                            )
                             if (result) {
                                 // TODO: Navigate to the map screen
                             } else {

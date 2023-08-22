@@ -47,6 +47,7 @@ import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
+import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -61,6 +62,7 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -161,7 +163,13 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        val result = viewModel.onSignUpClick()
+                        val result = viewModel.onSignUpClick(
+                            EmailPasswordAuthentication(
+                                FirebaseAuth.getInstance(),
+                                uiState.email,
+                                uiState.password
+                            )
+                        )
                         if (result) {
                             // TODO: Navigate to the map screen
                         } else {

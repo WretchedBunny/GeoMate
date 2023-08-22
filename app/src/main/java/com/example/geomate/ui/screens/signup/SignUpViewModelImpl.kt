@@ -1,15 +1,18 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.example.geomate.model.User
 import com.example.geomate.service.account.AccountService
+import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
 import com.example.geomate.ui.screens.GeoMateViewModel
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SignUpViewModelImpl(
     override val storageService: StorageService, override val accountService: AccountService,
@@ -65,21 +68,25 @@ class SignUpViewModelImpl(
         _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
     }
 
-    override fun onSignUpClick(): Boolean {
-        launchCatching {
-            storageService.addUser(
-                User(
-                    email = uiState.value.email,
-                    username = uiState.value.username,
-                    firstName = uiState.value.firstName,
-                    lastName = uiState.value.lastName,
-                    profilePictureUri = uiState.value.profilePictureUri,
-                    bio = uiState.value.bio
+    override fun onSignUpClick(authentication: Authentication): Boolean {
+        viewModelScope.launch {
+            try {
+                storageService.addUser(
+                    User(
+                        email = uiState.value.email,
+                        username = uiState.value.username,
+                        firstName = uiState.value.firstName,
+                        lastName = uiState.value.lastName,
+                        profilePictureUri = uiState.value.profilePictureUri,
+                        bio = uiState.value.bio
+                    )
                 )
-            )
-            accountService.signUp(uiState.value.email, uiState.value.password)
+                authentication.signUp()
+            } catch (e: Exception) {
+                Log.d("Exception", e.message.toString())
+            }
         }
-        return FirebaseAuth.getInstance().currentUser != null
+        return authentication.user != null
     }
 
     override fun onFacebookClick() {

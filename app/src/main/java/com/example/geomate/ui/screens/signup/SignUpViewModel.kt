@@ -2,6 +2,7 @@ package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
 import com.example.geomate.service.account.AccountService
+import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
 import kotlinx.coroutines.flow.StateFlow
 
@@ -21,7 +22,7 @@ interface SignUpViewModel {
     fun updateIsUsernameValid(isUsernameValid: Boolean)
     fun updateIsEmailValid(isEmailValid: Boolean)
     fun updateIsPasswordValid(isPasswordValid: Boolean)
-    fun onSignUpClick(): Boolean
+    fun onSignUpClick(authentication: Authentication): Boolean
     fun onFacebookClick()
     fun onGoogleClick()
     fun onTwitterClick()
