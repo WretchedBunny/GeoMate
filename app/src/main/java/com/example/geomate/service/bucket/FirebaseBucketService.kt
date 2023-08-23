@@ -2,11 +2,14 @@ package com.example.geomate.service.bucket
 
 import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 
 class FirebaseBucketService(private val bucket: FirebaseStorage) : BucketService {
-    override fun get(path: String): Uri {
+    override suspend fun get(path: String): Uri? {
         val reference = bucket.reference.child("images/$path")
-        return reference.downloadUrl.result
+        return try {
+            reference.downloadUrl.await()
+        } catch (e: Exception) { null }
     }
 
     override fun store(path: String, uri: Uri) {

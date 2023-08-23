@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.geomate.R
 import com.example.geomate.model.Group
 import com.example.geomate.ui.theme.GeoMateTheme
@@ -22,6 +26,7 @@ fun ChipsRow(
     isAllSelected: Boolean,
     toggleGroup: (Group) -> Unit,
     toggleAllGroups: (Boolean) -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     LazyRow(
@@ -41,6 +46,14 @@ fun ChipsRow(
                 text = it.name,
                 isSelected = it.isSelected,
                 onClick = { toggleGroup(it) }
+            )
+        }
+        item {
+            Chips(
+                icon = Icons.Outlined.Add,
+                text = stringResource(id = R.string.map_new),
+                isSelected = false,
+                onClick = { /* TODO: Navigate to "add new group" screen */ }
             )
         }
         item { Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium - MaterialTheme.spacing.small)) }
@@ -71,6 +84,7 @@ private fun ChipsRowPreview() {
             isAllSelected = false,
             toggleGroup = { },
             toggleAllGroups = { },
+            navController = NavController(LocalContext.current),
         )
     }
 }

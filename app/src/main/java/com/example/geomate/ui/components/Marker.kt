@@ -23,7 +23,7 @@ import com.example.geomate.R
 import com.example.geomate.ui.theme.GeoMateTheme
 
 @Composable
-fun Marker(
+fun MapMarker(
     modifier: Modifier = Modifier,
     fullName: String,
     image: @Composable (Modifier) -> Unit,
@@ -72,13 +72,13 @@ fun Marker(
     backgroundColor = 0xFF2A2A2A
 )
 @Composable
-private fun MarkerPreview() {
+private fun MapMarkerPreview() {
     GeoMateTheme {
         val profilePictureId = when (isSystemInDarkTheme()) {
             true -> R.drawable.profile_picture_placeholder_dark
             false -> R.drawable.profile_picture_placeholder_light
         }
-        Marker(fullName = "John Doe") {
+        MapMarker(fullName = "John Doe") {
             Image(
                 painter = painterResource(profilePictureId),
                 contentDescription = null,

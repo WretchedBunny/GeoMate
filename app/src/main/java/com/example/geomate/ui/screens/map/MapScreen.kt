@@ -1,7 +1,7 @@
 package com.example.geomate.ui.screens.map
 
+import android.Manifest
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +29,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import coil.compose.AsyncImage
 import com.example.geomate.R
 import com.example.geomate.model.Group
 import com.example.geomate.model.User
@@ -48,12 +50,17 @@ import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionsRequired
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.map(
@@ -77,9 +84,43 @@ fun NavController.navigateToMap() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MapScreen(
+    uiState: MapUiState,
+    viewModel: MapViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
+    val multiplePermissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
+    PermissionsRequired(
+        multiplePermissionsState = multiplePermissionsState,
+        permissionsNotGrantedContent = {
+            SideEffect {
+                multiplePermissionsState.launchMultiplePermissionRequest()
+            }
+
+            // TODO: Display upsy daisy map
+        },
+        permissionsNotAvailableContent = { /* ... */ }
+    ) {
+        Map(
+            uiState = uiState,
+            viewModel = viewModel,
+            navController = navController,
+            modifier = modifier,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Map(
     uiState: MapUiState,
     viewModel: MapViewModel,
     navController: NavController,
@@ -95,8 +136,13 @@ fun MapScreen(
         coroutineScope.launch {
             Firebase.auth.currentUser?.uid?.let {
                 user = viewModel.getUser(it)
+                viewModel.fetchProfilePictureUri(user?.uid ?: "") // TODO: Cache the image
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.startMonitoringUserLocation()
     }
 
     Scaffold(
@@ -126,7 +172,9 @@ fun MapScreen(
                 properties = MapProperties(
                     mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, mapStyleId)
                 ),
-            ) { }
+            ) {
+                Marker(MarkerState(uiState.userMarker))
+            }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
@@ -161,13 +209,12 @@ fun MapScreen(
                         TextFieldIcon(
                             onClick = { /* TODO: Navigate to the profile screen */ }
                         ) { modifier ->
-                            // TODO: Get download uri from BucketService if exists
-                            //  download user's profile picture and cache it
                             val drawableId =
                                 if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
                                 else R.drawable.profile_picture_placeholder_light
-                            Image(
-                                painter = painterResource(id = drawableId),
+                            AsyncImage(
+                                model = uiState.profilePictureUri ?: drawableId,
+                                contentScale = ContentScale.Crop,
                                 contentDescription = null,
                                 modifier = modifier
                                     .size(25.dp)
@@ -185,6 +232,7 @@ fun MapScreen(
                     isAllSelected = uiState.isAllSelected,
                     toggleGroup = viewModel::toggleGroup,
                     toggleAllGroups = viewModel::toggleAllGroups,
+                    navController = navController,
                 )
             }
         }

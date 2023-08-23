@@ -51,5 +51,6 @@
 
     <!--Map screen-->
     <string name="map_all">All</string>
+    <string name="map_new">New</string>
 
 </resources>

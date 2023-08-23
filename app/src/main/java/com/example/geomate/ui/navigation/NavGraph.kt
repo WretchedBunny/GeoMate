@@ -40,6 +40,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val mapViewModel = MapViewModelImpl(
         application,
         storageService,
+        bucketService,
         LocationServices.getFusedLocationProviderClient(LocalContext.current)
     )
 

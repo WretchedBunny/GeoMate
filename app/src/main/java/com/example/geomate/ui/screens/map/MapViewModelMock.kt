@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.asStateFlow
 class MapViewModelMock : MapViewModel {
     override val uiState = MutableStateFlow(MapUiState()).asStateFlow()
     override fun updateSearchQuery(searchQuery: String) { TODO() }
+    override suspend fun fetchProfilePictureUri(path: String) { TODO() }
+    override fun startMonitoringUserLocation() { TODO() }
+    override fun stopMonitoringUserLocation() { TODO() }
     override fun toggleGroup(group: Group) { TODO() }
     override fun toggleAllGroups(current: Boolean) { TODO() }
     override fun pointCameraOnUser() { TODO() }

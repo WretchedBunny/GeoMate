@@ -68,7 +68,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose:2.7.0-beta02")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.7.0")
 
     // Testing and tooling
@@ -92,7 +92,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
 
     // Icons
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
     // Status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
@@ -101,6 +101,12 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:2.7.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.23.1")
 }
 
 fun googleMapsApiKey(): Any? {
