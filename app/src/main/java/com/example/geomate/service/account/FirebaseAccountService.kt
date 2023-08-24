@@ -2,10 +2,6 @@ package com.example.geomate.service.account
 
 import android.content.Intent
 import android.util.Log
-import com.example.geomate.model.Response
-import com.example.geomate.model.Response.Failure
-import com.example.geomate.model.Response.Success
-import com.example.geomate.model.User
 import com.example.geomate.service.storage.StorageService
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInResult
@@ -51,19 +47,16 @@ class FirebaseAccountService(
         auth.sendPasswordResetEmail(email).await()
     }
 
-    override suspend fun getBeginSignInResult(): Response<BeginSignInResult> {
-        return try {
-            val signInResult = oneTapClient.beginSignIn(signInRequest).await()
-            Log.d("FirebaseAccountService", "$signInResult")
-            Success<BeginSignInResult>(signInResult)
-        } catch (e: Exception) {
-            Failure(e)
-        }
+    override suspend fun getBeginSignInResult(): BeginSignInResult {
+        val signInResult = oneTapClient.beginSignIn(signInRequest).await()
+        Log.d("FirebaseAccountService", "$signInResult")
+        return signInResult
     }
 
     override suspend fun firebaseSignInWithGoogle(
         googleCredential: AuthCredential,
-    ): Response<Boolean> {
+    ): Boolean {
+        /*
         return try {
             Log.d("firebaseSignInWithGoogle", "FFFFFFFFFFFFf")
             val authResult = auth.signInWithCredential(googleCredential).await()
@@ -71,6 +64,7 @@ class FirebaseAccountService(
 
             val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
             if (isNewUser) {
+                /*
                 storageService.addUser(
                     User(
                         email = auth.currentUser?.email,
@@ -81,19 +75,23 @@ class FirebaseAccountService(
                         bio = ""
                     )
                 )
+                 */
             }
             Success(true)
         } catch (e: Exception) {
             Failure(e)
         }
+         */
+        /*TODO to delete*/
+        return true
     }
 
-    override fun getGoogleCredentialsWithIntent(intent: Intent?): Response<String> {
+    override fun getGoogleCredentialsWithIntent(intent: Intent?): String {
         return try {
             val credential = oneTapClient.getSignInCredentialFromIntent(intent)
-            return Success<String>(credential.googleIdToken)
+            return (credential.googleIdToken.toString())
         } catch (e: Exception) {
-            Failure(e)
+            return "nu;ef"
         }
     }
 

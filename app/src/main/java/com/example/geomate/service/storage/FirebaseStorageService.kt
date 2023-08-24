@@ -9,9 +9,12 @@ private const val TAG = "StorageService"
 
 class FirebaseStorageService(private val fireStore: FirebaseFirestore) : StorageService {
     override suspend fun addUser(user: User) {
-        Log.d(TAG, "Trying to add new user.")
         fireStore.collection("user").add(user).addOnSuccessListener { documentReference ->
             Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
         }.await()
+    }
+
+    override suspend fun loggedForFirstTime(uid: String) {
+        TODO("Not yet implemented")
     }
 }

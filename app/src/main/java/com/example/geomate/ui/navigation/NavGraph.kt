@@ -30,7 +30,11 @@ fun NavGraph(navController: NavHostController) {
         storageService
     )
 
-    val signInViewModel = SignInViewModelImpl(accountService)
+    val signInViewModel =
+        SignInViewModelImpl(
+            accountService,
+            storageService
+        )
     val signUpViewModel = SignUpViewModelImpl(storageService, accountService)
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
 
