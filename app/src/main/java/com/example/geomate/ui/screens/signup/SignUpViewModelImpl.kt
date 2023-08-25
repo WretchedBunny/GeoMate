@@ -8,7 +8,6 @@ import com.example.geomate.model.User
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
 import com.google.android.gms.auth.api.identity.SignInCredential
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -93,24 +92,9 @@ class SignUpViewModelImpl(
     }
 
     override fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential) {
-        val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
         viewModelScope.launch {
             try {
-                val loggedInUser = authentication.signIn(googleCredential)
-                if (loggedInUser != null && storageService.loggedForFirstTime(loggedInUser.uid)) {
-                    loggedInUser.uid.let { uid ->
-                        storageService.addUser(
-                            User(
-                                uid = uid,
-                                email = loggedInUser.email ?: "",
-                                username = uid.dropLast(8),
-                                firstName = authCredential.givenName ?: "",
-                                lastName = authCredential.familyName ?: "",
-                                profilePictureUri = authCredential.profilePictureUri
-                            )
-                        )
-                    }
-                }
+                authentication.signIn()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

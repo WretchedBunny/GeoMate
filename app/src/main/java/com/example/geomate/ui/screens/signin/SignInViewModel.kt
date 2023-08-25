@@ -13,7 +13,7 @@ interface SignInViewModel {
     fun updateIsEmailValid(isEmailValid: Boolean)
     fun updateIsPasswordValid(isPasswordValid: Boolean)
     fun onSignInClick(authentication: Authentication): Boolean
+    fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential)
     fun onFacebookClick()
     fun onTwitterClick()
-    fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential)
 }

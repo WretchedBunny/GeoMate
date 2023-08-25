@@ -87,18 +87,18 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val googleSignInAuth = GoogleSignInAuthentication(
-        FirebaseAuth.getInstance(),
-        oneTapClient = Identity.getSignInClient(context),
-        viewModel.storageService
-    )
+    val oneTapClient = Identity.getSignInClient(context)
     val coroutineScope = rememberCoroutineScope()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
-            val signInCredentials =
-                googleSignInAuth.oneTapClient.getSignInCredentialFromIntent(result.data)
+            val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val googleSignInAuth = GoogleSignInAuthentication(
+                FirebaseAuth.getInstance(),
+                viewModel.storageService,
+                signInCredentials,
+            )
             viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
         }
     }
@@ -187,7 +187,8 @@ fun SignInScreen(
                 onFacebookClick = viewModel::onFacebookClick,
                 onGoogleClick = {
                     coroutineScope.launch {
-                        val signInIntentSender = googleSignInAuth.getIntentSender()
+                        val signInIntentSender =
+                            GoogleSignInAuthentication.getSignInIntentSender(oneTapClient)
                         launcher.launch(
                             IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                         )

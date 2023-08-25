@@ -4,12 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.ext.isEmailValid
-import com.example.geomate.model.User
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
 import com.google.android.gms.auth.api.identity.SignInCredential
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -42,12 +39,7 @@ class SignInViewModelImpl(
         if (!uiState.value.email.isEmailValid()) return false
         viewModelScope.launch {
             try {
-                authentication.signIn(
-                    EmailAuthProvider.getCredential(
-                        uiState.value.email,
-                        uiState.value.password
-                    )
-                )
+                authentication.signIn()
             } catch (e: Exception) {
                 Log.d("Exception", e.message.toString())
             }
@@ -56,24 +48,9 @@ class SignInViewModelImpl(
     }
 
     override fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential) {
-        val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
         viewModelScope.launch {
             try {
-                val loggedInUser = authentication.signIn(googleCredential)
-                if (loggedInUser != null && storageService.loggedForFirstTime(loggedInUser.uid)) {
-                    loggedInUser.uid.let { uid ->
-                        storageService.addUser(
-                            User(
-                                uid = uid,
-                                email = loggedInUser.email ?: "",
-                                username = uid.dropLast(8),
-                                firstName = authCredential.givenName ?: "",
-                                lastName = authCredential.familyName ?: "",
-                                profilePictureUri = authCredential.profilePictureUri
-                            )
-                        )
-                    }
-                }
+                authentication.signIn()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

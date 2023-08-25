@@ -1,6 +1,5 @@
 package com.example.geomate.service.account
 
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
@@ -11,9 +10,9 @@ class EmailPasswordAuthentication(
     val password: String,
 ) : Authentication {
     override val user: FirebaseUser? = auth.currentUser
-    override suspend fun signIn(authCredential: AuthCredential): FirebaseUser? {
+    override suspend fun signIn(): FirebaseUser? {
         return try {
-            auth.signInWithCredential(authCredential).await()
+            auth.signInWithEmailAndPassword(email, password).await()
             user
         } catch (e: Exception) {
             e.printStackTrace()
