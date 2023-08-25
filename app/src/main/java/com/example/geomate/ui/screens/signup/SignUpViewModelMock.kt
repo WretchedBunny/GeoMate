@@ -1,15 +1,13 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
-import com.example.geomate.service.account.AccountService
-import com.example.geomate.service.account.AccountServiceMock
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageServiceMock
+import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SignUpViewModelMock() : SignUpViewModel {
-    override val accountService: AccountService = AccountServiceMock()
     override val storageService = StorageServiceMock()
     override val uiState = MutableStateFlow(SignUpUiState()).asStateFlow()
     override fun updateEmail(email: String) {}
@@ -25,13 +23,10 @@ class SignUpViewModelMock() : SignUpViewModel {
     override fun updateIsEmailValid(isEmailValid: Boolean) {}
     override fun updateIsPasswordValid(isPasswordValid: Boolean) {}
     override fun onSignUpClick(authentication: Authentication): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
+    override fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential) {}
     override fun onFacebookClick() {}
-    override fun onGoogleClick() {
-        TODO("Not yet implemented")
-    }
-
     override fun onTwitterClick() {}
 }

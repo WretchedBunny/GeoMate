@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -87,26 +86,22 @@ fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    val googleSignInAuth =
-        GoogleSignInAuthentication(
-            FirebaseAuth.getInstance(), oneTapClient = Identity.getSignInClient(
-                LocalContext.current
-            )
-        )
+    val context = LocalContext.current
+    val googleSignInAuth = GoogleSignInAuthentication(
+        FirebaseAuth.getInstance(),
+        oneTapClient = Identity.getSignInClient(context),
+        viewModel.storageService
+    )
     val coroutineScope = rememberCoroutineScope()
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult(),
-        onResult = { result ->
-            Log.d("SignInScreen", "$result.resultCode")
-            if (result.resultCode == ComponentActivity.RESULT_OK) {
-                coroutineScope.launch {
-                    val signInCredentials =
-                        googleSignInAuth.oneTapClient.getSignInCredentialFromIntent(result.data)
-                    viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
-                }
-            }
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == ComponentActivity.RESULT_OK) {
+            val signInCredentials =
+                googleSignInAuth.oneTapClient.getSignInCredentialFromIntent(result.data)
+            viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
         }
-    )
+    }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,

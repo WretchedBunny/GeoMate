@@ -8,5 +8,5 @@ interface Authentication {
     val auth: FirebaseAuth
     val user: FirebaseUser?
     suspend fun signIn(authCredential: AuthCredential): FirebaseUser?
-    suspend fun signUp()
+    suspend fun signUp(): FirebaseUser?
 }

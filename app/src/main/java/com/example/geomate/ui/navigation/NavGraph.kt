@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.service.account.FirebaseAccountService
@@ -17,7 +16,6 @@ import com.example.geomate.ui.screens.signin.signIn
 import com.example.geomate.ui.screens.signup.SignUpViewModelImpl
 import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
-import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -26,16 +24,10 @@ fun NavGraph(navController: NavHostController) {
     val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
     val accountService = FirebaseAccountService(
         FirebaseAuth.getInstance(),
-        Identity.getSignInClient(LocalContext.current),
         storageService
     )
-
-    val signInViewModel =
-        SignInViewModelImpl(
-            accountService,
-            storageService
-        )
-    val signUpViewModel = SignUpViewModelImpl(storageService, accountService)
+    val signInViewModel = SignInViewModelImpl(storageService)
+    val signUpViewModel = SignUpViewModelImpl(storageService)
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
 
     GeoMateTheme {

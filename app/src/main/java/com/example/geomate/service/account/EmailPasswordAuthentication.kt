@@ -12,12 +12,23 @@ class EmailPasswordAuthentication(
 ) : Authentication {
     override val user: FirebaseUser? = auth.currentUser
     override suspend fun signIn(authCredential: AuthCredential): FirebaseUser? {
-        auth.signInWithCredential(authCredential).await()
-        return user
+        return try {
+            auth.signInWithCredential(authCredential).await()
+            user
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
-    override suspend fun signUp() {
-        auth.createUserWithEmailAndPassword(email, password).await()
+    override suspend fun signUp(): FirebaseUser? {
+        return try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+            user
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
 }

@@ -1,13 +1,12 @@
 package com.example.geomate.ui.screens.signin
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.model.User
-import com.example.geomate.service.account.AccountService
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
-import com.example.geomate.ui.screens.GeoMateViewModel
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
@@ -18,8 +17,8 @@ import kotlinx.coroutines.launch
 
 
 class SignInViewModelImpl(
-    override val accountService: AccountService, override val storageService: StorageService,
-) : GeoMateViewModel(), SignInViewModel {
+    override val storageService: StorageService,
+) : ViewModel(), SignInViewModel {
     private val _uiState = MutableStateFlow(SignInUiState())
     override val uiState = _uiState.asStateFlow()
 
@@ -39,17 +38,6 @@ class SignInViewModelImpl(
         _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
     }
 
-    /*
-    override fun onSignInClick(): Boolean {
-        if (!uiState.value.email.isEmailValid()) {
-            return false
-        }
-        launchCatching {
-            accountService.signIn(uiState.value.email, uiState.value.password)
-        }
-        return FirebaseAuth.getInstance().currentUser != null
-    }
-     */
     override fun onSignInClick(authentication: Authentication): Boolean {
         if (!uiState.value.email.isEmailValid()) return false
         viewModelScope.launch {
@@ -67,20 +55,27 @@ class SignInViewModelImpl(
         return authentication.user != null
     }
 
-    override fun onGoogleClick(authentication: Authentication, signInCredential: SignInCredential) {
-        val authCredential = GoogleAuthProvider.getCredential(signInCredential.googleIdToken, null)
+    override fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential) {
+        val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
         viewModelScope.launch {
             try {
-                val loggedInUser = authentication.signIn(authCredential)
-                if (loggedInUser != null) {
-                    storageService.addUser(
-                        User(
-                            email = loggedInUser.email ?: ""
+                val loggedInUser = authentication.signIn(googleCredential)
+                if (loggedInUser != null && storageService.loggedForFirstTime(loggedInUser.uid)) {
+                    loggedInUser.uid.let { uid ->
+                        storageService.addUser(
+                            User(
+                                uid = uid,
+                                email = loggedInUser.email ?: "",
+                                username = uid.dropLast(8),
+                                firstName = authCredential.givenName ?: "",
+                                lastName = authCredential.familyName ?: "",
+                                profilePictureUri = authCredential.profilePictureUri
+                            )
                         )
-                    )
+                    }
                 }
             } catch (e: Exception) {
-                Log.d("SignInViewModelImpl", e.message.toString())
+                e.printStackTrace()
             }
         }
     }

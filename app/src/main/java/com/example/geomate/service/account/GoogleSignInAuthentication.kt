@@ -1,6 +1,7 @@
 package com.example.geomate.service.account
 
 import android.content.IntentSender
+import com.example.geomate.service.storage.StorageService
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -11,6 +12,7 @@ import kotlinx.coroutines.tasks.await
 class GoogleSignInAuthentication(
     override val auth: FirebaseAuth,
     val oneTapClient: SignInClient,
+    val storageService: StorageService,
 ) :
     Authentication {
     override val user: FirebaseUser? = auth.currentUser
@@ -21,17 +23,28 @@ class GoogleSignInAuthentication(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
                     .setServerClientId("938799297885-9pradotv25k0sqvod236q4p0ng8u6p8e.apps.googleusercontent.com")
-                    .setFilterByAuthorizedAccounts(false)
+                    .setFilterByAuthorizedAccounts(true)
                     .build()
             )
             .setAutoSelectEnabled(true)
+            .build()
+    }
+    private val signUpRequest by lazy {
+        BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId("938799297885-9pradotv25k0sqvod236q4p0ng8u6p8e.apps.googleusercontent.com")
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
             .build()
     }
 
     suspend fun getIntentSender(): IntentSender? {
         val result = try {
             oneTapClient.beginSignIn(
-                signInRequest
+                signUpRequest
             ).await()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -41,12 +54,18 @@ class GoogleSignInAuthentication(
     }
 
     override suspend fun signIn(authCredential: AuthCredential): FirebaseUser? {
-        
-        return null
+        return try {
+            auth.signInWithCredential(authCredential).await()
+            user
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
-    override suspend fun signUp() {
-        TODO("Not yet implemented")
+    override suspend fun signUp(): FirebaseUser? {
+        /*TODO(Not Implemented) For consideration*/
+        return null
     }
 
 }
