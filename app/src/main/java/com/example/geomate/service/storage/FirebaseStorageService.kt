@@ -1,17 +1,14 @@
 package com.example.geomate.service.storage
 
-import android.util.Log
 import com.example.geomate.model.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-private const val TAG = "StorageService"
-
 class FirebaseStorageService(private val fireStore: FirebaseFirestore) : StorageService {
     override suspend fun addUser(user: User) {
-        Log.d(TAG, "Trying to add new user.")
-        fireStore.collection("user").add(user).addOnSuccessListener { documentReference ->
-            Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-        }.await()
+        fireStore.collection("user").add(user).await()
     }
+
+    override suspend fun loggedForFirstTime(uid: String): Boolean =
+        fireStore.collection("user").whereEqualTo("uid", uid).get().await().isEmpty
 }

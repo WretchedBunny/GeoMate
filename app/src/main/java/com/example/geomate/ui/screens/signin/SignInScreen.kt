@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -38,9 +37,8 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
-import com.example.geomate.model.Response.Failure
-import com.example.geomate.model.Response.Loading
-import com.example.geomate.model.Response.Success
+import com.example.geomate.service.account.EmailPasswordAuthentication
+import com.example.geomate.service.account.GoogleSignInAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -56,11 +54,9 @@ import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -90,40 +86,20 @@ fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val oneTapClient = Identity.getSignInClient(context)
     val coroutineScope = rememberCoroutineScope()
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            Log.d("SignInScreen", result.resultCode.toString())
-            if (result.resultCode == ComponentActivity.RESULT_OK) {
-                try {
-                    val googleIdToken =
-                        viewModel.accountService.getGoogleCredentialsWithIntent(result.data)
-                    val googleCredentials =
-                        GoogleAuthProvider.getCredential(googleIdToken.toString(), null)
-                    viewModel.signInWithGoogle(googleCredentials)
-
-                } catch (it: ApiException) {
-                    print(it)
-                }
-            }
-        }
-
-    fun launch() {
-        when (val oneTapSignInResponse = viewModel.oneTapSignInResponse) {
-            is Success -> {
-                Log.d("SignInScreen", "$oneTapSignInResponse")
-
-                oneTapSignInResponse.data?.let { it: BeginSignInResult ->
-                    val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
-                    launcher.launch(intent)
-                }
-            }
-
-            is Failure -> {
-                Log.d("SignInScreen", "${oneTapSignInResponse.e}")
-            }
-
-            Loading -> Log.d("SignInScreen", "Loading")
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == ComponentActivity.RESULT_OK) {
+            val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val googleSignInAuth = GoogleSignInAuthentication(
+                FirebaseAuth.getInstance(),
+                viewModel.storageService,
+                signInCredentials,
+            )
+            viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
         }
     }
     Column(
@@ -192,7 +168,11 @@ fun SignInScreen(
                         viewModel.updateIsEmailValid(uiState.email.isEmailValid())
                         viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
                         if (uiState.isEmailValid && uiState.isPasswordValid) {
-                            val result = viewModel.onSignInClick()
+                            val result = viewModel.onSignInClick(
+                                authentication = EmailPasswordAuthentication(
+                                    FirebaseAuth.getInstance(), uiState.email, uiState.password
+                                )
+                            )
                             if (result) {
                                 // TODO: Navigate to the map screen
                             } else {
@@ -207,8 +187,11 @@ fun SignInScreen(
                 onFacebookClick = viewModel::onFacebookClick,
                 onGoogleClick = {
                     coroutineScope.launch {
-                        viewModel.onGoogleClick()
-                        launch()
+                        val signInIntentSender =
+                            GoogleSignInAuthentication.getSignInIntentSender(oneTapClient)
+                        launcher.launch(
+                            IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
+                        )
                     }
                 },
                 onTwitterClick = viewModel::onTwitterClick

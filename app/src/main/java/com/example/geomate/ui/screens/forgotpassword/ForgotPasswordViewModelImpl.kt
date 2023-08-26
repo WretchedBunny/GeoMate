@@ -1,15 +1,18 @@
 package com.example.geomate.ui.screens.forgotpassword
 
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.geomate.service.account.AccountService
-import com.example.geomate.ui.screens.GeoMateViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModelImpl(
     override val accountService: AccountService,
-) : GeoMateViewModel(), ForgotPasswordViewModel {
+) : ViewModel(), ForgotPasswordViewModel {
     private val _uiState = MutableStateFlow(ForgotPasswordUiState())
     override val uiState: StateFlow<ForgotPasswordUiState> = _uiState.asStateFlow()
 
@@ -22,8 +25,12 @@ class ForgotPasswordViewModelImpl(
     }
 
     override fun onResetClick() {
-        launchCatching {
-            accountService.sendRecoveryEmail(uiState.value.email)
+        viewModelScope.launch {
+            try {
+                accountService.sendRecoveryEmail(uiState.value.email)
+            } catch (e: Exception) {
+                Log.d("Exception", e.message.toString())
+            }
         }
     }
 }

@@ -4,7 +4,9 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -47,6 +49,8 @@ import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
+import com.example.geomate.service.account.EmailPasswordAuthentication
+import com.example.geomate.service.account.GoogleSignInAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -61,6 +65,8 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -161,7 +167,13 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        val result = viewModel.onSignUpClick()
+                        val result = viewModel.onSignUpClick(
+                            EmailPasswordAuthentication(
+                                FirebaseAuth.getInstance(),
+                                uiState.email,
+                                uiState.password
+                            )
+                        )
                         if (result) {
                             // TODO: Navigate to the map screen
                         } else {
@@ -194,6 +206,22 @@ private fun EmailAndPasswordStage(
     next: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val oneTapClient = Identity.getSignInClient(context)
+    val coroutineScope = rememberCoroutineScope()
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == ComponentActivity.RESULT_OK) {
+            val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val googleSignInAuth = GoogleSignInAuthentication(
+                FirebaseAuth.getInstance(),
+                viewModel.storageService,
+                signInCredentials,
+            )
+            viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
@@ -246,7 +274,15 @@ private fun EmailAndPasswordStage(
         }
         SocialNetworksRow(
             onFacebookClick = viewModel::onFacebookClick,
-            onGoogleClick = viewModel::onGoogleClick,
+            onGoogleClick = {
+                coroutineScope.launch {
+                    val signInIntentSender =
+                        GoogleSignInAuthentication.getSignUpIntentSender(oneTapClient)
+                    launcher.launch(
+                        IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
+                    )
+                }
+            },
             onTwitterClick = viewModel::onTwitterClick
         )
     }

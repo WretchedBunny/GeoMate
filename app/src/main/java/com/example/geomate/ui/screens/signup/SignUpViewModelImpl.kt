@@ -1,19 +1,22 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.geomate.model.User
-import com.example.geomate.service.account.AccountService
+import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
-import com.example.geomate.ui.screens.GeoMateViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SignUpViewModelImpl(
-    override val storageService: StorageService, override val accountService: AccountService,
-) : GeoMateViewModel(), SignUpViewModel {
+    override val storageService: StorageService,
+) : ViewModel(), SignUpViewModel {
     private val _uiState = MutableStateFlow(SignUpUiState())
     override val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
@@ -65,32 +68,44 @@ class SignUpViewModelImpl(
         _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
     }
 
-    override fun onSignUpClick(): Boolean {
-        launchCatching {
-            storageService.addUser(
-                User(
-                    email = uiState.value.email,
-                    username = uiState.value.username,
-                    firstName = uiState.value.firstName,
-                    lastName = uiState.value.lastName,
-                    profilePictureUri = uiState.value.profilePictureUri,
-                    bio = uiState.value.bio
-                )
-            )
-            accountService.signUp(uiState.value.email, uiState.value.password)
+    override fun onSignUpClick(authentication: Authentication): Boolean {
+        viewModelScope.launch {
+            try {
+                val user = authentication.signUp()
+                user?.uid?.let { uid ->
+                    storageService.addUser(
+                        User(
+                            uid = uid,
+                            email = uiState.value.email,
+                            username = uiState.value.username,
+                            firstName = uiState.value.firstName,
+                            lastName = uiState.value.lastName,
+                            bio = uiState.value.bio
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d("Exception", e.message.toString())
+            }
         }
-        return FirebaseAuth.getInstance().currentUser != null
+        return authentication.user != null
     }
 
-    override fun onFacebookClick() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onGoogleClick() {
-        TODO("Not yet implemented")
+    override fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential) {
+        viewModelScope.launch {
+            try {
+                authentication.signIn()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onTwitterClick() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFacebookClick() {
         TODO("Not yet implemented")
     }
 }
