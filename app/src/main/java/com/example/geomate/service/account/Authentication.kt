@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseUser
 
 interface Authentication {
     val auth: FirebaseAuth
-    val user: FirebaseUser?
     suspend fun signIn(): FirebaseUser?
     suspend fun signUp(): FirebaseUser?
 }

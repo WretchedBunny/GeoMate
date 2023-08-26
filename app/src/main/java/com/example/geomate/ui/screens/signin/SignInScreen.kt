@@ -38,7 +38,7 @@ import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
-import com.example.geomate.service.account.GoogleSignInAuthentication
+import com.example.geomate.service.account.GoogleAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -94,12 +94,14 @@ fun SignInScreen(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleSignInAuthentication(
+            val googleSignInAuth = GoogleAuthentication(
                 FirebaseAuth.getInstance(),
                 viewModel.storageService,
                 signInCredentials,
             )
-            viewModel.onGoogleClick(googleSignInAuth, signInCredentials)
+            coroutineScope.launch {
+                viewModel.signIn(googleSignInAuth)
+            }
         }
     }
     Column(
@@ -168,15 +170,15 @@ fun SignInScreen(
                         viewModel.updateIsEmailValid(uiState.email.isEmailValid())
                         viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
                         if (uiState.isEmailValid && uiState.isPasswordValid) {
-                            val result = viewModel.onSignInClick(
-                                authentication = EmailPasswordAuthentication(
+                            coroutineScope.launch {
+                                val user = viewModel.signIn(EmailPasswordAuthentication(
                                     FirebaseAuth.getInstance(), uiState.email, uiState.password
-                                )
-                            )
-                            if (result) {
-                                // TODO: Navigate to the map screen
-                            } else {
-                                // TODO: Display error message
+                                ))
+                                if (user != null) {
+                                    // TODO: Navigate to the map screen
+                                } else {
+                                    // TODO: Display error message
+                                }
                             }
                         }
                     },
@@ -184,17 +186,17 @@ fun SignInScreen(
                 )
             }
             SocialNetworksRow(
-                onFacebookClick = viewModel::onFacebookClick,
+                onFacebookClick = { /* TODO */ },
                 onGoogleClick = {
                     coroutineScope.launch {
                         val signInIntentSender =
-                            GoogleSignInAuthentication.getSignInIntentSender(oneTapClient)
+                            GoogleAuthentication.getSignInIntentSender(oneTapClient)
                         launcher.launch(
                             IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                         )
                     }
                 },
-                onTwitterClick = viewModel::onTwitterClick
+                onTwitterClick = { /* TODO */ }
             )
         }
         Footer(

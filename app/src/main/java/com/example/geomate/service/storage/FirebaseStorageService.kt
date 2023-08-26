@@ -8,7 +8,4 @@ class FirebaseStorageService(private val fireStore: FirebaseFirestore) : Storage
     override suspend fun addUser(user: User) {
         fireStore.collection("user").add(user).await()
     }
-
-    override suspend fun loggedForFirstTime(uid: String): Boolean =
-        fireStore.collection("user").whereEqualTo("uid", uid).get().await().isEmpty
 }

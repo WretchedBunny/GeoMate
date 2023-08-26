@@ -3,7 +3,7 @@ package com.example.geomate.ui.screens.signup
 import android.net.Uri
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
-import com.google.android.gms.auth.api.identity.SignInCredential
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.StateFlow
 
 interface SignUpViewModel {
@@ -21,8 +21,5 @@ interface SignUpViewModel {
     fun updateIsUsernameValid(isUsernameValid: Boolean)
     fun updateIsEmailValid(isEmailValid: Boolean)
     fun updateIsPasswordValid(isPasswordValid: Boolean)
-    fun onSignUpClick(authentication: Authentication): Boolean
-    fun onGoogleClick(authentication: Authentication, authCredential: SignInCredential)
-    fun onFacebookClick()
-    fun onTwitterClick()
+    suspend fun signUp(authentication: Authentication): FirebaseUser?
 }
