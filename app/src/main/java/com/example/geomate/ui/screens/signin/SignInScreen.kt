@@ -102,7 +102,16 @@ fun SignInScreen(
                 signInCredentials,
             )
             coroutineScope.launch {
-                viewModel.signIn(googleSignInAuth)
+                // TODO: Refactor this part (repeating down below)
+                val user = viewModel.signIn(googleSignInAuth)
+                if (user != null) {
+                    navController.navigateToMap()
+                } else {
+                    Toast(context).apply {
+                        setText("Authentication failed!")
+                        duration = Toast.LENGTH_SHORT
+                    }.show()
+                }
             }
         }
     }
