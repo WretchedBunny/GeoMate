@@ -44,10 +44,14 @@ fun NavGraph(application: Application, navController: NavHostController) {
         LocationServices.getFusedLocationProviderClient(LocalContext.current)
     )
 
+    val startDestination = when (FirebaseAuth.getInstance().currentUser) {
+        null -> Destinations.SIGN_IN_ROUTE
+        else -> Destinations.MAP_ROUTE
+    }
     GeoMateTheme {
         NavHost(
             navController = navController,
-            startDestination = Destinations.SIGN_IN_ROUTE,
+            startDestination = startDestination,
             enterTransition = {
                 fadeIn(
                     animationSpec = tween(0, easing = LinearEasing),
