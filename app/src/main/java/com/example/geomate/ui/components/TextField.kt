@@ -20,12 +20,11 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PermContactCalendar
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Visibility
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +58,6 @@ data class InputValidator(
     val errorMessage: String,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeoMateTextField(
     modifier: Modifier = Modifier,
@@ -136,15 +134,18 @@ fun GeoMateTextField(
                     color = MaterialTheme.colorScheme.onSecondary.copy(alpha = .5f)
                 )
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = contentColor,
-                containerColor = containerColor,
-                focusedBorderColor = Color.Transparent,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = contentColor,
+                unfocusedTextColor = contentColor,
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
                 cursorColor = contentColor,
+                errorCursorColor = contentColor,
+                focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
                 errorBorderColor = Color.Transparent,
-                errorCursorColor = contentColor,
-                errorSupportingTextColor = MaterialTheme.colorScheme.error
+                errorSupportingTextColor = MaterialTheme.colorScheme.error,
             ),
             singleLine = singleLine,
             supportingText = {

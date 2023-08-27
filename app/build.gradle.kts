@@ -68,8 +68,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose:2.7.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.7.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.7.1")
 
     // Testing and tooling
     testImplementation("junit:junit:4.13.2")
@@ -102,8 +102,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    // Image loader
+    implementation("com.github.skydoves:landscapist-fresco:2.2.6")
 
     // Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.23.1")

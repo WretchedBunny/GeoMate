@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GpsFixed
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import coil.compose.AsyncImage
 import com.example.geomate.R
 import com.example.geomate.model.Group
 import com.example.geomate.model.User
@@ -61,6 +59,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.fresco.FrescoImage
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.map(
@@ -118,7 +118,6 @@ fun MapScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Map(
     uiState: MapUiState,
@@ -136,7 +135,7 @@ fun Map(
         coroutineScope.launch {
             Firebase.auth.currentUser?.uid?.let {
                 user = viewModel.getUser(it)
-                viewModel.fetchProfilePictureUri(user?.uid ?: "") // TODO: Cache the image
+                viewModel.fetchProfilePictureUri(user?.uid ?: "")
             }
         }
     }
@@ -212,10 +211,11 @@ fun Map(
                             val drawableId =
                                 if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
                                 else R.drawable.profile_picture_placeholder_light
-                            AsyncImage(
-                                model = uiState.profilePictureUri ?: drawableId,
-                                contentScale = ContentScale.Crop,
-                                contentDescription = null,
+
+                            FrescoImage(
+                                imageUrl = uiState.profilePictureUri.toString(),
+                                previewPlaceholder = drawableId,
+                                imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                                 modifier = modifier
                                     .size(25.dp)
                                     .clip(CircleShape)
