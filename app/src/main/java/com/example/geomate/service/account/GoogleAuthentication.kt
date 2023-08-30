@@ -1,7 +1,7 @@
 package com.example.geomate.service.account
 
 import android.content.IntentSender
-import com.example.geomate.model.User
+import com.example.geomate.ext.toUser
 import com.example.geomate.service.storage.StorageService
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -50,7 +50,7 @@ class GoogleAuthentication(
             val isNewUser = result.additionalUserInfo?.isNewUser ?: false
             val user = result.user
             if (user != null && isNewUser) {
-                storeUser(user)
+                storageService.addUser(user.toUser())
             }
             user
         } catch (e: Exception) { null }
@@ -63,23 +63,9 @@ class GoogleAuthentication(
             val isNewUser = result.additionalUserInfo?.isNewUser ?: false
             val user = result.user
             if (user != null && isNewUser) {
-                storeUser(user)
+                storageService.addUser(user.toUser())
             }
             user
         } catch (e: Exception) { null }
-    }
-
-    private suspend fun storeUser(user: FirebaseUser) {
-        user.uid.let { uid ->
-            storageService.addUser(
-                User(
-                    uid = uid,
-                    email = user.email ?: "",
-                    username = user.email?.substringBefore('@') ?: uid.take(20),
-                    firstName = authCredential.givenName ?: "",
-                    lastName = authCredential.familyName ?: "",
-                )
-            )
-        }
     }
 }

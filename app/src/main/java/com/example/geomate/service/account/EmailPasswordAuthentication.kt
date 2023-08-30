@@ -6,8 +6,8 @@ import kotlinx.coroutines.tasks.await
 
 class EmailPasswordAuthentication(
     override val auth: FirebaseAuth,
-    val email: String,
-    val password: String,
+    private val email: String,
+    private val password: String,
 ) : Authentication {
     override suspend fun signIn(): FirebaseUser? {
         return try {

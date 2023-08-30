@@ -4,4 +4,8 @@ object Destinations {
     const val FORGOT_PASSWORD_ROUTE = "com.example.geomate.ui.navigation.FORGOT_PASSWORD_ROUTE"
     const val SIGN_IN_ROUTE = "com.example.geomate.ui.navigation.SIGN_IN_ROUTE"
     const val SIGN_UP_ROUTE = "com.example.geomate.ui.navigation.SIGN_UP_ROUTE"
+
+    const val MAP_ROUTE = "com.example.geomate.ui.navigation.MAP_ROUTE"
+    const val GROUPS_ROUTE = "com.example.geomate.ui.navigation.GROUPS_ROUTE"
+    const val SOCIAL_ROUTE = "com.example.geomate.ui.navigation.SOCIAL_ROUTE"
 }

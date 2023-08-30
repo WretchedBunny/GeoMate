@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.signin
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,18 +47,18 @@ import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
-import com.example.geomate.ui.components.LeadingIcon
 import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.SupportingButton
-import com.example.geomate.ui.components.TrailingIcon
+import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
+import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+import kotlinx.coroutines.launch
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -100,10 +102,20 @@ fun SignInScreen(
                 signInCredentials,
             )
             coroutineScope.launch {
-                viewModel.signIn(googleSignInAuth)
+                // TODO: Refactor this part (repeating down below)
+                val user = viewModel.signIn(googleSignInAuth)
+                if (user != null) {
+                    navController.navigateToMap()
+                } else {
+                    Toast(context).apply {
+                        setText("Authentication failed!")
+                        duration = Toast.LENGTH_SHORT
+                    }.show()
+                }
             }
         }
     }
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,7 +146,16 @@ fun SignInScreen(
                 GeoMateTextField(
                     value = uiState.email,
                     onValueChange = viewModel::updateEmail,
-                    leadingIcon = LeadingIcon(Icons.Outlined.Email),
+                    leadingIcons = listOf(
+                        TextFieldIcon {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
+                                modifier = it
+                            )
+                        }
+                    ),
                     placeholder = stringResource(id = R.string.email_placeholder),
                     inputValidator = InputValidator(
                         isValid = uiState.isEmailValid,
@@ -146,10 +167,27 @@ fun SignInScreen(
                 GeoMateTextField(
                     value = uiState.password,
                     onValueChange = viewModel::updatePassword,
-                    leadingIcon = LeadingIcon(Icons.Outlined.Lock),
-                    trailingIcon = TrailingIcon(
-                        icon = passwordTrailingIcon,
-                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    leadingIcons = listOf(
+                        TextFieldIcon {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
+                                modifier = it
+                            )
+                        }
+                    ),
+                    trailingIcons = listOf(
+                        TextFieldIcon(
+                            onClick = { isPasswordVisible = !isPasswordVisible }
+                        ) {
+                            Icon(
+                                imageVector = passwordTrailingIcon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
+                                modifier = it
+                            )
+                        }
                     ),
                     placeholder = stringResource(id = R.string.password_placeholder),
                     supportingButton = SupportingButton(
@@ -167,17 +205,22 @@ fun SignInScreen(
                 GeoMateButton(
                     text = stringResource(id = R.string.button_sign_in),
                     onClick = {
-                        viewModel.updateIsEmailValid(uiState.email.isEmailValid())
-                        viewModel.updateIsPasswordValid(uiState.password.isPasswordValid())
-                        if (uiState.isEmailValid && uiState.isPasswordValid) {
+                        val isEmailValid = uiState.email.isEmailValid()
+                        val isPasswordValid = uiState.password.isPasswordValid()
+                        viewModel.updateIsEmailValid(isEmailValid)
+                        viewModel.updateIsPasswordValid(isPasswordValid)
+                        if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
                                 val user = viewModel.signIn(EmailPasswordAuthentication(
                                     FirebaseAuth.getInstance(), uiState.email, uiState.password
                                 ))
                                 if (user != null) {
-                                    // TODO: Navigate to the map screen
+                                    navController.navigateToMap()
                                 } else {
-                                    // TODO: Display error message
+                                    Toast(context).apply {
+                                        setText("Authentication failed!")
+                                        duration = Toast.LENGTH_SHORT
+                                    }.show()
                                 }
                             }
                         }

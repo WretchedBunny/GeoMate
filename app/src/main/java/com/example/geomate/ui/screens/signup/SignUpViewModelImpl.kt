@@ -3,6 +3,7 @@ package com.example.geomate.ui.screens.signup
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.geomate.model.User
+import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.account.Authentication
 import com.example.geomate.service.storage.StorageService
 import com.google.firebase.auth.FirebaseUser
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.update
 
 class SignUpViewModelImpl(
     override val storageService: StorageService,
+    override val bucketService: BucketService,
 ) : ViewModel(), SignUpViewModel {
     private val _uiState = MutableStateFlow(SignUpUiState())
     override val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
@@ -78,6 +80,9 @@ class SignUpViewModelImpl(
                     bio = uiState.value.bio
                 )
             )
+            uiState.value.profilePictureUri?.let { uri ->
+                bucketService.store(uid, uri)
+            }
         }
         return user
     }
