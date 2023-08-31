@@ -21,6 +21,7 @@ import com.example.geomate.ui.screens.signin.signIn
 import com.example.geomate.ui.screens.signup.SignUpViewModelImpl
 import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,7 +32,8 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
     val accountService = FirebaseAccountService(
         FirebaseAuth.getInstance(),
-        storageService
+        storageService,
+        Identity.getSignInClient(LocalContext.current)
     )
     val bucketService = FirebaseBucketService(FirebaseStorage.getInstance())
     val signInViewModel = SignInViewModelImpl(storageService)

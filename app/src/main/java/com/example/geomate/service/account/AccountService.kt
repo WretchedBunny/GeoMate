@@ -5,4 +5,5 @@ import com.example.geomate.service.storage.StorageService
 interface AccountService {
     val storageService: StorageService
     suspend fun sendRecoveryEmail(email: String)
+    suspend fun signOut(): Boolean
 }

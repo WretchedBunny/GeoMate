@@ -56,9 +56,9 @@ import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
-import kotlinx.coroutines.launch
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -99,7 +99,7 @@ fun SignInScreen(
             val googleSignInAuth = GoogleAuthentication(
                 FirebaseAuth.getInstance(),
                 viewModel.storageService,
-                signInCredentials,
+                signInCredentials
             )
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
@@ -211,9 +211,11 @@ fun SignInScreen(
                         viewModel.updateIsPasswordValid(isPasswordValid)
                         if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
-                                val user = viewModel.signIn(EmailPasswordAuthentication(
-                                    FirebaseAuth.getInstance(), uiState.email, uiState.password
-                                ))
+                                val user = viewModel.signIn(
+                                    EmailPasswordAuthentication(
+                                        FirebaseAuth.getInstance(), uiState.email, uiState.password
+                                    )
+                                )
                                 if (user != null) {
                                     navController.navigateToMap()
                                 } else {
