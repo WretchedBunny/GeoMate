@@ -9,4 +9,7 @@ class AccountServiceMock : AccountService {
         FirebaseStorageService(FirebaseFirestore.getInstance())
 
     override suspend fun sendRecoveryEmail(email: String) {}
+    override suspend fun signOut(): Boolean {
+        return true
+    }
 }

@@ -18,6 +18,7 @@ class TwitterAuthentication(
         return try {
             val result = auth.startActivityForSignInWithProvider(activity, provider).await()
             val isNewUser = result.additionalUserInfo?.isNewUser ?: false
+            result.additionalUserInfo?.profile
             val user = result.user
             if (user != null && isNewUser) {
                 storageService.addUser(user.toUser())
