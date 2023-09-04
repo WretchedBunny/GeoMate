@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens.signin
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -41,6 +42,7 @@ import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.service.account.GoogleAuthentication
+import com.example.geomate.service.account.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -56,9 +58,8 @@ import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
-import kotlinx.coroutines.launch
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
     navController: NavController,
@@ -97,7 +98,6 @@ fun SignInScreen(
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
             val googleSignInAuth = GoogleAuthentication(
-                FirebaseAuth.getInstance(),
                 viewModel.storageService,
                 signInCredentials,
             )
@@ -211,9 +211,11 @@ fun SignInScreen(
                         viewModel.updateIsPasswordValid(isPasswordValid)
                         if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
-                                val user = viewModel.signIn(EmailPasswordAuthentication(
-                                    FirebaseAuth.getInstance(), uiState.email, uiState.password
-                                ))
+                                val user = viewModel.signIn(
+                                    EmailPasswordAuthentication(
+                                        uiState.email, uiState.password
+                                    )
+                                )
                                 if (user != null) {
                                     navController.navigateToMap()
                                 } else {
@@ -239,7 +241,16 @@ fun SignInScreen(
                         )
                     }
                 },
-                onTwitterClick = { /* TODO */ }
+                onTwitterClick = {
+                    coroutineScope.launch {
+                        viewModel.signIn(
+                            TwitterAuthentication(
+                                context as Activity,
+                                viewModel.storageService
+                            )
+                        )
+                    }
+                }
             )
         }
         Footer(

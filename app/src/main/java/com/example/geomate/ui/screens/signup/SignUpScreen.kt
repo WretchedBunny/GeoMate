@@ -68,7 +68,6 @@ import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -174,7 +173,6 @@ fun SignUpScreen(
                         coroutineScope.launch {
                             val user = viewModel.signUp(
                                 EmailPasswordAuthentication(
-                                    FirebaseAuth.getInstance(),
                                     uiState.email,
                                     uiState.password
                                 )
@@ -224,7 +222,6 @@ private fun EmailAndPasswordStage(
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
             val googleSignInAuth = GoogleAuthentication(
-                FirebaseAuth.getInstance(),
                 viewModel.storageService,
                 signInCredentials,
             )
@@ -318,7 +315,8 @@ private fun EmailAndPasswordStage(
             onFacebookClick = { /* TODO */ },
             onGoogleClick = {
                 coroutineScope.launch {
-                    val signInIntentSender = GoogleAuthentication.getSignUpIntentSender(oneTapClient)
+                    val signInIntentSender =
+                        GoogleAuthentication.getSignUpIntentSender(oneTapClient)
                     launcher.launch(
                         IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                     )

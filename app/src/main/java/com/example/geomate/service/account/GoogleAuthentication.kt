@@ -12,10 +12,11 @@ import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 
 class GoogleAuthentication(
-    override val auth: FirebaseAuth,
     private val storageService: StorageService,
-    private val authCredential: SignInCredential
+    private val authCredential: SignInCredential,
 ) : Authentication {
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+
     companion object {
         private val requestBuilder by lazy {
             BeginSignInRequest.builder()
@@ -31,14 +32,18 @@ class GoogleAuthentication(
         suspend fun getSignInIntentSender(oneTapClient: SignInClient): IntentSender? {
             val result = try {
                 oneTapClient.beginSignIn(requestBuilder.setAutoSelectEnabled(true).build()).await()
-            } catch (e: Exception) { null }
+            } catch (e: Exception) {
+                null
+            }
             return result?.pendingIntent?.intentSender
         }
 
         suspend fun getSignUpIntentSender(oneTapClient: SignInClient): IntentSender? {
             val result = try {
                 oneTapClient.beginSignIn(requestBuilder.setAutoSelectEnabled(false).build()).await()
-            } catch (e: Exception) { null }
+            } catch (e: Exception) {
+                null
+            }
             return result?.pendingIntent?.intentSender
         }
     }
@@ -53,7 +58,9 @@ class GoogleAuthentication(
                 storageService.addUser(user.toUser())
             }
             user
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override suspend fun signUp(): FirebaseUser? {
@@ -66,6 +73,8 @@ class GoogleAuthentication(
                 storageService.addUser(user.toUser())
             }
             user
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            null
+        }
     }
 }
