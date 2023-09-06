@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -31,7 +30,6 @@ import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.GroupRow
-import com.example.geomate.ui.components.ProfilePicturesRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.map.navigateToMap
@@ -115,7 +113,7 @@ fun GroupsScreen(
                 GroupRow(
                     groupWithUris = groupWithUris,
                     onSelect = { /* TODO: Navigate to group details group */ },
-                    onRemove = { /* TODO: Remove group */ },
+                    onRemove = viewModel::removeGroup,
                 )
                 if (index < uiState.groupsWithUris.lastIndex) {
                     Divider(color = MaterialTheme.colorScheme.secondary)

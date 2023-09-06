@@ -1,17 +1,13 @@
 package com.example.geomate.ui.screens.groups
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.geomate.model.Group
 import com.example.geomate.model.User
 import com.example.geomate.service.bucket.BucketService
-import com.example.geomate.service.bucket.FirebaseBucketService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 private val groupsWithUris: List<GroupWithUris> = listOf(
     GroupWithUris(
@@ -63,5 +59,9 @@ class GroupsViewModelImpl(
             groupWithUris.copy(uris = groupWithUris.group.users.map { bucketService.get(it.uid) })
         }
         _uiState.update { it.copy(groupsWithUris = groupsWithUrisCopy) }
+    }
+
+    override fun removeGroup(group: Group): Boolean {
+        TODO("Not yet implemented")
     }
 }
