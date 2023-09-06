@@ -89,7 +89,7 @@ fun NavGraphBuilder.signUp(
 fun NavController.navigateToSignUp() {
     popBackStack()
     navigate(Destinations.SIGN_UP_ROUTE) {
-        launchSingleTop = false
+        launchSingleTop = true
     }
 }
 
