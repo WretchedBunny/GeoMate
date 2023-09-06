@@ -2,6 +2,7 @@ package com.example.geomate.ui.screens.signin
 
 import androidx.lifecycle.ViewModel
 import com.example.geomate.service.account.Authentication
+import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.storage.StorageService
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.update
 
 class SignInViewModelImpl(
     override val storageService: StorageService,
+    override val bucketService: BucketService,
 ) : ViewModel(), SignInViewModel {
     private val _uiState = MutableStateFlow(SignInUiState())
     override val uiState = _uiState.asStateFlow()

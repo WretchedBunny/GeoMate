@@ -2,9 +2,8 @@ package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.example.geomate.model.User
-import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.account.Authentication
+import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.storage.StorageService
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,22 +67,6 @@ class SignUpViewModelImpl(
     }
 
     override suspend fun signUp(authentication: Authentication): FirebaseUser? {
-        val user = authentication.signUp()
-        user?.uid?.let { uid ->
-            storageService.addUser(
-                User(
-                    uid = uid,
-                    email = uiState.value.email,
-                    username = uiState.value.username,
-                    firstName = uiState.value.firstName,
-                    lastName = uiState.value.lastName,
-                    bio = uiState.value.bio
-                )
-            )
-            uiState.value.profilePictureUri?.let { uri ->
-                bucketService.store(uid, uri)
-            }
-        }
-        return user
+        return authentication.signUp()
     }
 }

@@ -99,6 +99,7 @@ fun SignInScreen(
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
             val googleSignInAuth = GoogleAuthentication(
                 viewModel.storageService,
+                viewModel.bucketService,
                 signInCredentials,
             )
             coroutineScope.launch {
@@ -213,7 +214,10 @@ fun SignInScreen(
                             coroutineScope.launch {
                                 val user = viewModel.signIn(
                                     EmailPasswordAuthentication(
-                                        uiState.email, uiState.password
+                                        email = uiState.email,
+                                        password = uiState.password,
+                                        storageService = viewModel.storageService,
+                                        bucketService = viewModel.bucketService
                                     )
                                 )
                                 if (user != null) {
@@ -243,12 +247,21 @@ fun SignInScreen(
                 },
                 onTwitterClick = {
                     coroutineScope.launch {
-                        viewModel.signIn(
+                        val user = viewModel.signIn(
                             TwitterAuthentication(
                                 context as Activity,
-                                viewModel.storageService
+                                viewModel.storageService,
+                                viewModel.bucketService
                             )
                         )
+                        if (user != null) {
+                            navController.navigateToMap()
+                        } else {
+                            Toast(context).apply {
+                                setText("Authentication  failed!")
+                                duration = Toast.LENGTH_SHORT
+                            }.show()
+                        }
                     }
                 }
             )
