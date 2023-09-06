@@ -2,6 +2,9 @@ package com.example.geomate.ui.screens.map
 
 import android.Manifest
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,14 +25,15 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,7 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.model.Group
+import com.example.geomate.model.Chip
 import com.example.geomate.model.User
 import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.ChipsRow
@@ -46,11 +50,13 @@ import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.groups.navigateToGroups
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionsRequired
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -62,6 +68,7 @@ import com.google.maps.android.compose.MarkerState
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
 import kotlinx.coroutines.launch
+
 
 fun NavGraphBuilder.map(
     viewModel: MapViewModel,
@@ -80,7 +87,7 @@ fun NavGraphBuilder.map(
 fun NavController.navigateToMap() {
     popBackStack()
     navigate(Destinations.MAP_ROUTE) {
-        launchSingleTop = false
+        launchSingleTop = true
     }
 }
 
@@ -128,7 +135,7 @@ fun Map(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    var user: User? by rememberSaveable { mutableStateOf(null) }
+    var user: User? by remember { mutableStateOf(null) }
     val mapStyleId = if (isSystemInDarkTheme()) R.raw.map_style_dark else R.raw.map_style_light
 
     LaunchedEffect(Firebase.auth.currentUser) {
@@ -155,7 +162,7 @@ fun Map(
             BottomNavigationBar(
                 currentRoute = Destinations.MAP_ROUTE,
                 navigateToMap = { },
-                navigateToGroups = { /* navController::navigateToGroups */ },
+                navigateToGroups = navController::navigateToGroups,
                 navigateToSocial = { /* navController::navigateToSocial */ },
             )
         },
@@ -172,7 +179,19 @@ fun Map(
                     mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, mapStyleId)
                 ),
             ) {
-                Marker(MarkerState(uiState.userMarker))
+                // TODO: Refactor this crap
+                val drawableId =
+                    if (isSystemInDarkTheme()) R.drawable.you_marker_dark
+                    else R.drawable.you_marker_light
+                val vectorDrawable = context.resources.getDrawable(drawableId, null)
+                vectorDrawable.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+                val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                vectorDrawable.draw(canvas)
+                Marker(
+                    state = MarkerState(position = uiState.userMarker),
+                    icon = BitmapDescriptorFactory.fromBitmap(bitmap)
+                )
             }
 
             Column(
@@ -214,7 +233,12 @@ fun Map(
 
                             FrescoImage(
                                 imageUrl = uiState.profilePictureUri.toString(),
-                                previewPlaceholder = drawableId,
+                                failure = {
+                                    Image(
+                                        painter = painterResource(id = drawableId),
+                                        contentDescription = null
+                                    )
+                                },
                                 imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                                 modifier = modifier
                                     .size(25.dp)
@@ -228,10 +252,10 @@ fun Map(
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
                 )
                 ChipsRow(
-                    groups = uiState.groups,
+                    chips = uiState.chips,
                     isAllSelected = uiState.isAllSelected,
-                    toggleGroup = viewModel::toggleGroup,
-                    toggleAllGroups = viewModel::toggleAllGroups,
+                    toggleGroup = viewModel::toggleChip,
+                    toggleAllGroups = viewModel::toggleAllChips,
                     navController = navController,
                 )
             }
@@ -246,10 +270,10 @@ private fun MapScreenPreview() {
     GeoMateTheme {
         MapScreen(
             uiState = MapUiState(
-                groups = listOf(
-                    Group(name = "University", isSelected = true),
-                    Group(name = "Family", isSelected = true),
-                    Group(name = "Football team", isSelected = false),
+                chips = listOf(
+                    Chip(name = "University", isSelected = true),
+                    Chip(name = "Family", isSelected = true),
+                    Chip(name = "Football team", isSelected = false),
                 )
             ),
             viewModel = MapViewModelMock(),

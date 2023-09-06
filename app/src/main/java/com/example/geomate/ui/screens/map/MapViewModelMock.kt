@@ -1,6 +1,6 @@
 package com.example.geomate.ui.screens.map
 
-import com.example.geomate.model.Group
+import com.example.geomate.model.Chip
 import com.example.geomate.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,8 +11,8 @@ class MapViewModelMock : MapViewModel {
     override suspend fun fetchProfilePictureUri(path: String) { TODO() }
     override fun startMonitoringUserLocation() { TODO() }
     override fun stopMonitoringUserLocation() { TODO() }
-    override fun toggleGroup(group: Group) { TODO() }
-    override fun toggleAllGroups(current: Boolean) { TODO() }
+    override fun toggleChip(chip: Chip) { TODO() }
+    override fun toggleAllChips(current: Boolean) { TODO() }
     override fun pointCameraOnUser() { TODO() }
     override suspend fun getUser(uid: String): User? { TODO() }
 }

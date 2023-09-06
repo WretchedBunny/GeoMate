@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
-import com.example.geomate.model.Group
+import com.example.geomate.model.Chip
 import com.example.geomate.model.User
 import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.storage.StorageService
@@ -31,13 +31,13 @@ class MapViewModelImpl(
 ) : AndroidViewModel(application), MapViewModel {
     private val _uiState = MutableStateFlow(
         MapUiState(
-            groups = listOf(
-                Group(name = "University", isSelected = false),
-                Group(name = "Family", isSelected = false),
-                Group(name = "Football team", isSelected = false),
-                Group(name = "Discord", isSelected = false),
-                Group(name = "Work", isSelected = false),
-                Group(name = "Poker club", isSelected = false),
+            chips = listOf(
+                Chip(name = "University", isSelected = false),
+                Chip(name = "Family", isSelected = false),
+                Chip(name = "Football team", isSelected = false),
+                Chip(name = "Discord", isSelected = false),
+                Chip(name = "Work", isSelected = false),
+                Chip(name = "Poker club", isSelected = false),
             )
         )
     )
@@ -86,23 +86,23 @@ class MapViewModelImpl(
         // TODO: Implement (currently not needed)
     }
 
-    override fun toggleGroup(group: Group) {
-        val updatedGroup = group.copy(
-            isSelected = !group.isSelected
+    override fun toggleChip(chip: Chip) {
+        val updatedGroup = chip.copy(
+            isSelected = !chip.isSelected
         )
-        val updatedGroups = uiState.value.groups.toMutableList()
-        updatedGroups[updatedGroups.indexOf(group)] = updatedGroup
+        val updatedGroups = uiState.value.chips.toMutableList()
+        updatedGroups[updatedGroups.indexOf(chip)] = updatedGroup
         _uiState.update {
-            it.copy(groups = updatedGroups)
+            it.copy(chips = updatedGroups)
         }
     }
 
-    override fun toggleAllGroups(current: Boolean) {
-        val updatedGroups = uiState.value.groups.map {
+    override fun toggleAllChips(current: Boolean) {
+        val updatedGroups = uiState.value.chips.map {
             it.copy(isSelected = !current)
         }
         _uiState.update {
-            it.copy(groups = updatedGroups)
+            it.copy(chips = updatedGroups)
         }
     }
 

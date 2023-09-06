@@ -16,15 +16,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.geomate.R
-import com.example.geomate.model.Group
+import com.example.geomate.model.Chip
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
 @Composable
 fun ChipsRow(
-    groups: List<Group>,
+    chips: List<Chip>,
     isAllSelected: Boolean,
-    toggleGroup: (Group) -> Unit,
+    toggleGroup: (Chip) -> Unit,
     toggleAllGroups: (Boolean) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
@@ -41,7 +41,7 @@ fun ChipsRow(
                 onClick = { toggleAllGroups(isAllSelected) }
             )
         }
-        items(groups) {
+        items(chips) {
             Chips(
                 text = it.name,
                 isSelected = it.isSelected,
@@ -73,13 +73,13 @@ fun ChipsRow(
 private fun ChipsRowPreview() {
     GeoMateTheme {
         ChipsRow(
-            groups = listOf(
-                Group(name = "University", isSelected = true),
-                Group(name = "Family", isSelected = true),
-                Group(name = "Football team", isSelected = false),
-                Group(name = "Discord", isSelected = false),
-                Group(name = "Work", isSelected = false),
-                Group(name = "Poker club", isSelected = false),
+            chips = listOf(
+                Chip(name = "University", isSelected = true),
+                Chip(name = "Family", isSelected = true),
+                Chip(name = "Football team", isSelected = false),
+                Chip(name = "Discord", isSelected = false),
+                Chip(name = "Work", isSelected = false),
+                Chip(name = "Poker club", isSelected = false),
             ),
             isAllSelected = false,
             toggleGroup = { },
