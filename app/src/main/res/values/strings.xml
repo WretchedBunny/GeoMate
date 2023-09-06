@@ -17,6 +17,7 @@
     <string name="username_placeholder">Enter your username</string>
     <string name="description_placeholder">Describe yourself</string>
     <string name="users_search_placeholder">Search for other users</string>
+    <string name="groups_search_placeholder">Search for group of friends</string>
 
     <!--Errors (just stubs, provide detailed errors explanations later)-->
     <string name="invalid_email">Invalid email</string>

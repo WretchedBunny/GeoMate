@@ -14,6 +14,8 @@ import com.example.geomate.service.bucket.FirebaseBucketService
 import com.example.geomate.service.storage.FirebaseStorageService
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModelImpl
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.groups.GroupsViewModelImpl
+import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModelImpl
 import com.example.geomate.ui.screens.map.map
 import com.example.geomate.ui.screens.signin.SignInViewModelImpl
@@ -43,6 +45,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         bucketService,
         LocationServices.getFusedLocationProviderClient(LocalContext.current)
     )
+    val groupsViewModel = GroupsViewModelImpl(bucketService)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -51,7 +54,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     GeoMateTheme {
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = Destinations.GROUPS_ROUTE,
             enterTransition = {
                 fadeIn(
                     animationSpec = tween(0, easing = LinearEasing),
@@ -76,6 +79,10 @@ fun NavGraph(application: Application, navController: NavHostController) {
             )
             map(
                 viewModel = mapViewModel,
+                navController = navController
+            )
+            groups(
+                viewModel = groupsViewModel,
                 navController = navController
             )
         }
