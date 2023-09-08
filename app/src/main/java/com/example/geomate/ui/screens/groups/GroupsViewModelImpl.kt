@@ -2,6 +2,7 @@ package com.example.geomate.ui.screens.groups
 
 import androidx.lifecycle.ViewModel
 import com.example.geomate.model.Group
+import com.example.geomate.model.GroupWithUris
 import com.example.geomate.model.User
 import com.example.geomate.service.bucket.BucketService
 import kotlinx.coroutines.flow.MutableStateFlow

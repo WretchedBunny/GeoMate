@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.groups
 
 import com.example.geomate.model.Group
+import com.example.geomate.model.GroupWithUris
 import kotlinx.coroutines.flow.StateFlow
 
 interface GroupsViewModel {
