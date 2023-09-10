@@ -31,10 +31,10 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
     val accountService = FirebaseAccountService(
         FirebaseAuth.getInstance(),
-        storageService
+        storageService,
     )
     val bucketService = FirebaseBucketService(FirebaseStorage.getInstance())
-    val signInViewModel = SignInViewModelImpl(storageService)
+    val signInViewModel = SignInViewModelImpl(storageService, bucketService)
     val signUpViewModel = SignUpViewModelImpl(storageService, bucketService)
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
     val mapViewModel = MapViewModelImpl(

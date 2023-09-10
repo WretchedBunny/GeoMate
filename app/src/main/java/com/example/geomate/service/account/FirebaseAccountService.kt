@@ -5,10 +5,10 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAccountService(
-    private val auth: FirebaseAuth,
+    private val firebaseAuth: FirebaseAuth,
     override val storageService: StorageService,
 ) : AccountService {
     override suspend fun sendRecoveryEmail(email: String) {
-        auth.sendPasswordResetEmail(email).await()
+        firebaseAuth.sendPasswordResetEmail(email).await()
     }
 }

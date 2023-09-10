@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens.signup
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -53,6 +54,7 @@ import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.service.account.GoogleAuthentication
+import com.example.geomate.service.account.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -68,7 +70,6 @@ import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
@@ -129,6 +130,7 @@ fun SignUpScreen(
                 0 -> EmailAndPasswordStage(
                     uiState = uiState,
                     viewModel = viewModel,
+                    navController = navController,
                     next = {
                         val isEmailValid = uiState.email.isEmailValid()
                         viewModel.updateIsEmailValid(isEmailValid)
@@ -174,9 +176,14 @@ fun SignUpScreen(
                         coroutineScope.launch {
                             val user = viewModel.signUp(
                                 EmailPasswordAuthentication(
-                                    FirebaseAuth.getInstance(),
-                                    uiState.email,
-                                    uiState.password
+                                    email = uiState.email,
+                                    password = uiState.password,
+                                    username = uiState.username,
+                                    firstName = uiState.firstName,
+                                    lastName = uiState.lastName,
+                                    bio = uiState.bio,
+                                    storageService = viewModel.storageService,
+                                    bucketService = viewModel.bucketService
                                 )
                             )
                             if (user != null) {
@@ -212,6 +219,7 @@ fun SignUpScreen(
 private fun EmailAndPasswordStage(
     uiState: SignUpUiState,
     viewModel: SignUpViewModel,
+    navController: NavController,
     next: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -224,12 +232,21 @@ private fun EmailAndPasswordStage(
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
             val googleSignInAuth = GoogleAuthentication(
-                FirebaseAuth.getInstance(),
                 viewModel.storageService,
+                viewModel.bucketService,
                 signInCredentials,
             )
             coroutineScope.launch {
-                viewModel.signUp(googleSignInAuth)
+                // TODO: Refactor this part (repeating down below)
+                val user = viewModel.signUp(googleSignInAuth)
+                if (user != null) {
+                    navController.navigateToMap()
+                } else {
+                    Toast(context).apply {
+                        setText("Authentication failed!")
+                        duration = Toast.LENGTH_SHORT
+                    }.show()
+                }
             }
         }
     }
@@ -318,13 +335,32 @@ private fun EmailAndPasswordStage(
             onFacebookClick = { /* TODO */ },
             onGoogleClick = {
                 coroutineScope.launch {
-                    val signInIntentSender = GoogleAuthentication.getSignUpIntentSender(oneTapClient)
+                    val signInIntentSender =
+                        GoogleAuthentication.getSignUpIntentSender(oneTapClient)
                     launcher.launch(
                         IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                     )
                 }
             },
-            onTwitterClick = { /* TODO */ }
+            onTwitterClick = {
+                coroutineScope.launch {
+                    val user = viewModel.signUp(
+                        TwitterAuthentication(
+                            context as Activity,
+                            viewModel.storageService,
+                            viewModel.bucketService
+                        )
+                    )
+                    if (user != null) {
+                        navController.navigateToMap()
+                    } else {
+                        Toast(context).apply {
+                            setText("Authentication  failed!")
+                            duration = Toast.LENGTH_SHORT
+                        }.show()
+                    }
+                }
+            }
         )
     }
 }
@@ -509,6 +545,7 @@ private fun EmailAndPasswordStagePreview() {
         EmailAndPasswordStage(
             uiState = SignUpUiState(),
             viewModel = SignUpViewModelMock(),
+            navController = NavController(LocalContext.current),
             next = { }
         )
     }
