@@ -1,5 +1,6 @@
 package com.example.geomate.service.storage
 
+import com.example.geomate.model.Group
 import com.example.geomate.model.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -14,5 +15,15 @@ class FirebaseStorageService(private val fireStore: FirebaseFirestore) : Storage
             .whereEqualTo("uid", uid)
             .get().await()
             .toObjects(User::class.java).firstOrNull()
+    }
+
+    override suspend fun addGroup(group: Group) {
+        fireStore.collection("group").add(group).await()
+    }
+
+    override suspend fun getGroups(): List<Group> {
+        return fireStore.collection("group")
+            .get().await()
+            .toObjects(Group::class.java)
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
@@ -38,11 +40,11 @@ import com.example.geomate.ui.theme.spacing
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.groups(
+    uiState: GroupsUiState,
     viewModel: GroupsViewModel,
     navController: NavController,
 ) {
     composable(Destinations.GROUPS_ROUTE) {
-        val uiState by viewModel.uiState.collectAsState()
         GroupsScreen(
             uiState = uiState,
             viewModel = viewModel,
@@ -67,7 +69,7 @@ fun GroupsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(uiState.groupsWithUris) {
         coroutineScope.launch {
             viewModel.fetchProfilePictures(uiState.groupsWithUris)
         }

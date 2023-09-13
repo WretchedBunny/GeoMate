@@ -6,7 +6,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.service.account.FirebaseAccountService
@@ -14,6 +15,7 @@ import com.example.geomate.service.bucket.FirebaseBucketService
 import com.example.geomate.service.storage.FirebaseStorageService
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModelImpl
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModelImpl
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModelImpl
@@ -30,22 +32,31 @@ import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun NavGraph(application: Application, navController: NavHostController) {
+    // Services
     val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
-    val accountService = FirebaseAccountService(
-        FirebaseAuth.getInstance(),
-        storageService,
-    )
+    val accountService = FirebaseAccountService(FirebaseAuth.getInstance(), storageService)
     val bucketService = FirebaseBucketService(FirebaseStorage.getInstance())
-    val signInViewModel = SignInViewModelImpl(storageService, bucketService)
-    val signUpViewModel = SignUpViewModelImpl(storageService, bucketService)
+
+    // ViewModels and UiStates
     val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
+    val forgotPasswordUiState by forgotPasswordViewModel.uiState.collectAsState()
+
+    val signInViewModel = SignInViewModelImpl(storageService, bucketService)
+    val signInUiState by signInViewModel.uiState.collectAsState()
+
+    val signUpViewModel = SignUpViewModelImpl(storageService, bucketService)
+    val signUpUiState by signUpViewModel.uiState.collectAsState()
+
     val mapViewModel = MapViewModelImpl(
         application,
         storageService,
         bucketService,
-        LocationServices.getFusedLocationProviderClient(LocalContext.current)
+        LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
-    val groupsViewModel = GroupsViewModelImpl(bucketService)
+    val mapUiState by mapViewModel.uiState.collectAsState()
+
+    val groupViewModel = GroupsViewModelImpl(bucketService)
+    val groupUiState by groupViewModel.uiState.collectAsState()
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -65,26 +76,12 @@ fun NavGraph(application: Application, navController: NavHostController) {
                 fadeOut(tween(0, easing = LinearEasing))
             }
         ) {
-            forgotPassword(
-                viewModel = forgotPasswordViewModel,
-                navController = navController
-            )
-            signIn(
-                viewModel = signInViewModel,
-                navController = navController
-            )
-            signUp(
-                viewModel = signUpViewModel,
-                navController = navController
-            )
-            map(
-                viewModel = mapViewModel,
-                navController = navController
-            )
-            groups(
-                viewModel = groupsViewModel,
-                navController = navController
-            )
+            forgotPassword(forgotPasswordUiState, forgotPasswordViewModel, navController)
+            signIn(signInUiState, signInViewModel, navController)
+            signUp(signUpUiState, signUpViewModel, navController)
+            map(mapUiState, mapViewModel, navController)
+            groups(groupUiState, groupViewModel, navController)
+            groupDetails()
         }
     }
 }

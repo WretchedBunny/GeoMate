@@ -11,7 +11,6 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,19 +22,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.model.Group
 import com.example.geomate.model.GroupWithUris
 import com.example.geomate.model.User
-import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.GroupRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
-import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
+
+fun NavGraphBuilder.groupDetails() {
+    composable("${Destinations.GROUP_DETAILS_ROUTE}/{groupUid}") { backStackEntry ->
+        val groupUid = backStackEntry.arguments?.getString("groupUid")
+    }
+}
+
+fun NavController.navigateToGroupDetails(groupUid: String) {
+    navigate("${Destinations.GROUP_DETAILS_ROUTE}/$groupUid") {
+        launchSingleTop = true
+    }
+}
 
 @Composable
 fun GroupDetailsScreen(

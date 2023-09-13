@@ -1,6 +1,8 @@
 package com.example.geomate.ui.screens.map
 
 import android.Manifest
+import android.app.Application
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -43,6 +45,8 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.model.Chip
 import com.example.geomate.model.User
+import com.example.geomate.service.bucket.BucketService
+import com.example.geomate.service.storage.StorageService
 import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.ChipsRow
 import com.example.geomate.ui.components.GeoMateFAB
@@ -56,6 +60,7 @@ import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionsRequired
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.firebase.auth.ktx.auth
@@ -71,11 +76,11 @@ import kotlinx.coroutines.launch
 
 
 fun NavGraphBuilder.map(
+    uiState: MapUiState,
     viewModel: MapViewModel,
     navController: NavController,
 ) {
     composable(Destinations.MAP_ROUTE) {
-        val uiState by viewModel.uiState.collectAsState()
         MapScreen(
             uiState = uiState,
             viewModel = viewModel,

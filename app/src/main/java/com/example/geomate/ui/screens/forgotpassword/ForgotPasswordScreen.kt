@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
+import com.example.geomate.service.account.AccountService
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -37,11 +38,11 @@ import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.forgotPassword(
-    navController: NavController,
+    uiState: ForgotPasswordUiState,
     viewModel: ForgotPasswordViewModel,
+    navController: NavController,
 ) {
     composable(Destinations.FORGOT_PASSWORD_ROUTE) {
-        val uiState by viewModel.uiState.collectAsState()
         ForgotPasswordScreen(
             uiState = uiState,
             viewModel = viewModel,

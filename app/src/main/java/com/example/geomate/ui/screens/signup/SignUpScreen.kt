@@ -54,6 +54,8 @@ import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.service.account.GoogleAuthentication
+import com.example.geomate.service.bucket.BucketService
+import com.example.geomate.service.storage.StorageService
 import com.example.geomate.service.account.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
@@ -73,11 +75,11 @@ import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
+    uiState: SignUpUiState,
+    viewModel: SignUpViewModel,
     navController: NavController,
-    viewModel: SignUpViewModelImpl,
 ) {
     composable(Destinations.SIGN_UP_ROUTE) {
-        val uiState by viewModel.uiState.collectAsState()
         SignUpScreen(
             uiState = uiState,
             viewModel = viewModel,

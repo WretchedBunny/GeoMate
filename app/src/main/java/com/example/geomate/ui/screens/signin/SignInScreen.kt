@@ -42,6 +42,7 @@ import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.service.account.GoogleAuthentication
+import com.example.geomate.service.storage.StorageService
 import com.example.geomate.service.account.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
@@ -53,6 +54,7 @@ import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.SupportingButton
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordUiState
 import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
@@ -62,11 +64,11 @@ import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
-    navController: NavController,
+    uiState: SignInUiState,
     viewModel: SignInViewModel,
+    navController: NavController
 ) {
     composable(Destinations.SIGN_IN_ROUTE) {
-        val uiState by viewModel.uiState.collectAsState()
         SignInScreen(
             uiState = uiState,
             viewModel = viewModel,
