@@ -11,8 +11,6 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +22,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
-import com.example.geomate.service.account.AccountService
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton

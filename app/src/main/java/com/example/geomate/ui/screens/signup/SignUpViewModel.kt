@@ -1,8 +1,8 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
-import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.account.Authentication
+import com.example.geomate.service.bucket.BucketService
 import com.example.geomate.service.storage.StorageService
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.StateFlow

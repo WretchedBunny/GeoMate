@@ -1,8 +1,8 @@
 package com.example.geomate.ui.screens.signup
 
 import android.net.Uri
-import com.example.geomate.service.bucket.BucketServiceMock
 import com.example.geomate.service.account.Authentication
+import com.example.geomate.service.bucket.BucketServiceMock
 import com.example.geomate.service.storage.StorageServiceMock
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow

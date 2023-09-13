@@ -29,7 +29,6 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +53,6 @@ import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.service.account.EmailPasswordAuthentication
 import com.example.geomate.service.account.GoogleAuthentication
-import com.example.geomate.service.bucket.BucketService
-import com.example.geomate.service.storage.StorageService
 import com.example.geomate.service.account.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
