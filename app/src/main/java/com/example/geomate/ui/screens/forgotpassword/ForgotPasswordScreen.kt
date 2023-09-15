@@ -1,6 +1,5 @@
 package com.example.geomate.ui.screens.forgotpassword
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,11 +10,11 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -31,15 +30,14 @@ import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.signin.navigateToSignIn
-import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.forgotPassword(
-    uiState: ForgotPasswordUiState,
     viewModel: ForgotPasswordViewModel,
     navController: NavController,
 ) {
     composable(Destinations.FORGOT_PASSWORD_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
         ForgotPasswordScreen(
             uiState = uiState,
             viewModel = viewModel,
@@ -116,19 +114,6 @@ fun ForgotPasswordScreen(
             text = stringResource(id = R.string.forgot_password_footer),
             clickableText = stringResource(id = R.string.button_back),
             onClick = navController::navigateToSignIn
-        )
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun ForgotPasswordScreenPreview() {
-    GeoMateTheme {
-        ForgotPasswordScreen(
-            uiState = ForgotPasswordUiState(),
-            viewModel = ForgotPasswordViewModelMock(),
-            navController = NavController(LocalContext.current)
         )
     }
 }

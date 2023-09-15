@@ -1,6 +1,5 @@
 package com.example.geomate.ui.components
 
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,10 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.R
-import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
@@ -71,23 +68,5 @@ fun ProfilePicturesRow(
                 )
             }
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-fun ProfilePicturesRowPreview() {
-    GeoMateTheme {
-        ProfilePicturesRow(
-            uris = listOf(Uri.EMPTY, Uri.EMPTY, Uri.EMPTY)
-        )
     }
 }

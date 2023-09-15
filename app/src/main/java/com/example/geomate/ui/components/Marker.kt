@@ -1,9 +1,7 @@
 package com.example.geomate.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -17,10 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.R
-import com.example.geomate.ui.theme.GeoMateTheme
 
 @Composable
 fun MapMarker(
@@ -57,32 +53,6 @@ fun MapMarker(
                 painter = painterResource(id = R.drawable.arrow_down),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-            )
-        }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun MapMarkerPreview() {
-    GeoMateTheme {
-        val profilePictureId = when (isSystemInDarkTheme()) {
-            true -> R.drawable.profile_picture_placeholder_dark
-            false -> R.drawable.profile_picture_placeholder_light
-        }
-        MapMarker(fullName = "John Doe") {
-            Image(
-                painter = painterResource(profilePictureId),
-                contentDescription = null,
-                modifier = it
             )
         }
     }

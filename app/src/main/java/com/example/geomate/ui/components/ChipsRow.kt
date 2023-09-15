@@ -1,6 +1,5 @@
 package com.example.geomate.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -11,20 +10,17 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.geomate.R
-import com.example.geomate.model.Chip
-import com.example.geomate.ui.theme.GeoMateTheme
+import com.example.geomate.data.models.Group
 import com.example.geomate.ui.theme.spacing
 
 @Composable
 fun ChipsRow(
-    chips: List<Chip>,
+    chips: Map<Group, Boolean>,
     isAllSelected: Boolean,
-    toggleGroup: (Chip) -> Unit,
+    toggleGroup: (Group) -> Unit,
     toggleAllGroups: (Boolean) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
@@ -41,10 +37,10 @@ fun ChipsRow(
                 onClick = { toggleAllGroups(isAllSelected) }
             )
         }
-        items(chips) {
+        items(chips.keys.toList()) {
             Chips(
                 text = it.name,
-                isSelected = it.isSelected,
+                isSelected = chips[it] ?: false,
                 onClick = { toggleGroup(it) }
             )
         }
@@ -57,34 +53,5 @@ fun ChipsRow(
             )
         }
         item { Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium - MaterialTheme.spacing.small)) }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun ChipsRowPreview() {
-    GeoMateTheme {
-        ChipsRow(
-            chips = listOf(
-                Chip(name = "University", isSelected = true),
-                Chip(name = "Family", isSelected = true),
-                Chip(name = "Football team", isSelected = false),
-                Chip(name = "Discord", isSelected = false),
-                Chip(name = "Work", isSelected = false),
-                Chip(name = "Poker club", isSelected = false),
-            ),
-            isAllSelected = false,
-            toggleGroup = { },
-            toggleAllGroups = { },
-            navController = NavController(LocalContext.current),
-        )
     }
 }

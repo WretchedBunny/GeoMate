@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.signin
 
 import android.app.Activity
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,6 +19,7 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -39,9 +38,9 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
-import com.example.geomate.service.account.EmailPasswordAuthentication
-import com.example.geomate.service.account.GoogleAuthentication
-import com.example.geomate.service.account.TwitterAuthentication
+import com.example.geomate.service.authentication.EmailPasswordAuthentication
+import com.example.geomate.service.authentication.GoogleAuthentication
+import com.example.geomate.service.authentication.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -55,17 +54,16 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
-import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
-    uiState: SignInUiState,
     viewModel: SignInViewModel,
     navController: NavController
 ) {
     composable(Destinations.SIGN_IN_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
         SignInScreen(
             uiState = uiState,
             viewModel = viewModel,
@@ -96,11 +94,7 @@ fun SignInScreen(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(
-                viewModel.storageService,
-                viewModel.bucketService,
-                signInCredentials,
-            )
+            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signIn(googleSignInAuth)
@@ -207,16 +201,18 @@ fun SignInScreen(
                     onClick = {
                         val isEmailValid = uiState.email.isEmailValid()
                         val isPasswordValid = uiState.password.isPasswordValid()
+
                         viewModel.updateIsEmailValid(isEmailValid)
                         viewModel.updateIsPasswordValid(isPasswordValid)
+
                         if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
                                 val user = viewModel.signIn(
+                                    // TODO: Consider splitting all Authentication implementations into SignIn and SingUp specific
                                     EmailPasswordAuthentication(
                                         email = uiState.email,
                                         password = uiState.password,
-                                        storageService = viewModel.storageService,
-                                        bucketService = viewModel.bucketService
+                                        usersRepository = viewModel.usersRepository
                                     )
                                 )
                                 if (user != null) {
@@ -247,11 +243,7 @@ fun SignInScreen(
                 onTwitterClick = {
                     coroutineScope.launch {
                         val user = viewModel.signIn(
-                            TwitterAuthentication(
-                                context as Activity,
-                                viewModel.storageService,
-                                viewModel.bucketService
-                            )
+                            TwitterAuthentication(viewModel.usersRepository, context as Activity)
                         )
                         if (user != null) {
                             navController.navigateToMap()
@@ -269,19 +261,6 @@ fun SignInScreen(
             text = stringResource(id = R.string.sign_in_footer),
             clickableText = stringResource(id = R.string.button_sign_up),
             onClick = navController::navigateToSignUp
-        )
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun SignInScreenPreview() {
-    GeoMateTheme {
-        SignInScreen(
-            uiState = SignInUiState(),
-            viewModel = SignInViewModelMock(),
-            navController = NavController(LocalContext.current)
         )
     }
 }

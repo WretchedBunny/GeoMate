@@ -1,8 +1,9 @@
 package com.example.geomate.ui.screens.groups
 
-import com.example.geomate.model.GroupWithUris
+import android.net.Uri
+import com.example.geomate.data.models.Group
 
 data class GroupsUiState(
     val searchQuery: String = "",
-    val groupsWithUris: List<GroupWithUris> = listOf(),
+    val groups: MutableMap<Group, List<Uri>> = mutableMapOf(),
 )

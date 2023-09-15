@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.map
 
 import android.Manifest
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.compose.foundation.Image
@@ -22,11 +21,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,14 +30,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.model.Chip
-import com.example.geomate.model.User
 import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.ChipsRow
 import com.example.geomate.ui.components.GeoMateFAB
@@ -50,7 +43,6 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
-import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionsRequired
@@ -66,15 +58,14 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
-import kotlinx.coroutines.launch
 
 
 fun NavGraphBuilder.map(
-    uiState: MapUiState,
     viewModel: MapViewModel,
     navController: NavController,
 ) {
     composable(Destinations.MAP_ROUTE) {
+        val uiState by viewModel.uiState.collectAsState()
         MapScreen(
             uiState = uiState,
             viewModel = viewModel,
@@ -104,6 +95,14 @@ fun MapScreen(
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     )
+
+    LaunchedEffect(Firebase.auth.uid) {
+        Firebase.auth.uid?.let {
+            viewModel.fetchGroups(it)
+            viewModel.fetchProfilePicture(it)
+        }
+    }
+
     PermissionsRequired(
         multiplePermissionsState = multiplePermissionsState,
         permissionsNotGrantedContent = {
@@ -132,19 +131,7 @@ fun Map(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    var user: User? by remember { mutableStateOf(null) }
     val mapStyleId = if (isSystemInDarkTheme()) R.raw.map_style_dark else R.raw.map_style_light
-
-    LaunchedEffect(Firebase.auth.currentUser) {
-        coroutineScope.launch {
-            Firebase.auth.currentUser?.uid?.let {
-                user = viewModel.getUser(it)
-                viewModel.fetchProfilePictureUri(user?.uid ?: "")
-            }
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.startMonitoringUserLocation()
@@ -251,32 +238,13 @@ fun Map(
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
                 )
                 ChipsRow(
-                    chips = uiState.chips,
+                    chips = uiState.groups,
                     isAllSelected = uiState.isAllSelected,
-                    toggleGroup = viewModel::toggleChip,
-                    toggleAllGroups = viewModel::toggleAllChips,
+                    toggleGroup = viewModel::toggleGroup,
+                    toggleAllGroups = viewModel::toggleAllGroups,
                     navController = navController,
                 )
             }
         }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun MapScreenPreview() {
-    GeoMateTheme {
-        MapScreen(
-            uiState = MapUiState(
-                chips = listOf(
-                    Chip(name = "University", isSelected = true),
-                    Chip(name = "Family", isSelected = true),
-                    Chip(name = "Football team", isSelected = false),
-                )
-            ),
-            viewModel = MapViewModelMock(),
-            navController = NavController(LocalContext.current)
-        )
     }
 }

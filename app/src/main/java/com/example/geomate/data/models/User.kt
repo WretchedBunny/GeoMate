@@ -1,4 +1,4 @@
-package com.example.geomate.model
+package com.example.geomate.data.models
 
 data class User(
     val uid: String = "",
