@@ -1,21 +1,19 @@
 package com.example.geomate.ui.screens.map
 
 import android.net.Uri
-import com.example.geomate.model.Group
+import com.example.geomate.data.models.Group
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 
 data class MapUiState(
-    val profilePictureUri: Uri? = null,
     val searchQuery: String = "",
-    val groups: List<Group> = listOf(),
+    val profilePictureUri: Uri? = null,
+    val groups: MutableMap<Group, Boolean> = mutableMapOf(),
     val userMarker: LatLng = LatLng(40.772499265817345, -73.97661507692591),
     val cameraPosition: CameraPositionState = CameraPositionState(
-        CameraPosition(
-            userMarker, 16.0f, 0.0f, 0.0f
-        )
+        CameraPosition(userMarker, 16.0f, 0.0f, 0.0f)
     ),
 )
 
-val MapUiState.isAllSelected: Boolean get() = groups.all { it.isSelected }
+val MapUiState.isAllSelected: Boolean get() = groups.all { it.value }

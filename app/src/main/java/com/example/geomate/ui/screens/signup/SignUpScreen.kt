@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.signup
 
 import android.app.Activity
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -41,7 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -52,9 +50,9 @@ import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
-import com.example.geomate.service.account.EmailPasswordAuthentication
-import com.example.geomate.service.account.GoogleAuthentication
-import com.example.geomate.service.account.TwitterAuthentication
+import com.example.geomate.service.authentication.EmailPasswordAuthentication
+import com.example.geomate.service.authentication.GoogleAuthentication
+import com.example.geomate.service.authentication.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -67,14 +65,13 @@ import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signin.navigateToSignIn
-import com.example.geomate.ui.theme.GeoMateTheme
 import com.example.geomate.ui.theme.spacing
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signUp(
+    viewModel: SignUpViewModel,
     navController: NavController,
-    viewModel: SignUpViewModelImpl,
 ) {
     composable(Destinations.SIGN_UP_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
@@ -89,7 +86,7 @@ fun NavGraphBuilder.signUp(
 fun NavController.navigateToSignUp() {
     popBackStack()
     navigate(Destinations.SIGN_UP_ROUTE) {
-        launchSingleTop = false
+        launchSingleTop = true
     }
 }
 
@@ -182,8 +179,8 @@ fun SignUpScreen(
                                     firstName = uiState.firstName,
                                     lastName = uiState.lastName,
                                     bio = uiState.bio,
-                                    storageService = viewModel.storageService,
-                                    bucketService = viewModel.bucketService
+                                    uri = uiState.profilePictureUri,
+                                    usersRepository = viewModel.usersRepository
                                 )
                             )
                             if (user != null) {
@@ -231,11 +228,7 @@ private fun EmailAndPasswordStage(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(
-                viewModel.storageService,
-                viewModel.bucketService,
-                signInCredentials,
-            )
+            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signUp(googleSignInAuth)
@@ -345,11 +338,7 @@ private fun EmailAndPasswordStage(
             onTwitterClick = {
                 coroutineScope.launch {
                     val user = viewModel.signUp(
-                        TwitterAuthentication(
-                            context as Activity,
-                            viewModel.storageService,
-                            viewModel.bucketService
-                        )
+                        TwitterAuthentication(viewModel.usersRepository, context as Activity)
                     )
                     if (user != null) {
                         navController.navigateToMap()
@@ -514,81 +503,5 @@ private fun OptionalInformationStage(
                 type = ButtonType.Primary
             )
         }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun SignUpScreenPreview() {
-    GeoMateTheme {
-        SignUpScreen(
-            uiState = SignUpUiState(),
-            viewModel = SignUpViewModelMock(),
-            navController = NavController(LocalContext.current)
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun EmailAndPasswordStagePreview() {
-    GeoMateTheme {
-        EmailAndPasswordStage(
-            uiState = SignUpUiState(),
-            viewModel = SignUpViewModelMock(),
-            navController = NavController(LocalContext.current),
-            next = { }
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun PublicInformationStagePreview() {
-    GeoMateTheme {
-        PublicInformationStage(
-            uiState = SignUpUiState(),
-            viewModel = SignUpViewModelMock(),
-            prev = { },
-            next = { }
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun OptionalInformationStagePreview() {
-    GeoMateTheme {
-        OptionalInformationStage(
-            uiState = SignUpUiState(),
-            viewModel = SignUpViewModelMock(),
-            next = { },
-            prev = { }
-        )
     }
 }

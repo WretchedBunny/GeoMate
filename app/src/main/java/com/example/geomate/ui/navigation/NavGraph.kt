@@ -6,19 +6,21 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.geomate.service.account.FirebaseAccountService
-import com.example.geomate.service.bucket.FirebaseBucketService
-import com.example.geomate.service.storage.FirebaseStorageService
-import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModelImpl
+import com.example.geomate.data.datasources.GroupsRemoteDataSource
+import com.example.geomate.data.datasources.UsersRemoteDataSource
+import com.example.geomate.data.repositories.GroupsRepository
+import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
-import com.example.geomate.ui.screens.map.MapViewModelImpl
+import com.example.geomate.ui.screens.groups.GroupsViewModel
+import com.example.geomate.ui.screens.groups.groups
+import com.example.geomate.ui.screens.map.MapViewModel
 import com.example.geomate.ui.screens.map.map
-import com.example.geomate.ui.screens.signin.SignInViewModelImpl
+import com.example.geomate.ui.screens.signin.SignInViewModel
 import com.example.geomate.ui.screens.signin.signIn
-import com.example.geomate.ui.screens.signup.SignUpViewModelImpl
+import com.example.geomate.ui.screens.signup.SignUpViewModel
 import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
@@ -28,21 +30,27 @@ import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun NavGraph(application: Application, navController: NavHostController) {
-    val storageService = FirebaseStorageService(FirebaseFirestore.getInstance())
-    val accountService = FirebaseAccountService(
-        FirebaseAuth.getInstance(),
-        storageService,
+    // Data sources
+    val usersDataSource = UsersRemoteDataSource(
+        FirebaseAuth.getInstance(), FirebaseFirestore.getInstance(), FirebaseStorage.getInstance()
     )
-    val bucketService = FirebaseBucketService(FirebaseStorage.getInstance())
-    val signInViewModel = SignInViewModelImpl(storageService, bucketService)
-    val signUpViewModel = SignUpViewModelImpl(storageService, bucketService)
-    val forgotPasswordViewModel = ForgotPasswordViewModelImpl(accountService)
-    val mapViewModel = MapViewModelImpl(
+    val groupsDataSource = GroupsRemoteDataSource(FirebaseFirestore.getInstance())
+
+    // Repositories
+    val usersRepository = UsersRepository(usersDataSource)
+    val groupsRepository = GroupsRepository(groupsDataSource)
+
+    // ViewModels and UiStates
+    val forgotPasswordViewModel = ForgotPasswordViewModel(usersRepository)
+    val signInViewModel = SignInViewModel(usersRepository)
+    val signUpViewModel = SignUpViewModel(usersRepository)
+    val mapViewModel = MapViewModel(
         application,
-        storageService,
-        bucketService,
-        LocationServices.getFusedLocationProviderClient(LocalContext.current)
+        groupsRepository,
+        usersRepository,
+        LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
+    val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -62,22 +70,11 @@ fun NavGraph(application: Application, navController: NavHostController) {
                 fadeOut(tween(0, easing = LinearEasing))
             }
         ) {
-            forgotPassword(
-                viewModel = forgotPasswordViewModel,
-                navController = navController
-            )
-            signIn(
-                viewModel = signInViewModel,
-                navController = navController
-            )
-            signUp(
-                viewModel = signUpViewModel,
-                navController = navController
-            )
-            map(
-                viewModel = mapViewModel,
-                navController = navController
-            )
+            forgotPassword(forgotPasswordViewModel, navController)
+            signIn(signInViewModel, navController)
+            signUp(signUpViewModel, navController)
+            map(mapViewModel, navController)
+            groups(groupViewModel, navController)
         }
     }
 }

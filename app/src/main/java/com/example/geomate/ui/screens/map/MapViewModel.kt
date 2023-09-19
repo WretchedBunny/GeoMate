@@ -1,17 +1,125 @@
 package com.example.geomate.ui.screens.map
 
-import com.example.geomate.model.Group
-import com.example.geomate.model.User
+import android.Manifest
+import android.app.Application
+import android.content.pm.PackageManager
+import android.os.Looper
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.geomate.data.models.Group
+import com.example.geomate.data.repositories.GroupsRepository
+import com.example.geomate.data.repositories.UsersRepository
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-interface MapViewModel {
-    val uiState: StateFlow<MapUiState>
-    fun updateSearchQuery(searchQuery: String)
-    suspend fun fetchProfilePictureUri(path: String)
-    fun startMonitoringUserLocation()
-    fun stopMonitoringUserLocation()
-    fun toggleGroup(group: Group)
-    fun toggleAllGroups(current: Boolean)
-    fun pointCameraOnUser()
-    suspend fun getUser(uid: String): User?
+class MapViewModel(
+    application: Application,
+    private val groupsRepository: GroupsRepository,
+    private val usersRepository: UsersRepository,
+    private val fusedLocationClient: FusedLocationProviderClient,
+) : AndroidViewModel(application) {
+    private val _uiState = MutableStateFlow(MapUiState())
+    val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
+
+    fun fetchGroups(userId: String) = viewModelScope.launch {
+        groupsRepository.getAll(userId).collect { groups ->
+            _uiState.update { it.copy(groups = groups.associateWith { true }.toMutableMap()) }
+        }
+    }
+
+    fun updateSearchQuery(searchQuery: String) {
+        _uiState.update { it.copy(searchQuery = searchQuery) }
+    }
+
+    suspend fun fetchProfilePicture(userId: String) = viewModelScope.launch {
+        usersRepository.getProfilePicture(userId).collect { uri ->
+            _uiState.update { it.copy(profilePictureUri = uri) }
+        }
+    }
+
+    fun startMonitoringUserLocation() {
+        val request = LocationRequest.Builder(10L)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.locations.lastOrNull()?.let { location ->
+                    _uiState.update {
+                        it.copy(
+                            userMarker = LatLng(location.latitude, location.longitude),
+                        )
+                    }
+                }
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                getApplication<Application>().applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                request,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+            pointCameraOnUser()
+        }
+    }
+
+    fun stopMonitoringUserLocation() {
+        // TODO: Implement (currently not needed)
+    }
+
+    fun toggleGroup(group: Group) {
+        val groups = uiState.value.groups.toMutableMap()
+        groups[group] = groups[group]?.not() ?: false
+        _uiState.update {
+            it.copy(groups = groups)
+        }
+    }
+
+    fun toggleAllGroups(current: Boolean) {
+        val groups = uiState.value.groups.toMutableMap()
+        groups.replaceAll { _, _ -> !current }
+        _uiState.update {
+            it.copy(groups = groups)
+        }
+    }
+
+    fun pointCameraOnUser() {
+        if (ActivityCompat.checkSelfPermission(
+                getApplication<Application>().applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    _uiState.update {
+                        it.copy(
+                            cameraPosition = CameraPositionState(
+                                CameraPosition(
+                                    LatLng(location.latitude, location.longitude),
+                                    uiState.value.cameraPosition.position.zoom,
+                                    uiState.value.cameraPosition.position.tilt,
+                                    uiState.value.cameraPosition.position.bearing,
+                                )
+                            ),
+                        )
+                    }
+                }
+        }
+    }
 }

@@ -1,18 +1,35 @@
 package com.example.geomate.ui.screens.signin
 
-import com.example.geomate.service.account.Authentication
-import com.example.geomate.service.bucket.BucketService
-import com.example.geomate.service.storage.StorageService
+import androidx.lifecycle.ViewModel
+import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.service.authentication.Authentication
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
-interface SignInViewModel {
-    val uiState: StateFlow<SignInUiState>
-    val storageService: StorageService
-    val bucketService: BucketService
-    fun updateEmail(email: String)
-    fun updatePassword(password: String)
-    fun updateIsEmailValid(isEmailValid: Boolean)
-    fun updateIsPasswordValid(isPasswordValid: Boolean)
-    suspend fun signIn(authentication: Authentication): FirebaseUser?
+
+class SignInViewModel(val usersRepository: UsersRepository) : ViewModel() {
+    private val _uiState = MutableStateFlow(SignInUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun updateEmail(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun updatePassword(password: String) {
+        _uiState.update { it.copy(password = password) }
+    }
+
+    fun updateIsEmailValid(isEmailValid: Boolean) {
+        _uiState.update { it.copy(isEmailValid = isEmailValid) }
+    }
+
+    fun updateIsPasswordValid(isPasswordValid: Boolean) {
+        _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
+    }
+
+    suspend fun signIn(authentication: Authentication): FirebaseUser? {
+        return authentication.signIn()
+    }
 }
