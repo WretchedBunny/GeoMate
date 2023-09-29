@@ -43,6 +43,7 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionsRequired
@@ -211,7 +212,11 @@ fun Map(
                             )
                         },
                         TextFieldIcon(
-                            onClick = { /* TODO: Navigate to the profile screen */ }
+                            onClick = {
+                                /* TODO: Navigate to the profile screen */
+                                Firebase.auth.signOut()
+                                navController.navigateToSignIn()
+                            }
                         ) { modifier ->
                             val drawableId =
                                 if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +36,7 @@ class MapViewModel(
 
     fun fetchGroups(userId: String) = viewModelScope.launch {
         groupsRepository.getAll(userId).collect { groups ->
+            Log.d("asdqwe", "fetchGroups: map screen")
             _uiState.update { it.copy(groups = groups.associateWith { true }.toMutableMap()) }
         }
     }

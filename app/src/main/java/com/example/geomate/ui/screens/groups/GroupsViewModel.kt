@@ -1,6 +1,7 @@
 package com.example.geomate.ui.screens.groups
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.Group
@@ -21,6 +22,7 @@ class GroupsViewModel(
 
     fun fetchGroups(userId: String) = viewModelScope.launch {
         groupsRepository.getAll(userId).collect { groups ->
+            Log.d("asdqwe", "fetchGroups: groups screen")
             _uiState.update {
                 it.copy(
                     groups = groups.associateWith { group ->

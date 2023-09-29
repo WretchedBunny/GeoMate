@@ -22,6 +22,12 @@ class UsersRemoteDataSource(
         .snapshotFlow()
         .map { it.toObjects(User::class.java).firstOrNull() }
 
+    override suspend fun getAll(userIds: List<String>): Flow<List<User>> = fireStore
+        .collection("users")
+        .whereIn("uid", userIds)
+        .snapshotFlow()
+        .map { it.toObjects(User::class.java) }
+
     override suspend fun add(user: User) {
         fireStore.collection("users").add(user).await()
     }

@@ -28,6 +28,7 @@ import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.GroupRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.groupdetails.navigateToGroupDetails
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.theme.spacing
 import com.google.firebase.auth.ktx.auth
@@ -104,7 +105,7 @@ fun GroupsScreen(
             itemsIndexed(uiState.groups.keys.toList()) { index, group ->
                 GroupRow(
                     group = group to (uiState.groups[group] ?: listOf()),
-                    onSelect = { /* TODO: Navigate to group details group */ },
+                    onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
                     onRemove = { viewModel.removeGroup(it) },
                 )
                 if (index < uiState.groups.size-1) {

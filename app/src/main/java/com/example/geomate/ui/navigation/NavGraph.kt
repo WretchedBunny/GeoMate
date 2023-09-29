@@ -6,14 +6,19 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
+import com.example.geomate.data.models.Group
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
+import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModel
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModel
@@ -51,6 +56,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
+    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -75,6 +81,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             signUp(signUpViewModel, navController)
             map(mapViewModel, navController)
             groups(groupViewModel, navController)
+            groupDetails(groupDetailsViewModel, navController)
         }
     }
 }

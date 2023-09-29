@@ -34,5 +34,4 @@ class TwitterAuthentication(
 
     override suspend fun signIn(): FirebaseUser? = auth()
     override suspend fun signUp(): FirebaseUser? = auth()
-    override suspend fun signOut() = auth.signOut()
 }

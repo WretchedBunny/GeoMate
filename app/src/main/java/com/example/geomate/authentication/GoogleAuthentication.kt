@@ -1,7 +1,6 @@
-package com.example.geomate.service.authentication
+package com.example.geomate.authentication
 
 import android.content.IntentSender
-import com.example.geomate.authentication.Authentication
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -73,6 +72,4 @@ class GoogleAuthentication(
     } catch (e: Exception) {
         null
     }
-
-    override suspend fun signOut() = auth.signOut()
 }

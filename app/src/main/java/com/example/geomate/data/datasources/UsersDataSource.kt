@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsersDataSource {
     suspend fun get(userId: String): Flow<User?>
+    suspend fun getAll(userIds: List<String>): Flow<List<User>>
     suspend fun add(user: User)
     suspend fun remove(user: User)
     suspend fun getProfilePicture(userId: String): Flow<Uri>

@@ -37,11 +37,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.authentication.FacebookAuthentication
+import com.example.geomate.authentication.GoogleAuthentication
 import com.example.geomate.authentication.TwitterAuthentication
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.authentication.EmailPasswordAuthentication
-import com.example.geomate.service.authentication.GoogleAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton

@@ -37,8 +37,6 @@ class EmailPasswordAuthentication(
         null
     }
 
-    override suspend fun signOut() = auth.signOut()
-
     override fun createUser(user: FirebaseUser): User = User(
         uid = user.uid,
         email = user.email ?: "",

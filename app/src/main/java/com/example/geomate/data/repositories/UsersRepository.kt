@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UsersRepository(private val usersDataSource: UsersDataSource) {
     suspend fun get(userId: String): Flow<User?> = usersDataSource.get(userId)
+    suspend fun getAll(userIds: List<String>): Flow<List<User>> = usersDataSource.getAll(userIds)
     suspend fun add(user: User) = usersDataSource.add(user)
     suspend fun remove(user: User) = usersDataSource.remove(user)
     suspend fun getProfilePicture(userId: String): Flow<Uri> = usersDataSource.getProfilePicture(userId)
