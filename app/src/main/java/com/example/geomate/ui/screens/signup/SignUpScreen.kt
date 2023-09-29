@@ -45,6 +45,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.authentication.FacebookAuthentication
+import com.example.geomate.authentication.TwitterAuthentication
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
@@ -52,7 +54,6 @@ import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.service.authentication.EmailPasswordAuthentication
 import com.example.geomate.service.authentication.GoogleAuthentication
-import com.example.geomate.service.authentication.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -66,6 +67,8 @@ import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
+import com.facebook.CallbackManager
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
@@ -228,7 +231,8 @@ private fun EmailAndPasswordStage(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth =
+                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signUp(googleSignInAuth)
@@ -243,6 +247,32 @@ private fun EmailAndPasswordStage(
             }
         }
     }
+    val loginManager = LoginManager.getInstance()
+    val callbackManager = remember { CallbackManager.Factory.create() }
+    val facebookLauncher =
+        rememberLauncherForActivityResult(
+            contract = loginManager.createLogInActivityResultContract(
+                callbackManager,
+                null
+            ), onResult = { activityResult ->
+                if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
+                    val signInToken =
+                        FacebookAuthentication.getTokenFromIntent(activityResult.data)
+                    val facebookSignInAuth =
+                        FacebookAuthentication(viewModel.usersRepository, signInToken)
+                    coroutineScope.launch {
+                        val user = viewModel.signUp(facebookSignInAuth)
+                        if (user != null) {
+                            navController.navigateToMap()
+                        } else {
+                            Toast(context).apply {
+                                setText("Authentication failed!")
+                                duration = Toast.LENGTH_SHORT
+                            }.show()
+                        }
+                    }
+                }
+            })
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -325,7 +355,7 @@ private fun EmailAndPasswordStage(
             )
         }
         SocialNetworksRow(
-            onFacebookClick = { /* TODO */ },
+            onFacebookClick = { facebookLauncher.launch(listOf("email", "public_profile")) },
             onGoogleClick = {
                 coroutineScope.launch {
                     val signInIntentSender =

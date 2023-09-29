@@ -36,11 +36,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.authentication.FacebookAuthentication
+import com.example.geomate.authentication.TwitterAuthentication
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.service.authentication.EmailPasswordAuthentication
 import com.example.geomate.service.authentication.GoogleAuthentication
-import com.example.geomate.service.authentication.TwitterAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -55,12 +56,14 @@ import com.example.geomate.ui.screens.forgotpassword.navigateToForgotPassword
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.signup.navigateToSignUp
 import com.example.geomate.ui.theme.spacing
+import com.facebook.CallbackManager
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.signIn(
     viewModel: SignInViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     composable(Destinations.SIGN_IN_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
@@ -89,12 +92,13 @@ fun SignInScreen(
     val context = LocalContext.current
     val oneTapClient = Identity.getSignInClient(context)
     val coroutineScope = rememberCoroutineScope()
-    val launcher = rememberLauncherForActivityResult(
+    val googleLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth =
+                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signIn(googleSignInAuth)
@@ -109,6 +113,32 @@ fun SignInScreen(
             }
         }
     }
+    val loginManager = LoginManager.getInstance()
+    val callbackManager = remember { CallbackManager.Factory.create() }
+    val facebookLauncher =
+        rememberLauncherForActivityResult(
+            contract = loginManager.createLogInActivityResultContract(
+                callbackManager,
+                null
+            ), onResult = { activityResult ->
+                if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
+                    val signInToken =
+                        FacebookAuthentication.getTokenFromIntent(activityResult.data)
+                    val facebookSignInAuth =
+                        FacebookAuthentication(viewModel.usersRepository, signInToken)
+                    coroutineScope.launch {
+                        val user = viewModel.signIn(facebookSignInAuth)
+                        if (user != null) {
+                            navController.navigateToMap()
+                        } else {
+                            Toast(context).apply {
+                                setText("Authentication failed!")
+                                duration = Toast.LENGTH_SHORT
+                            }.show()
+                        }
+                    }
+                }
+            })
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -230,12 +260,12 @@ fun SignInScreen(
                 )
             }
             SocialNetworksRow(
-                onFacebookClick = { /* TODO */ },
+                onFacebookClick = { facebookLauncher.launch(listOf("email", "public_profile")) },
                 onGoogleClick = {
                     coroutineScope.launch {
                         val signInIntentSender =
                             GoogleAuthentication.getSignInIntentSender(oneTapClient)
-                        launcher.launch(
+                        googleLauncher.launch(
                             IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                         )
                     }

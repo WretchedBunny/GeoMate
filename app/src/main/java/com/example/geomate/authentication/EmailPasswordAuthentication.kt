@@ -1,6 +1,7 @@
 package com.example.geomate.service.authentication
 
 import android.net.Uri
+import com.example.geomate.authentication.Authentication
 import com.example.geomate.data.models.User
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.firebase.auth.FirebaseAuth
