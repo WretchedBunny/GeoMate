@@ -2,7 +2,6 @@ package com.example.geomate.service.authentication
 
 import android.content.IntentSender
 import com.example.geomate.authentication.Authentication
-import com.example.geomate.data.models.User
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -30,14 +29,12 @@ class GoogleAuthentication(
                 )
         }
 
-        @JvmStatic
         suspend fun getSignInIntentSender(oneTapClient: SignInClient): IntentSender? = try {
             oneTapClient.beginSignIn(requestBuilder.setAutoSelectEnabled(true).build()).await()
         } catch (e: Exception) {
             null
         }?.pendingIntent?.intentSender
 
-        @JvmStatic
         suspend fun getSignUpIntentSender(oneTapClient: SignInClient): IntentSender? = try {
             oneTapClient.beginSignIn(requestBuilder.setAutoSelectEnabled(false).build()).await()
         } catch (e: Exception) {
@@ -78,13 +75,4 @@ class GoogleAuthentication(
     }
 
     override suspend fun signOut() = auth.signOut()
-
-    override fun createUser(user: FirebaseUser): User = User(
-        uid = user.uid,
-        email = user.email ?: "",
-        username = user.email?.substringBefore('@') ?: user.uid.take(20),
-        firstName = user.displayName?.substringBeforeLast(' ') ?: "",
-        lastName = user.displayName?.substringAfterLast(' ') ?: "",
-        bio = ""
-    )
 }

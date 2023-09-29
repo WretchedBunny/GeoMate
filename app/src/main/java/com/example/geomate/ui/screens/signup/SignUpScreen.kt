@@ -231,8 +231,7 @@ private fun EmailAndPasswordStage(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth =
-                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signUp(googleSignInAuth)
@@ -256,10 +255,8 @@ private fun EmailAndPasswordStage(
                 null
             ), onResult = { activityResult ->
                 if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
-                    val signInToken =
-                        FacebookAuthentication.getTokenFromIntent(activityResult.data)
-                    val facebookSignInAuth =
-                        FacebookAuthentication(viewModel.usersRepository, signInToken)
+                    val signInToken = FacebookAuthentication.getTokenFromIntent(activityResult.data)
+                    val facebookSignInAuth = FacebookAuthentication(viewModel.usersRepository, signInToken)
                     coroutineScope.launch {
                         val user = viewModel.signUp(facebookSignInAuth)
                         if (user != null) {
@@ -358,8 +355,7 @@ private fun EmailAndPasswordStage(
             onFacebookClick = { facebookLauncher.launch(listOf("email", "public_profile")) },
             onGoogleClick = {
                 coroutineScope.launch {
-                    val signInIntentSender =
-                        GoogleAuthentication.getSignUpIntentSender(oneTapClient)
+                    val signInIntentSender = GoogleAuthentication.getSignUpIntentSender(oneTapClient)
                     launcher.launch(
                         IntentSenderRequest.Builder(signInIntentSender ?: return@launch).build()
                     )

@@ -97,8 +97,7 @@ fun SignInScreen(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth =
-                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signIn(googleSignInAuth)
@@ -122,10 +121,10 @@ fun SignInScreen(
                 null
             ), onResult = { activityResult ->
                 if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
-                    val signInToken =
-                        FacebookAuthentication.getTokenFromIntent(activityResult.data)
-                    val facebookSignInAuth =
-                        FacebookAuthentication(viewModel.usersRepository, signInToken)
+                    val signInToken = FacebookAuthentication.getTokenFromIntent(activityResult.data)
+                    val facebookSignInAuth = FacebookAuthentication(
+                        viewModel.usersRepository, signInToken
+                    )
                     coroutineScope.launch {
                         val user = viewModel.signIn(facebookSignInAuth)
                         if (user != null) {

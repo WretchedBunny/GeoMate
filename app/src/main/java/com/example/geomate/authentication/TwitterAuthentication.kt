@@ -2,7 +2,6 @@ package com.example.geomate.authentication
 
 import android.app.Activity
 import android.net.Uri
-import com.example.geomate.data.models.User
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -14,6 +13,7 @@ class TwitterAuthentication(
     private val activity: Activity,
 ) : Authentication {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+
     private suspend fun auth(): FirebaseUser? = try {
         val provider = OAuthProvider.newBuilder("twitter.com").build()
         val result = auth.startActivityForSignInWithProvider(activity, provider).await()
@@ -35,12 +35,4 @@ class TwitterAuthentication(
     override suspend fun signIn(): FirebaseUser? = auth()
     override suspend fun signUp(): FirebaseUser? = auth()
     override suspend fun signOut() = auth.signOut()
-    override fun createUser(user: FirebaseUser): User = User(
-        uid = user.uid,
-        email = user.email ?: "",
-        username = user.uid.take(20),
-        firstName = user.displayName?.substringBeforeLast(' ') ?: "",
-        lastName = user.displayName?.substringAfterLast(' ') ?: "",
-        bio = "",
-    )
 }

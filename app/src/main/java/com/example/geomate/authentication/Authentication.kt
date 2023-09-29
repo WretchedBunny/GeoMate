@@ -7,5 +7,12 @@ interface Authentication {
     suspend fun signIn(): FirebaseUser?
     suspend fun signUp(): FirebaseUser?
     suspend fun signOut()
-    fun createUser(user: FirebaseUser): User
+    fun createUser(user: FirebaseUser): User = User(
+        uid = user.uid,
+        email = user.email ?: "",
+        username = user.email?.substringBefore('@') ?: user.uid.take(20),
+        firstName = user.displayName?.substringBeforeLast(' ') ?: "",
+        lastName = user.displayName?.substringAfterLast(' ') ?: "",
+        bio = ""
+    )
 }
