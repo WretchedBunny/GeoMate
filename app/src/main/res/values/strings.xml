@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GeoMate</string>
 
+    <!--FacebookAuth-->
+    <string name="facebook_app_id">832887335155156</string>
+    <string name="fb_login_protocol_scheme">fb832887335155156</string>
+    <string name="facebook_client_token">baee80fce22644392cdb327bc87bc41a</string>
+
     <!--Texts-->
     <string name="or_continue_with">Or continue with</string>
 

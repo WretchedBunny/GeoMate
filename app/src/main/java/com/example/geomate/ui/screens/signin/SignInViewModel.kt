@@ -1,8 +1,8 @@
 package com.example.geomate.ui.screens.signin
 
 import androidx.lifecycle.ViewModel
+import com.example.geomate.authentication.Authentication
 import com.example.geomate.data.repositories.UsersRepository
-import com.example.geomate.service.authentication.Authentication
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

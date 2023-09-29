@@ -1,4 +1,4 @@
-package com.example.geomate.service.authentication
+package com.example.geomate.authentication
 
 import com.example.geomate.data.models.User
 import com.google.firebase.auth.FirebaseUser

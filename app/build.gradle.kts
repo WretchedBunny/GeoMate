@@ -88,6 +88,9 @@ dependencies {
     // Authentication
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
+    //Facebook
+    implementation("com.facebook.android:facebook-login:latest.release")
+
     // Add the dependency for the Firebase Authentication library
     implementation("com.google.firebase:firebase-auth-ktx")
 
