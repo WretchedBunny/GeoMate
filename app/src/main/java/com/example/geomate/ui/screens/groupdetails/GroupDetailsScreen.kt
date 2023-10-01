@@ -31,8 +31,8 @@ import androidx.navigation.navArgument
 import com.example.geomate.R
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
+import com.example.geomate.ui.components.GroupUserRow
 import com.example.geomate.ui.components.TextFieldIcon
-import com.example.geomate.ui.components.UserRow
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.theme.spacing
 
@@ -41,7 +41,7 @@ fun NavGraphBuilder.groupDetails(
     navController: NavController
 ) {
     composable(
-        route = Destinations.GROUP_DETAILS_ROUTE + "/{groupId}",
+        route = "${Destinations.GROUP_DETAILS_ROUTE}/{groupId}",
         arguments = listOf(navArgument("groupId") { type = NavType.StringType })
     ) { backStackEntry ->
         val uiState by viewModel.uiState.collectAsState()
@@ -110,7 +110,7 @@ fun GroupDetailsScreen(
     ) {
         LazyColumn(modifier = Modifier.padding(it)) {
             itemsIndexed(uiState.users.keys.toList()) { index, user ->
-                UserRow(
+                GroupUserRow(
                     user = user to (uiState.users[user] ?: Uri.EMPTY),
                     onSelect = { /* TODO: Navigate to user's profile */ },
                     onRemove = { viewModel.removeUser(groupId, it.uid) }

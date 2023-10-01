@@ -1,7 +1,6 @@
 package com.example.geomate.ui.screens.groupdetails
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.repositories.GroupsRepository
@@ -21,10 +20,8 @@ class GroupDetailsViewModel(
 
     fun fetchGroup(groupId: String) = viewModelScope.launch {
         groupsRepository.get(groupId).collect { groupOrNull ->
-            Log.d("asdqwe", "fetchGroup: group loop")
             groupOrNull?.let { group ->
                 usersRepository.getAll(group.users).collect { users ->
-                    Log.d("asdqwe", "fetchGroup: users loop")
                     _uiState.update { it.copy(
                         name = group.name,
                         users = users.associateWith { Uri.EMPTY }.toMutableMap()

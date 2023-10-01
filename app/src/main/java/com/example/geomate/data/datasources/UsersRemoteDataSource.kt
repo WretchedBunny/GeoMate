@@ -22,11 +22,17 @@ class UsersRemoteDataSource(
         .snapshotFlow()
         .map { it.toObjects(User::class.java).firstOrNull() }
 
-    override suspend fun getAll(userIds: List<String>): Flow<List<User>> = fireStore
+    override suspend fun getAll(usersIds: List<String>): Flow<List<User>> = fireStore
         .collection("users")
-        .whereIn("uid", userIds)
+        .whereIn("uid", usersIds)
         .snapshotFlow()
         .map { it.toObjects(User::class.java) }
+
+    override suspend fun match(searchQuery: String): List<User> = fireStore
+        .collection("users")
+        .whereGreaterThanOrEqualTo("firstName", searchQuery)
+        .whereLessThan("firstName", searchQuery + '\uf8ff')
+        .get().await().toObjects(User::class.java)
 
     override suspend fun add(user: User) {
         fireStore.collection("users").add(user).await()

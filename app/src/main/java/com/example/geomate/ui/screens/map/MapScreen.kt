@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,6 +44,7 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.search.navigateToSearch
 import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -240,7 +242,11 @@ fun Map(
                     placeholder = stringResource(id = R.string.users_search_placeholder),
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.medium)
+                        .onFocusChanged {
+                            if (it.hasFocus) navController.navigateToSearch()
+                        }
                 )
                 ChipsRow(
                     chips = uiState.groups,

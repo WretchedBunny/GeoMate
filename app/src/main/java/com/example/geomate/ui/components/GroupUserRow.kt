@@ -32,7 +32,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
 
 @Composable
-fun UserRow(
+fun GroupUserRow(
     user: Pair<User, Uri>,
     onSelect: (User) -> Unit,
     onRemove: (User) -> Unit,

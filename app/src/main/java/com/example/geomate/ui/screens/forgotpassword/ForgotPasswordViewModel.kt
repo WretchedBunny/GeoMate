@@ -1,6 +1,5 @@
 package com.example.geomate.ui.screens.forgotpassword
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.repositories.UsersRepository
@@ -28,7 +27,7 @@ class ForgotPasswordViewModel(
         try {
             usersRepository.sendRecoveryEmail(uiState.value.email)
         } catch (e: Exception) {
-            Log.d("Exception", e.message.toString())
+            e.printStackTrace()
         }
     }
 }

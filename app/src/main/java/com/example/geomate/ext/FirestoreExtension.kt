@@ -1,6 +1,5 @@
 package com.example.geomate.ext
 
-import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.callbackFlow
 
 fun Query.snapshotFlow(): Flow<QuerySnapshot> = callbackFlow {
     val listener = addSnapshotListener { value, error ->
-        Log.d("asdqwe", "snapshotFlow produced: ${value?.documents?.map { it.id }}, $error")
         error?.let { close(); return@addSnapshotListener}
         value?.let { trySend(it) }
     }

@@ -9,5 +9,7 @@ object Destinations {
     const val GROUPS_ROUTE = "com.example.geomate.ui.navigation.GROUPS_ROUTE"
     const val SOCIAL_ROUTE = "com.example.geomate.ui.navigation.SOCIAL_ROUTE"
 
+    const val SEARCH_ROUTE = "com.example.geomate.ui.navigation.SEARCH_ROUTE"
+
     const val GROUP_DETAILS_ROUTE = "com.example.geomate.ui.navigation.GROUP_DETAILS_ROUTE"
 }

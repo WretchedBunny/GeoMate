@@ -6,13 +6,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
-import com.example.geomate.data.models.Group
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
@@ -23,6 +20,8 @@ import com.example.geomate.ui.screens.groups.GroupsViewModel
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModel
 import com.example.geomate.ui.screens.map.map
+import com.example.geomate.ui.screens.search.SearchViewModel
+import com.example.geomate.ui.screens.search.search
 import com.example.geomate.ui.screens.signin.SignInViewModel
 import com.example.geomate.ui.screens.signin.signIn
 import com.example.geomate.ui.screens.signup.SignUpViewModel
@@ -55,6 +54,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         usersRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
+    val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
 
@@ -80,6 +80,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             signIn(signInViewModel, navController)
             signUp(signUpViewModel, navController)
             map(mapViewModel, navController)
+            search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
         }
