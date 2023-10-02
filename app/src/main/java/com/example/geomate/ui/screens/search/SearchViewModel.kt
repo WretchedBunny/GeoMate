@@ -35,7 +35,12 @@ class SearchViewModel(
                     _uiState.update { it.copy(isLoading = true) }
                 }
 
-                val users = if (query.isBlank()) listOf() else usersRepository.match(query)
+                val users = if (query.isBlank()) listOf() else {
+                    val byFirstName = usersRepository.matchFirstName(query.uppercase()).toSet()
+                    val byLastName = usersRepository.matchLastName(query.uppercase()).toSet()
+                    val byUsername = usersRepository.matchUsername(query).toSet()
+                    (byFirstName union byLastName union byUsername).toList()
+                }
                 _uiState.update {
                     it.copy(users = users.associateWith { Uri.EMPTY })
                 }

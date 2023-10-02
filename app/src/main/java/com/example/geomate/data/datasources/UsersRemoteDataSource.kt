@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
@@ -28,10 +27,22 @@ class UsersRemoteDataSource(
         .snapshotFlow()
         .map { it.toObjects(User::class.java) }
 
-    override suspend fun match(searchQuery: String): List<User> = fireStore
+    override suspend fun matchFirstName(searchQuery: String): List<User> = fireStore
         .collection("users")
         .whereGreaterThanOrEqualTo("firstName", searchQuery)
         .whereLessThan("firstName", searchQuery + '\uf8ff')
+        .get().await().toObjects(User::class.java)
+
+    override suspend fun matchLastName(searchQuery: String): List<User> = fireStore
+        .collection("users")
+        .whereGreaterThanOrEqualTo("lastName", searchQuery)
+        .whereLessThan("lastName", searchQuery + '\uf8ff')
+        .get().await().toObjects(User::class.java)
+
+    override suspend fun matchUsername(searchQuery: String): List<User> = fireStore
+        .collection("users")
+        .whereGreaterThanOrEqualTo("username", searchQuery)
+        .whereLessThan("username", searchQuery + '\uf8ff')
         .get().await().toObjects(User::class.java)
 
     override suspend fun add(user: User) {
@@ -45,12 +56,11 @@ class UsersRemoteDataSource(
             .documents.first().reference.delete()
     }
 
-    override suspend fun getProfilePicture(userId: String): Flow<Uri> = flow {
+    override suspend fun getProfilePicture(userId: String): Uri {
         val reference = fireBucket.reference.child("profile-pictures/$userId")
-        val uri = try {
+        return try {
             reference.downloadUrl.await()
         } catch (e: Exception) { Uri.EMPTY }
-        emit(uri)
     }
 
     override suspend fun addProfilePicture(userId: String, uri: Uri) {
