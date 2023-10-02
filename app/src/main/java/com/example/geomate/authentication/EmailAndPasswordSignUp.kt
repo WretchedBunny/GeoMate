@@ -1,30 +1,24 @@
-package com.example.geomate.service.authentication
+package com.example.geomate.authentication
 
 import android.net.Uri
-import com.example.geomate.authentication.Authentication
 import com.example.geomate.data.models.User
 import com.example.geomate.data.repositories.UsersRepository
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class EmailPasswordAuthentication(
+class EmailAndPasswordSignUp(
     private val email: String,
     private val password: String,
-    private val username: String = "",
-    private val firstName: String = "",
-    private val lastName: String = "",
-    private val bio: String = "",
-    private val uri: Uri? = null,
+    private val username: String,
+    private val firstName: String,
+    private val lastName: String,
+    private val bio: String,
+    private val uri: Uri?,
     private val usersRepository: UsersRepository,
-) : Authentication {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
-    override suspend fun signIn(): FirebaseUser? = try {
-        auth.signInWithEmailAndPassword(email, password).await().user
-    } catch (e: Exception) {
-        null
-    }
+) : SignUp {
+    private val auth = Firebase.auth
 
     override suspend fun signUp(): FirebaseUser? = try {
         val user = auth.createUserWithEmailAndPassword(email, password).await().user

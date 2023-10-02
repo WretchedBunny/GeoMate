@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class GoogleAuthentication(
     private val usersRepository: UsersRepository,
     private val authCredential: SignInCredential,
-) : Authentication {
+) : SignIn, SignUp {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     companion object {

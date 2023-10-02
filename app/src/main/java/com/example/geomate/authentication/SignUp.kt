@@ -3,8 +3,7 @@ package com.example.geomate.authentication
 import com.example.geomate.data.models.User
 import com.google.firebase.auth.FirebaseUser
 
-interface Authentication {
-    suspend fun signIn(): FirebaseUser?
+fun interface SignUp {
     suspend fun signUp(): FirebaseUser?
     fun createUser(user: FirebaseUser): User = User(
         uid = user.uid,

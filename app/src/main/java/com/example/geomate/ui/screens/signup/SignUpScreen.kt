@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.authentication.EmailAndPasswordSignUp
 import com.example.geomate.authentication.FacebookAuthentication
 import com.example.geomate.authentication.GoogleAuthentication
 import com.example.geomate.authentication.TwitterAuthentication
@@ -53,7 +54,6 @@ import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
-import com.example.geomate.service.authentication.EmailPasswordAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -175,7 +175,7 @@ fun SignUpScreen(
                     next = {
                         coroutineScope.launch {
                             val user = viewModel.signUp(
-                                EmailPasswordAuthentication(
+                                EmailAndPasswordSignUp(
                                     email = uiState.email,
                                     password = uiState.password,
                                     username = uiState.username,

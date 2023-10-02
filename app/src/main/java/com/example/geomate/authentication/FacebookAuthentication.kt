@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class FacebookAuthentication(
     private val usersRepository: UsersRepository,
     private val accessToken: AccessToken?,
-) : Authentication {
+) : SignIn, SignUp {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     companion object {
