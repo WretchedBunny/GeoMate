@@ -64,6 +64,7 @@ fun GroupsScreen(
 ) {
     LaunchedEffect(Firebase.auth.uid) {
         Firebase.auth.uid?.let { viewModel.fetchGroups(it) }
+        viewModel.fetchSearchGroups()
     }
 
     Scaffold(
@@ -108,7 +109,7 @@ fun GroupsScreen(
                     onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
                     onRemove = { viewModel.removeGroup(it) },
                 )
-                if (index < uiState.groups.size-1) {
+                if (index < uiState.groups.size - 1) {
                     Divider(color = MaterialTheme.colorScheme.secondary)
                 }
             }
