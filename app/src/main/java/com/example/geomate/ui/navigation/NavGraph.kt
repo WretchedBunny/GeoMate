@@ -20,6 +20,8 @@ import com.example.geomate.ui.screens.groups.GroupsViewModel
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModel
 import com.example.geomate.ui.screens.map.map
+import com.example.geomate.ui.screens.profile.ProfileViewModel
+import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
 import com.example.geomate.ui.screens.signin.SignInViewModel
@@ -57,6 +59,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
+    val profileViewModel = ProfileViewModel(usersRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -83,6 +86,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
+            profile(profileViewModel, navController)
         }
     }
 }

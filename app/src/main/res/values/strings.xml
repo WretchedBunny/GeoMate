@@ -25,6 +25,9 @@
     <string name="groups_search_placeholder">Search for group of friends</string>
     <string name="group_details_name_placeholder">Name your group</string>
 
+    <!--Supporting texts-->
+    <string name="optional">Optional</string>
+
     <!--Errors (just stubs, provide detailed errors explanations later)-->
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Min. 8 characters long</string>
@@ -40,6 +43,13 @@
     <string name="button_forgot_password">Forgot password?</string>
     <string name="button_continue">Continue</string>
     <string name="button_back">Back</string>
+    <string name="button_send_request">Send request</string>
+    <string name="button_revoke_request">Revoke request</string>
+    <string name="button_accept">Accept</string>
+    <string name="button_decline">Decline</string>
+    <string name="button_remove">Remove</string>
+    <string name="button_turn_off_notifications">Turn off notifications</string>
+    <string name="button_turn_on_notifications">Turn on notifications</string>
 
     <!--Forgot password screen-->
     <string name="forgot_password_title">Reset password</string>
@@ -60,4 +70,9 @@
     <string name="map_all">All</string>
     <string name="map_new">New</string>
 
+    <!--Profile screen-->
+    <string name="profile_profile">Profile</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_bio">Bio</string>
+    <string name="profile_joined">Joined</string>
 </resources>

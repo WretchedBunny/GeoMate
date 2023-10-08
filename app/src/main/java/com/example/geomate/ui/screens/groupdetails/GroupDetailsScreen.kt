@@ -34,6 +34,7 @@ import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.GroupUserRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.groupDetails(
@@ -112,7 +113,7 @@ fun GroupDetailsScreen(
             itemsIndexed(uiState.users.keys.toList()) { index, user ->
                 GroupUserRow(
                     user = user to (uiState.users[user] ?: Uri.EMPTY),
-                    onSelect = { /* TODO: Navigate to user's profile */ },
+                    onSelect = { navController.navigateToProfile(it.uid) },
                     onRemove = { viewModel.removeUser(groupId, it.uid) }
                 )
                 if (index < uiState.users.size - 1) {

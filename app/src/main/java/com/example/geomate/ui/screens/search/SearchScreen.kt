@@ -34,6 +34,7 @@ import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.SearchUserRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.search(
@@ -121,7 +122,7 @@ fun SearchScreen(
                     itemsIndexed(uiState.users.keys.toList()) { index, user ->
                         SearchUserRow(
                             user = Pair(user, uiState.users[user] ?: Uri.EMPTY),
-                            onSelect = { /* TODO: Navigate to the user's profile */ }
+                            onSelect = { navController.navigateToProfile(it.uid) }
                         )
                         if (index < uiState.users.size - 1) {
                             Divider(color = MaterialTheme.colorScheme.secondary)

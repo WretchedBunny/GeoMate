@@ -515,7 +515,7 @@ private fun OptionalInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.description_placeholder),
-            supportingText = "Optional",
+            supportingText = stringResource(id = R.string.optional),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             GeoMateButton(
