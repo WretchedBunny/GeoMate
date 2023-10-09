@@ -17,7 +17,6 @@ import com.example.geomate.R
 import com.example.geomate.data.models.User
 import com.example.geomate.ui.theme.spacing
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable

@@ -1,20 +1,29 @@
 package com.example.geomate.ui.screens.profile
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -74,6 +84,12 @@ fun NavController.navigateToProfile(userId: String) {
     }
 }
 
+data class DropdownMenuItem(
+    val icon: ImageVector,
+    @StringRes val textId: Int,
+    val onClick: () -> Unit,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -107,8 +123,48 @@ fun ProfileScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Show dropdown */ }) {
+                    IconButton(onClick = { viewModel.updateIsMenuVisible(!uiState.isLoading) }) {
                         Icon(imageVector = Icons.Outlined.MoreVert, contentDescription = null)
+                    }
+                    DropdownMenu(
+                        expanded = uiState.isMenuVisible,
+                        onDismissRequest = { viewModel.updateIsMenuVisible(false) },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                    ) {
+                        val dropdownMenuItems = listOf(
+                            DropdownMenuItem(Icons.Outlined.Edit, R.string.profile_edit_profile) { /* TODO: Navigate to the "Edit profile" screen */ },
+                            DropdownMenuItem(Icons.Outlined.CameraAlt, R.string.profile_change_picture) { /* TODO: Open image picker */ },
+                            DropdownMenuItem(
+                                icon = if (isSystemInDarkTheme()) Icons.Outlined.WbSunny else Icons.Outlined.DarkMode,
+                                textId = if (isSystemInDarkTheme()) R.string.profile_light_mode else R.string.profile_dark_mode
+                            ) {
+                                // TODO: Toggle UI mode
+                            },
+                            DropdownMenuItem(Icons.Outlined.ExitToApp, R.string.profile_log_out) { /* TODO: Log out */ },
+                        )
+
+                        dropdownMenuItems.forEach {
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                                    ) {
+                                        Icon(
+                                            imageVector = it.icon,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text(
+                                            text = stringResource(id = it.textId),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                        )
+                                    }
+                                },
+                                onClick = it.onClick
+                            )
+                        }
                     }
                 },
                 modifier = Modifier.shadow(elevation = MaterialTheme.spacing.extraSmall)
@@ -117,12 +173,12 @@ fun ProfileScreen(
     ) {
         if (uiState.isLoading) {
             Box(
-                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.secondary)
+                    .padding(it)
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         } else {
             Column(

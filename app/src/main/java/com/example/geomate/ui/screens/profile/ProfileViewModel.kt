@@ -29,4 +29,8 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun updateIsMenuVisible(isMenuVisible: Boolean) {
+        _uiState.update { it.copy(isMenuVisible = isMenuVisible) }
+    }
 }
