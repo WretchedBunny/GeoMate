@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class UsersRepository(private val usersDataSource: UsersDataSource) {
     private val userFlows: MutableMap<String, Flow<User?>> = mutableMapOf()
     private val allUsersFlows: MutableMap<List<String>, Flow<List<User>>> = mutableMapOf()
-    private val profilePictures: MutableMap<String, Uri> = mutableMapOf()
+    private val profilePictures: MutableMap<String, Uri> = mutableMapOf() // TODO: Doesn't update. Solution: pair Uri with timestamp
 
     suspend fun get(userId: String): Flow<User?>{
         return userFlows[userId] ?: run {

@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.example.geomate.R
 import com.example.geomate.data.models.User
 import com.example.geomate.ui.theme.spacing
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun ProfileInfo(
@@ -44,7 +47,7 @@ fun ProfileInfo(
         // TODO: Show real date
         ProfileInfoRow(
             labelId = R.string.profile_joined,
-            text = "15 March, 2023",
+            text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(user.joined),
         )
     }
 }
