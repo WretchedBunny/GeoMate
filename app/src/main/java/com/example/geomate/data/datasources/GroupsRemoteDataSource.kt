@@ -14,6 +14,7 @@ class GroupsRemoteDataSource(private val fireStore: FirebaseFirestore) : GroupsD
         .snapshotFlow()
         .map { it.toObjects(Group::class.java) }
 
+
     override suspend fun add(group: Group) {
         fireStore.collection("groups")
             .add(group).await()

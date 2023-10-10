@@ -63,7 +63,6 @@ fun GroupsScreen(
 ) {
     LaunchedEffect(Firebase.auth.uid) {
         Firebase.auth.uid?.let { viewModel.fetchGroups(it) }
-        viewModel.fetchSearchGroups()
     }
 
     Scaffold(
@@ -102,6 +101,7 @@ fun GroupsScreen(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
         LazyColumn(modifier = Modifier.padding(it)) {
+
             itemsIndexed(uiState.groups.keys.toList()) { index, group ->
                 GroupRow(
                     group = group to (uiState.groups[group] ?: listOf()),
