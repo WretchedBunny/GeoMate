@@ -18,6 +18,8 @@ import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockReset
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -140,6 +142,7 @@ fun ProfileScreen(
                             ) {
                                 // TODO: Toggle UI mode
                             },
+                            DropdownMenuItem(Icons.Outlined.LockReset, R.string.profile_reset_password) { /* TODO: Reset password */ },
                             DropdownMenuItem(Icons.Outlined.ExitToApp, R.string.profile_log_out) { /* TODO: Log out */ },
                         )
 
