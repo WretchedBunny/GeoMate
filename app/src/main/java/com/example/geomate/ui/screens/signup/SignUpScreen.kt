@@ -151,11 +151,16 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        viewModel.updateIsFirstNameValid(uiState.firstName.isFirstNameValid())
-                        viewModel.updateIsLastNameValid(uiState.lastName.isLastNameValid())
-                        viewModel.updateIsUsernameValid(uiState.username.isUsernameValid())
+                        val isFirstNameValid = uiState.firstName.isFirstNameValid()
+                        viewModel.updateIsFirstNameValid(isFirstNameValid)
 
-                        if (uiState.isFirstNameValid && uiState.isLastNameValid && uiState.isUsernameValid) {
+                        val isLastNameValid = uiState.lastName.isLastNameValid()
+                        viewModel.updateIsLastNameValid(isLastNameValid)
+
+                        val isUsernameValid = uiState.username.isUsernameValid()
+                        viewModel.updateIsUsernameValid(isUsernameValid)
+
+                        if (isFirstNameValid && isLastNameValid && isUsernameValid) {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(2)
                             }
@@ -411,7 +416,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isFirstNameValid,
                 updateIsValid = viewModel::updateIsFirstNameValid,
                 rule = { it.length in 1..30 },
-                errorMessage = stringResource(id = R.string.invalid_firstname_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_firstname)
             )
         )
         GeoMateTextField(
@@ -432,7 +437,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isLastNameValid,
                 updateIsValid = viewModel::updateIsLastNameValid,
                 rule = { it.length in 1..30 },
-                errorMessage = stringResource(id = R.string.invalid_lastname_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_lastname)
             )
         )
         GeoMateTextField(
@@ -453,7 +458,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isUsernameValid,
                 updateIsValid = viewModel::updateIsUsernameValid,
                 rule = String::isUsernameValid, // TODO: Check if username is already taken
-                errorMessage = stringResource(id = R.string.invalid_username_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_username)
             )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {

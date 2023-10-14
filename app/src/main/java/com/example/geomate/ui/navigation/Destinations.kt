@@ -14,4 +14,5 @@ object Destinations {
     const val GROUP_DETAILS_ROUTE = "com.example.geomate.ui.navigation.GROUP_DETAILS_ROUTE"
 
     const val PROFILE_ROUTE = "com.example.geomate.ui.navigation.PROFILE_ROUTE"
+    const val EDIT_PROFILE_ROUTE = "com.example.geomate.ui.navigation.EDIT_PROFILE_ROUTE"
 }

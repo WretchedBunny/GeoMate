@@ -30,7 +30,7 @@ fun ProfileInfo(
             .background(MaterialTheme.colorScheme.background)
     ) {
         ProfileInfoRow(
-            labelId = R.string.profile_profile,
+            labelId = R.string.profile_title,
             text = "@${user.username}",
         )
         Divider(color = MaterialTheme.colorScheme.secondary)
@@ -43,7 +43,6 @@ fun ProfileInfo(
             Divider(color = MaterialTheme.colorScheme.secondary)
         }
 
-        // TODO: Show real date
         ProfileInfoRow(
             labelId = R.string.profile_joined,
             text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(user.joined),

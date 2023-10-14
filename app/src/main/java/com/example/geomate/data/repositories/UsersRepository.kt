@@ -28,6 +28,7 @@ class UsersRepository(private val usersDataSource: UsersDataSource) {
     suspend fun matchLastName(searchQuery: String): List<User> = usersDataSource.matchLastName(searchQuery)
     suspend fun matchUsername(searchQuery: String): List<User> = usersDataSource.matchUsername(searchQuery)
     suspend fun add(user: User) = usersDataSource.add(user)
+    suspend fun update(userId: String, updates: Map<String, Any>) = usersDataSource.update(userId, updates)
     suspend fun remove(user: User) = usersDataSource.remove(user)
     suspend fun getProfilePicture(userId: String): Uri {
         return profilePictures[userId] ?: run {

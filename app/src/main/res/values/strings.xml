@@ -31,10 +31,9 @@
     <!--Errors (just stubs, provide detailed errors explanations later)-->
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Min. 8 characters long</string>
-    <string name="invalid_password_sign_up">Password must contain: at least one uppercase latin letter, one digit and one special sign</string>
-    <string name="invalid_firstname_sign_up">Minimum 2 letters</string>
-    <string name="invalid_lastname_sign_up">Minimum 2 letters</string>
-    <string name="invalid_username_sign_up">Minimum 5 letters</string>
+    <string name="invalid_firstname">Minimum 2 letters</string>
+    <string name="invalid_lastname">Minimum 2 letters</string>
+    <string name="invalid_username">Minimum 5 letters</string>
 
     <!--Buttons' texts-->
     <string name="button_reset_password">Reset password</string>
@@ -71,7 +70,7 @@
     <string name="map_new">New</string>
 
     <!--Profile screen-->
-    <string name="profile_profile">Profile</string>
+    <string name="profile_title">Profile</string>
     <string name="profile_username">Username</string>
     <string name="profile_bio">Bio</string>
     <string name="profile_joined">Joined</string>
@@ -81,4 +80,7 @@
     <string name="profile_dark_mode">Dark mode</string>
     <string name="profile_reset_password">Reset password</string>
     <string name="profile_log_out">Log out</string>
+
+    <!--Edit profile screen-->
+    <string name="edit_profile_title">Edit profile</string>
 </resources>

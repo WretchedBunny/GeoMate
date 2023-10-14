@@ -49,6 +49,14 @@ class UsersRemoteDataSource(
         fireStore.collection("users").add(user).await()
     }
 
+    override suspend fun update(userId: String, updates: Map<String, Any>) {
+        fireStore.collection("users")
+            .whereEqualTo("uid", userId)
+            .get().await()
+            .documents.first().reference.update(updates)
+    }
+
+
     override suspend fun remove(user: User) {
         fireStore.collection("users")
             .whereEqualTo("uid", user.uid)

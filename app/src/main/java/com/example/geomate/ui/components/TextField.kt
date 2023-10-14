@@ -124,6 +124,7 @@ fun GeoMateTextField(
                 focusedContainerColor = containerColor,
                 unfocusedContainerColor = containerColor,
                 disabledContainerColor = containerColor,
+                errorContainerColor = containerColor,
                 cursorColor = contentColor,
                 errorCursorColor = contentColor,
                 focusedBorderColor = Color.Transparent,

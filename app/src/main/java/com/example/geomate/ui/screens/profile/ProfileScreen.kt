@@ -18,7 +18,6 @@ import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ExitToApp
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.LockReset
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.WbSunny
@@ -56,6 +55,7 @@ import com.example.geomate.statemachine.FriendshipState
 import com.example.geomate.ui.components.ProfileButtonsRow
 import com.example.geomate.ui.components.ProfileInfo
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.editprofile.navigateToEditProfile
 import com.example.geomate.ui.theme.spacing
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -114,7 +114,7 @@ fun ProfileScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.profile_profile),
+                        text = stringResource(id = R.string.profile_title),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -134,16 +134,29 @@ fun ProfileScreen(
                         modifier = Modifier.background(MaterialTheme.colorScheme.background)
                     ) {
                         val dropdownMenuItems = listOf(
-                            DropdownMenuItem(Icons.Outlined.Edit, R.string.profile_edit_profile) { /* TODO: Navigate to the "Edit profile" screen */ },
-                            DropdownMenuItem(Icons.Outlined.CameraAlt, R.string.profile_change_picture) { /* TODO: Open image picker */ },
+                            DropdownMenuItem(Icons.Outlined.Edit, R.string.profile_edit_profile) {
+                                viewModel.updateIsMenuVisible(false)
+                                navController.navigateToEditProfile()
+                            },
+                            DropdownMenuItem(Icons.Outlined.CameraAlt, R.string.profile_change_picture) {
+                                viewModel.updateIsMenuVisible(false)
+                                /* TODO: Open image picker */
+                            },
                             DropdownMenuItem(
                                 icon = if (isSystemInDarkTheme()) Icons.Outlined.WbSunny else Icons.Outlined.DarkMode,
                                 textId = if (isSystemInDarkTheme()) R.string.profile_light_mode else R.string.profile_dark_mode
                             ) {
+                                viewModel.updateIsMenuVisible(false)
                                 // TODO: Toggle UI mode
                             },
-                            DropdownMenuItem(Icons.Outlined.LockReset, R.string.profile_reset_password) { /* TODO: Reset password */ },
-                            DropdownMenuItem(Icons.Outlined.ExitToApp, R.string.profile_log_out) { /* TODO: Log out */ },
+                            DropdownMenuItem(Icons.Outlined.LockReset, R.string.profile_reset_password) {
+                                viewModel.updateIsMenuVisible(false)
+                                /* TODO: Reset password */
+                            },
+                            DropdownMenuItem(Icons.Outlined.ExitToApp, R.string.profile_log_out) {
+                                viewModel.updateIsMenuVisible(false)
+                                /* TODO: Log out */
+                            },
                         )
 
                         dropdownMenuItems.forEach {

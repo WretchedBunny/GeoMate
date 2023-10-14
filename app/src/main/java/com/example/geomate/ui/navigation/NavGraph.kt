@@ -12,6 +12,8 @@ import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.ui.screens.editprofile.EditProfileViewModel
+import com.example.geomate.ui.screens.editprofile.editProfile
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
 import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
@@ -60,6 +62,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
     val profileViewModel = ProfileViewModel(usersRepository)
+    val editProfileViewModel = EditProfileViewModel(usersRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -87,6 +90,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
             profile(profileViewModel, navController)
+            editProfile(editProfileViewModel, navController)
         }
     }
 }

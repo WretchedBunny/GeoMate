@@ -11,6 +11,7 @@ interface UsersDataSource {
     suspend fun matchLastName(searchQuery: String): List<User>
     suspend fun matchUsername(searchQuery: String): List<User>
     suspend fun add(user: User)
+    suspend fun update(userId: String, updates: Map<String, Any>)
     suspend fun remove(user: User)
     suspend fun getProfilePicture(userId: String): Uri
     suspend fun addProfilePicture(userId: String, uri: Uri)
