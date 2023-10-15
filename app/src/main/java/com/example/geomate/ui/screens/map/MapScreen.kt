@@ -101,8 +101,8 @@ fun MapScreen(
 
     LaunchedEffect(Firebase.auth.uid) {
         Firebase.auth.uid?.let {
-            viewModel.fetchGroups(it)
             viewModel.fetchProfilePicture(it)
+            viewModel.fetchGroups(it)
         }
     }
 
@@ -173,8 +173,17 @@ fun Map(
                     if (isSystemInDarkTheme()) R.drawable.you_marker_dark
                     else R.drawable.you_marker_light
                 val vectorDrawable = context.resources.getDrawable(drawableId, null)
-                vectorDrawable.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
-                val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                vectorDrawable.setBounds(
+                    0,
+                    0,
+                    vectorDrawable.intrinsicWidth,
+                    vectorDrawable.intrinsicHeight
+                )
+                val bitmap = Bitmap.createBitmap(
+                    vectorDrawable.intrinsicWidth,
+                    vectorDrawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
                 val canvas = Canvas(bitmap)
                 vectorDrawable.draw(canvas)
                 Marker(

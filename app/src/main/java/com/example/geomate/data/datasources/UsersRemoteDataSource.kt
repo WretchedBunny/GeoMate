@@ -68,7 +68,9 @@ class UsersRemoteDataSource(
         val reference = fireBucket.reference.child("profile-pictures/$userId")
         return try {
             reference.downloadUrl.await()
-        } catch (e: Exception) { Uri.EMPTY }
+        } catch (e: Exception) {
+            Uri.EMPTY
+        }
     }
 
     override suspend fun addProfilePicture(userId: String, uri: Uri) {
@@ -77,6 +79,10 @@ class UsersRemoteDataSource(
     }
 
     override suspend fun sendRecoveryEmail(email: String) {
+        fireAuth.sendPasswordResetEmail(email).await()
+    }
+
+    override suspend fun sendRecoveryPassword(email: String) {
         fireAuth.sendPasswordResetEmail(email).await()
     }
 }

@@ -1,5 +1,8 @@
 package com.example.geomate.ui.screens.profile
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,6 +60,7 @@ import com.example.geomate.ui.components.ProfileButtonsRow
 import com.example.geomate.ui.components.ProfileInfo
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.editprofile.navigateToEditProfile
+import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -64,7 +69,7 @@ import com.skydoves.landscapist.fresco.FrescoImage
 
 fun NavGraphBuilder.profile(
     viewModel: ProfileViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     composable(
         route = "${Destinations.PROFILE_ROUTE}/{userId}",
@@ -100,6 +105,11 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     navController: NavController,
 ) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = viewModel::updateProfilePictureUri
+    )
     LaunchedEffect(Unit) {
         viewModel.fetchProfilePicture(userId)
         viewModel.fetchUser(userId)
@@ -138,24 +148,38 @@ fun ProfileScreen(
                                 viewModel.updateIsMenuVisible(false)
                                 navController.navigateToEditProfile()
                             },
-                            DropdownMenuItem(Icons.Outlined.CameraAlt, R.string.profile_change_picture) {
+                            DropdownMenuItem(
+                                Icons.Outlined.CameraAlt,
+                                R.string.profile_change_picture
+                            ) {
                                 viewModel.updateIsMenuVisible(false)
-                                /* TODO: Open image picker */
+                                launcher.launch("image/*")
                             },
                             DropdownMenuItem(
                                 icon = if (isSystemInDarkTheme()) Icons.Outlined.WbSunny else Icons.Outlined.DarkMode,
                                 textId = if (isSystemInDarkTheme()) R.string.profile_light_mode else R.string.profile_dark_mode
                             ) {
                                 viewModel.updateIsMenuVisible(false)
-                                // TODO: Toggle UI mode
                             },
-                            DropdownMenuItem(Icons.Outlined.LockReset, R.string.profile_reset_password) {
+                            DropdownMenuItem(
+                                Icons.Outlined.LockReset,
+                                R.string.profile_reset_password
+                            ) {
                                 viewModel.updateIsMenuVisible(false)
-                                /* TODO: Reset password */
+                                viewModel.onResetPasswordClick()
+                                navController.navigateToSignIn()
+                                Toast.makeText(
+                                    context,
+                                    "Check your mail for reset link",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             },
-                            DropdownMenuItem(Icons.Outlined.ExitToApp, R.string.profile_log_out) {
-                                viewModel.updateIsMenuVisible(false)
-                                /* TODO: Log out */
+                            DropdownMenuItem(
+                                Icons.Outlined.ExitToApp,
+                                R.string.profile_log_out
+                            ) {
+                                Firebase.auth.signOut()
+                                navController.navigateToSignIn()
                             },
                         )
 
@@ -217,7 +241,10 @@ fun ProfileScreen(
                     FrescoImage(
                         imageUrl = uiState.profilePictureUri.toString(),
                         failure = {
-                            Image(painter = painterResource(id = drawableId), contentDescription = null)
+                            Image(
+                                painter = painterResource(id = drawableId),
+                                contentDescription = null
+                            )
                         },
                         imageOptions = ImageOptions(contentScale = ContentScale.Crop),
                         modifier = Modifier

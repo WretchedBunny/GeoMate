@@ -16,4 +16,5 @@ interface UsersDataSource {
     suspend fun getProfilePicture(userId: String): Uri
     suspend fun addProfilePicture(userId: String, uri: Uri)
     suspend fun sendRecoveryEmail(email: String)
+    suspend fun sendRecoveryPassword(email: String)
 }
