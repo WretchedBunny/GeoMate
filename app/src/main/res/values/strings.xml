@@ -80,6 +80,7 @@
     <string name="profile_dark_mode">Dark mode</string>
     <string name="profile_reset_password">Reset password</string>
     <string name="profile_log_out">Log out</string>
+    <string name="profile_check_mail">Check your mail for reset link</string>
 
     <!--Edit profile screen-->
     <string name="edit_profile_title">Edit profile</string>

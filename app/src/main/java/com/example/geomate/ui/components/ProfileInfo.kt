@@ -45,7 +45,7 @@ fun ProfileInfo(
 
         ProfileInfoRow(
             labelId = R.string.profile_joined,
-            text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(user.joined),
+            text = SimpleDateFormat("dd MMM yyyy", Locale.US).format(user.joined),
         )
     }
 }

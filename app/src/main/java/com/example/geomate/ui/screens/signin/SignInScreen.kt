@@ -76,8 +76,8 @@ fun NavGraphBuilder.signIn(
 }
 
 fun NavController.navigateToSignIn() {
-    popBackStack()
     navigate(Destinations.SIGN_IN_ROUTE) {
+        popBackStack(destinationId = graph.id, inclusive = false)
         launchSingleTop = true
     }
 }
@@ -97,7 +97,8 @@ fun SignInScreen(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth =
+                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signIn(googleSignInAuth)
