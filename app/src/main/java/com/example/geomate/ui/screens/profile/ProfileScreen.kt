@@ -169,7 +169,7 @@ fun ProfileScreen(
                                 viewModel.onResetPasswordClick()
                                 Toast.makeText(
                                     context,
-                                    "Check your mail for reset link",
+                                    context.getString(R.string.profile_check_mail),
                                     Toast.LENGTH_LONG
                                 ).show()
                             },
