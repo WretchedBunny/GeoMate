@@ -44,7 +44,7 @@ class ProfileViewModel(
 
     fun onResetPasswordClick() = viewModelScope.launch {
         try {
-            usersRepository.sendRecoveryPassword(uiState.value.user.email)
+            usersRepository.sendRecoveryEmail(uiState.value.user.email)
         } catch (e: Exception) {
             e.printStackTrace()
         }

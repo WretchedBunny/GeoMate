@@ -81,8 +81,4 @@ class UsersRemoteDataSource(
     override suspend fun sendRecoveryEmail(email: String) {
         fireAuth.sendPasswordResetEmail(email).await()
     }
-
-    override suspend fun sendRecoveryPassword(email: String) {
-        fireAuth.sendPasswordResetEmail(email).await()
-    }
 }

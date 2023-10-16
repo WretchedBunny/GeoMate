@@ -54,5 +54,4 @@ class UsersRepository(private val usersDataSource: UsersDataSource) {
     }
 
     suspend fun sendRecoveryEmail(email: String) = usersDataSource.sendRecoveryEmail(email)
-    suspend fun sendRecoveryPassword(email: String) = usersDataSource.sendRecoveryPassword(email)
 }

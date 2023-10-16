@@ -167,7 +167,6 @@ fun ProfileScreen(
                             ) {
                                 viewModel.updateIsMenuVisible(false)
                                 viewModel.onResetPasswordClick()
-                                navController.navigateToSignIn()
                                 Toast.makeText(
                                     context,
                                     "Check your mail for reset link",
