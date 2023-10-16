@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens.profile
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -108,8 +109,9 @@ fun ProfileScreen(
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = viewModel::updateProfilePictureUri
-    )
+    ) { uri: Uri? ->
+        uri?.let { viewModel.updateProfilePictureUri(it) }
+    }
     LaunchedEffect(Unit) {
         viewModel.fetchProfilePicture(userId)
         viewModel.fetchUser(userId)

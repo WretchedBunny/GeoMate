@@ -489,7 +489,7 @@ private fun OptionalInformationStage(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        viewModel.updateProfilePictureUri(uri)
+        uri?.let { viewModel.updateProfilePictureUri(it) }
     }
 
     Column(
