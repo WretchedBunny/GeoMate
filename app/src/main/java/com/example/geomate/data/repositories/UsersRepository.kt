@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class UsersRepository(private val usersDataSource: UsersDataSource) {
     private val userFlows: MutableMap<String, Flow<User?>> = mutableMapOf()
     private val allUsersFlows: MutableMap<List<String>, Flow<List<User>>> = mutableMapOf()
-    private val profilePictures: MutableMap<String, Uri> =
-        mutableMapOf() // TODO: Doesn't update. Solution: pair Uri with timestamp
+    private val profilePictures: MutableMap<String, Uri> = mutableMapOf()
 
     suspend fun get(userId: String): Flow<User?> {
         return userFlows[userId] ?: run {
@@ -49,8 +48,10 @@ class UsersRepository(private val usersDataSource: UsersDataSource) {
         }
     }
 
-    suspend fun addProfilePicture(userId: String, uri: Uri) =
+    suspend fun addProfilePicture(userId: String, uri: Uri) {
+        profilePictures[userId] = uri
         usersDataSource.addProfilePicture(userId, uri)
+    }
 
     suspend fun sendRecoveryEmail(email: String) = usersDataSource.sendRecoveryEmail(email)
     suspend fun sendRecoveryPassword(email: String) = usersDataSource.sendRecoveryPassword(email)
