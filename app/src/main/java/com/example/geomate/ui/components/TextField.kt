@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -56,6 +57,7 @@ fun GeoMateTextField(
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Next,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     val isValid = inputValidator?.isValid ?: true
 
@@ -122,6 +124,7 @@ fun GeoMateTextField(
                 focusedContainerColor = containerColor,
                 unfocusedContainerColor = containerColor,
                 disabledContainerColor = containerColor,
+                errorContainerColor = containerColor,
                 cursorColor = contentColor,
                 errorCursorColor = contentColor,
                 focusedBorderColor = Color.Transparent,
@@ -147,6 +150,7 @@ fun GeoMateTextField(
             isError = !isValid,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
+            keyboardActions = keyboardActions,
             modifier = Modifier.fillMaxWidth().wrapContentHeight()
         )
         supportingButton?.let {

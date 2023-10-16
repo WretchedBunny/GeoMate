@@ -36,12 +36,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.authentication.EmailAndPasswordSignIn
 import com.example.geomate.authentication.FacebookAuthentication
+import com.example.geomate.authentication.GoogleAuthentication
 import com.example.geomate.authentication.TwitterAuthentication
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isPasswordValid
-import com.example.geomate.service.authentication.EmailPasswordAuthentication
-import com.example.geomate.service.authentication.GoogleAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -76,8 +76,8 @@ fun NavGraphBuilder.signIn(
 }
 
 fun NavController.navigateToSignIn() {
-    popBackStack()
     navigate(Destinations.SIGN_IN_ROUTE) {
+        popBackStack(destinationId = graph.id, inclusive = false)
         launchSingleTop = true
     }
 }
@@ -97,7 +97,8 @@ fun SignInScreen(
     ) { result ->
         if (result.resultCode == ComponentActivity.RESULT_OK) {
             val signInCredentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-            val googleSignInAuth = GoogleAuthentication(viewModel.usersRepository, signInCredentials)
+            val googleSignInAuth =
+                GoogleAuthentication(viewModel.usersRepository, signInCredentials)
             coroutineScope.launch {
                 // TODO: Refactor this part (repeating down below)
                 val user = viewModel.signIn(googleSignInAuth)
@@ -237,11 +238,9 @@ fun SignInScreen(
                         if (isEmailValid && isPasswordValid) {
                             coroutineScope.launch {
                                 val user = viewModel.signIn(
-                                    // TODO: Consider splitting all Authentication implementations into SignIn and SingUp specific
-                                    EmailPasswordAuthentication(
+                                    EmailAndPasswordSignIn(
                                         email = uiState.email,
-                                        password = uiState.password,
-                                        usersRepository = viewModel.usersRepository
+                                        password = uiState.password
                                     )
                                 )
                                 if (user != null) {

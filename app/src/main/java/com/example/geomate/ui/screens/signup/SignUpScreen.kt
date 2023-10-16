@@ -45,15 +45,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.authentication.EmailAndPasswordSignUp
 import com.example.geomate.authentication.FacebookAuthentication
+import com.example.geomate.authentication.GoogleAuthentication
 import com.example.geomate.authentication.TwitterAuthentication
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ext.isFirstNameValid
 import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
-import com.example.geomate.service.authentication.EmailPasswordAuthentication
-import com.example.geomate.service.authentication.GoogleAuthentication
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
@@ -151,11 +151,16 @@ fun SignUpScreen(
                     uiState = uiState,
                     viewModel = viewModel,
                     next = {
-                        viewModel.updateIsFirstNameValid(uiState.firstName.isFirstNameValid())
-                        viewModel.updateIsLastNameValid(uiState.lastName.isLastNameValid())
-                        viewModel.updateIsUsernameValid(uiState.username.isUsernameValid())
+                        val isFirstNameValid = uiState.firstName.isFirstNameValid()
+                        viewModel.updateIsFirstNameValid(isFirstNameValid)
 
-                        if (uiState.isFirstNameValid && uiState.isLastNameValid && uiState.isUsernameValid) {
+                        val isLastNameValid = uiState.lastName.isLastNameValid()
+                        viewModel.updateIsLastNameValid(isLastNameValid)
+
+                        val isUsernameValid = uiState.username.isUsernameValid()
+                        viewModel.updateIsUsernameValid(isUsernameValid)
+
+                        if (isFirstNameValid && isLastNameValid && isUsernameValid) {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(2)
                             }
@@ -175,7 +180,7 @@ fun SignUpScreen(
                     next = {
                         coroutineScope.launch {
                             val user = viewModel.signUp(
-                                EmailPasswordAuthentication(
+                                EmailAndPasswordSignUp(
                                     email = uiState.email,
                                     password = uiState.password,
                                     username = uiState.username,
@@ -411,7 +416,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isFirstNameValid,
                 updateIsValid = viewModel::updateIsFirstNameValid,
                 rule = { it.length in 1..30 },
-                errorMessage = stringResource(id = R.string.invalid_firstname_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_firstname)
             )
         )
         GeoMateTextField(
@@ -432,7 +437,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isLastNameValid,
                 updateIsValid = viewModel::updateIsLastNameValid,
                 rule = { it.length in 1..30 },
-                errorMessage = stringResource(id = R.string.invalid_lastname_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_lastname)
             )
         )
         GeoMateTextField(
@@ -453,7 +458,7 @@ private fun PublicInformationStage(
                 isValid = uiState.isUsernameValid,
                 updateIsValid = viewModel::updateIsUsernameValid,
                 rule = String::isUsernameValid, // TODO: Check if username is already taken
-                errorMessage = stringResource(id = R.string.invalid_username_sign_up)
+                errorMessage = stringResource(id = R.string.invalid_username)
             )
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
@@ -484,7 +489,7 @@ private fun OptionalInformationStage(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        viewModel.updateProfilePictureUri(uri)
+        uri?.let { viewModel.updateProfilePictureUri(it) }
     }
 
     Column(
@@ -515,7 +520,7 @@ private fun OptionalInformationStage(
                 }
             ),
             placeholder = stringResource(id = R.string.description_placeholder),
-            supportingText = "Optional",
+            supportingText = stringResource(id = R.string.optional),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             GeoMateButton(

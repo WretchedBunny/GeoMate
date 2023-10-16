@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,6 +44,8 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.profile.navigateToProfile
+import com.example.geomate.ui.screens.search.navigateToSearch
 import com.example.geomate.ui.theme.spacing
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionsRequired
@@ -98,8 +101,8 @@ fun MapScreen(
 
     LaunchedEffect(Firebase.auth.uid) {
         Firebase.auth.uid?.let {
-            viewModel.fetchGroups(it)
             viewModel.fetchProfilePicture(it)
+            viewModel.fetchGroups(it)
         }
     }
 
@@ -170,8 +173,17 @@ fun Map(
                     if (isSystemInDarkTheme()) R.drawable.you_marker_dark
                     else R.drawable.you_marker_light
                 val vectorDrawable = context.resources.getDrawable(drawableId, null)
-                vectorDrawable.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
-                val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                vectorDrawable.setBounds(
+                    0,
+                    0,
+                    vectorDrawable.intrinsicWidth,
+                    vectorDrawable.intrinsicHeight
+                )
+                val bitmap = Bitmap.createBitmap(
+                    vectorDrawable.intrinsicWidth,
+                    vectorDrawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
                 val canvas = Canvas(bitmap)
                 vectorDrawable.draw(canvas)
                 Marker(
@@ -211,7 +223,11 @@ fun Map(
                             )
                         },
                         TextFieldIcon(
-                            onClick = { /* TODO: Navigate to the profile screen */ }
+                            onClick = {
+                                Firebase.auth.uid?.let {
+                                    navController.navigateToProfile(it)
+                                }
+                            }
                         ) { modifier ->
                             val drawableId =
                                 if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
@@ -235,7 +251,11 @@ fun Map(
                     placeholder = stringResource(id = R.string.users_search_placeholder),
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.medium)
+                        .onFocusChanged {
+                            if (it.hasFocus) navController.navigateToSearch()
+                        }
                 )
                 ChipsRow(
                     chips = uiState.groups,
