@@ -44,9 +44,8 @@ class MapViewModel(
     }
 
     suspend fun fetchProfilePicture(userId: String) = viewModelScope.launch {
-        usersRepository.getProfilePicture(userId).collect { uri ->
-            _uiState.update { it.copy(profilePictureUri = uri) }
-        }
+        val uri = usersRepository.getProfilePicture(userId)
+        _uiState.update { it.copy(profilePictureUri = uri) }
     }
 
     fun startMonitoringUserLocation() {

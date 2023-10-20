@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 class TwitterAuthentication(
     private val usersRepository: UsersRepository,
     private val activity: Activity,
-) : Authentication {
+) : SignIn, SignUp {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private suspend fun auth(): FirebaseUser? = try {
@@ -34,5 +34,4 @@ class TwitterAuthentication(
 
     override suspend fun signIn(): FirebaseUser? = auth()
     override suspend fun signUp(): FirebaseUser? = auth()
-    override suspend fun signOut() = auth.signOut()
 }

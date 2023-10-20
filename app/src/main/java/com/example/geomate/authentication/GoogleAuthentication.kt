@@ -1,7 +1,6 @@
-package com.example.geomate.service.authentication
+package com.example.geomate.authentication
 
 import android.content.IntentSender
-import com.example.geomate.authentication.Authentication
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -14,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class GoogleAuthentication(
     private val usersRepository: UsersRepository,
     private val authCredential: SignInCredential,
-) : Authentication {
+) : SignIn, SignUp {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     companion object {
@@ -73,6 +72,4 @@ class GoogleAuthentication(
     } catch (e: Exception) {
         null
     }
-
-    override suspend fun signOut() = auth.signOut()
 }

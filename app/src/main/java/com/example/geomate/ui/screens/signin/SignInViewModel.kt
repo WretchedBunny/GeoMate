@@ -1,7 +1,7 @@
 package com.example.geomate.ui.screens.signin
 
 import androidx.lifecycle.ViewModel
-import com.example.geomate.authentication.Authentication
+import com.example.geomate.authentication.SignIn
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ class SignInViewModel(val usersRepository: UsersRepository) : ViewModel() {
         _uiState.update { it.copy(isPasswordValid = isPasswordValid) }
     }
 
-    suspend fun signIn(authentication: Authentication): FirebaseUser? {
+    suspend fun signIn(authentication: SignIn): FirebaseUser? {
         return authentication.signIn()
     }
 }

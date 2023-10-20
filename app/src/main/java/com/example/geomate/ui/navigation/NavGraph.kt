@@ -12,12 +12,20 @@ import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.ui.screens.editprofile.EditProfileViewModel
+import com.example.geomate.ui.screens.editprofile.editProfile
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
+import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModel
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModel
 import com.example.geomate.ui.screens.map.map
+import com.example.geomate.ui.screens.profile.ProfileViewModel
+import com.example.geomate.ui.screens.profile.profile
+import com.example.geomate.ui.screens.search.SearchViewModel
+import com.example.geomate.ui.screens.search.search
 import com.example.geomate.ui.screens.signin.SignInViewModel
 import com.example.geomate.ui.screens.signin.signIn
 import com.example.geomate.ui.screens.signup.SignUpViewModel
@@ -50,7 +58,11 @@ fun NavGraph(application: Application, navController: NavHostController) {
         usersRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
+    val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
+    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
+    val profileViewModel = ProfileViewModel(usersRepository)
+    val editProfileViewModel = EditProfileViewModel(usersRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
         null -> Destinations.SIGN_IN_ROUTE
@@ -74,7 +86,11 @@ fun NavGraph(application: Application, navController: NavHostController) {
             signIn(signInViewModel, navController)
             signUp(signUpViewModel, navController)
             map(mapViewModel, navController)
+            search(searchViewModel, navController)
             groups(groupViewModel, navController)
+            groupDetails(groupDetailsViewModel, navController)
+            profile(profileViewModel, navController)
+            editProfile(editProfileViewModel, navController)
         }
     }
 }
