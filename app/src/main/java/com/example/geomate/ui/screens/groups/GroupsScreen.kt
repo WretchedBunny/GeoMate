@@ -102,8 +102,11 @@ fun GroupsScreen(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
         LazyColumn(modifier = Modifier.padding(it)) {
-
-            itemsIndexed(uiState.groups.keys.toList()) { index, group ->
+            val groups = when (uiState.searchQuery.isBlank()) {
+                true -> uiState.groups.keys.toList()
+                false -> viewModel.matchGroups.value.keys.toList()
+            }
+            itemsIndexed(groups) { index, group ->
                 GroupRow(
                     group = group to (uiState.groups[group] ?: listOf()),
                     onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
