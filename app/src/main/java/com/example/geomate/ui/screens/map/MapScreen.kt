@@ -44,6 +44,7 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.notifications.navigateToNotifications
 import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.screens.search.navigateToSearch
 import com.example.geomate.ui.theme.spacing
@@ -211,9 +212,7 @@ fun Map(
                         }
                     ),
                     trailingIcons = listOf(
-                        TextFieldIcon(
-                            onClick = { /* TODO: Navigate to the notification screen */ }
-                        ) {
+                        TextFieldIcon(navController::navigateToNotifications) {
                             IconWithNotification(
                                 icon = Icons.Outlined.Notifications,
                                 notificationsCount = 4,

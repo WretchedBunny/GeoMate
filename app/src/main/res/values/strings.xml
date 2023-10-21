@@ -69,6 +69,9 @@
     <string name="map_all">All</string>
     <string name="map_new">New</string>
 
+    <!--Notifications screen-->
+    <string name="notifications_title">Notifications</string>
+
     <!--Profile screen-->
     <string name="profile_title">Profile</string>
     <string name="profile_username">Username</string>
