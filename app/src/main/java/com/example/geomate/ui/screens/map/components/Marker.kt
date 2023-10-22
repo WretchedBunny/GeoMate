@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.map.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

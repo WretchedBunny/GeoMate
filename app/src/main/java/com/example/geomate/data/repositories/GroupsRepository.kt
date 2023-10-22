@@ -8,21 +8,25 @@ class GroupsRepository(private val groupsDataSource: GroupsDataSource) {
     private val allGroupsFlows: MutableMap<String, Flow<List<Group>>> = mutableMapOf()
     private val groupFlows: MutableMap<String, Flow<Group?>> = mutableMapOf()
 
-    suspend fun getAll(ownerId: String): Flow<List<Group>> {
+    suspend fun getAllAsFlow(ownerId: String): Flow<List<Group>> {
         return allGroupsFlows[ownerId] ?: run {
-            val groups = groupsDataSource.getAll(ownerId)
+            val groups = groupsDataSource.getAllAsFlow(ownerId)
             allGroupsFlows[ownerId] = groups
             return groups
         }
     }
-    suspend fun get(groupId: String): Flow<Group?> {
+
+    suspend fun getSingleAsFlow(groupId: String): Flow<Group?> {
         return groupFlows[groupId] ?: run {
-            val group = groupsDataSource.get(groupId)
+            val group = groupsDataSource.getSingleAsFlow(groupId)
             groupFlows[groupId] = group
             return group
         }
     }
+
     suspend fun remove(group: Group) = groupsDataSource.remove(group)
+
     suspend fun add(group: Group) = groupsDataSource.add(group)
+
     suspend fun removeUser(groupId: String, userId: String) = groupsDataSource.removeUser(groupId, userId)
 }

@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.map.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,7 @@ import com.example.geomate.data.models.Group
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun ChipsRow(
+fun Chips(
     chips: Map<Group, Boolean>,
     isAllSelected: Boolean,
     toggleGroup: (Group) -> Unit,
@@ -31,21 +31,21 @@ fun ChipsRow(
     ) {
         item { Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium - MaterialTheme.spacing.small)) }
         item {
-            Chips(
+            Chip(
                 text = stringResource(id = R.string.map_all),
                 isSelected = isAllSelected,
                 onClick = { toggleAllGroups(isAllSelected) }
             )
         }
         items(chips.keys.toList()) {
-            Chips(
+            Chip(
                 text = it.name,
                 isSelected = chips[it] ?: false,
                 onClick = { toggleGroup(it) }
             )
         }
         item {
-            Chips(
+            Chip(
                 icon = Icons.Outlined.Add,
                 text = stringResource(id = R.string.map_new),
                 isSelected = false,

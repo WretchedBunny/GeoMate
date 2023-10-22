@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.signup
+package com.example.geomate.ui.screens.authentication.signup
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -55,17 +55,17 @@ import com.example.geomate.ext.isLastNameValid
 import com.example.geomate.ext.isPasswordValid
 import com.example.geomate.ext.isUsernameValid
 import com.example.geomate.ui.components.ButtonType
-import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.ProfilePicturePicker
-import com.example.geomate.ui.components.SocialNetworksRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.authentication.components.Footer
+import com.example.geomate.ui.screens.authentication.components.Header
+import com.example.geomate.ui.screens.authentication.components.SocialNetworks
+import com.example.geomate.ui.screens.authentication.signin.navigateToSignIn
 import com.example.geomate.ui.screens.map.navigateToMap
-import com.example.geomate.ui.screens.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
 import com.facebook.CallbackManager
 import com.facebook.login.LoginManager
@@ -356,7 +356,7 @@ private fun EmailAndPasswordStage(
                 type = ButtonType.Primary
             )
         }
-        SocialNetworksRow(
+        SocialNetworks(
             onFacebookClick = { facebookLauncher.launch(listOf("email", "public_profile")) },
             onGoogleClick = {
                 coroutineScope.launch {

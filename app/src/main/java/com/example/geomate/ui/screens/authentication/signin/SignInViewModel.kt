@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.signin
+package com.example.geomate.ui.screens.authentication.signin
 
 import androidx.lifecycle.ViewModel
 import com.example.geomate.authentication.SignIn

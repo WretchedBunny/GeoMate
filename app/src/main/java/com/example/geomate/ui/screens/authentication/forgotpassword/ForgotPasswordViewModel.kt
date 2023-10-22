@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.forgotpassword
+package com.example.geomate.ui.screens.authentication.forgotpassword
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

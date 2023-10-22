@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.signup
+package com.example.geomate.ui.screens.authentication.signup
 
 import android.net.Uri
 

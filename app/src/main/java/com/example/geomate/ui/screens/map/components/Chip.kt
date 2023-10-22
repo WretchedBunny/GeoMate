@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.map.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun Chips(
+fun Chip(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     text: String,

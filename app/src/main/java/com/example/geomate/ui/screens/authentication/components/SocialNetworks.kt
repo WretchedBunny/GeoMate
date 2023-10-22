@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.authentication.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,10 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.geomate.R
+import com.example.geomate.ui.components.GeoMateIconButton
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun SocialNetworksRow(
+fun SocialNetworks(
     onFacebookClick: () -> Unit,
     onGoogleClick: () -> Unit,
     onTwitterClick: () -> Unit,

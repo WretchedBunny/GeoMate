@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.signin
+package com.example.geomate.ui.screens.authentication.signin
 
 data class SignInUiState(
     val email: String = "",

@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.groups.components
 
 import android.net.Uri
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import com.example.geomate.data.models.Group
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun GroupRow(
+fun Group(
     group: Pair<Group, List<Uri>>,
     onSelect: (Group) -> Unit,
     onRemove: (Group) -> Unit,
@@ -36,7 +36,7 @@ fun GroupRow(
                 vertical = MaterialTheme.spacing.small
             )
     ) {
-        ProfilePicturesRow(uris = group.second)
+        ProfilePictures(uris = group.second)
         Text(
             text = group.first.name,
             style = MaterialTheme.typography.bodyLarge,

@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.groupdetails.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -32,7 +32,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
 
 @Composable
-fun GroupUserRow(
+fun GroupUser(
     user: Pair<User, Uri>,
     onSelect: (User) -> Unit,
     onRemove: (User) -> Unit,

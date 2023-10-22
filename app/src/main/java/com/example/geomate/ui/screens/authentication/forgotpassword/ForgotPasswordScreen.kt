@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.forgotpassword
+package com.example.geomate.ui.screens.authentication.forgotpassword
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,14 +22,14 @@ import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ext.isEmailValid
 import com.example.geomate.ui.components.ButtonType
-import com.example.geomate.ui.components.Footer
 import com.example.geomate.ui.components.GeoMateButton
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.Header
 import com.example.geomate.ui.components.InputValidator
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
-import com.example.geomate.ui.screens.signin.navigateToSignIn
+import com.example.geomate.ui.screens.authentication.components.Footer
+import com.example.geomate.ui.screens.authentication.components.Header
+import com.example.geomate.ui.screens.authentication.signin.navigateToSignIn
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.forgotPassword(

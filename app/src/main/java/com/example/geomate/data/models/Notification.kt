@@ -1,20 +1,12 @@
 package com.example.geomate.data.models
 
-import java.time.LocalDateTime
+import android.net.Uri
 import java.util.Date
 
 sealed class Notification {
     data class FriendshipRequest(
-        val senderId: String = "",
+        val sender: User = User(),
+        val senderProfilePicture: Uri = Uri.EMPTY,
         val createdAt: Date = Date(),
-    ) : Notification() {
-        companion object {
-            fun from(
-                friendshipRequest: com.example.geomate.data.models.FriendshipRequest
-            ): FriendshipRequest = FriendshipRequest(
-                senderId = friendshipRequest.senderId,
-                createdAt = friendshipRequest.createdAt,
-            )
-        }
-    }
+    ) : Notification()
 }

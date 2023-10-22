@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.components.bottomnavbar
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat

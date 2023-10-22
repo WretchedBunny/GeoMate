@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.components.bottomnavbar
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.MaterialTheme
@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.geomate.ui.components.IconWithNotification
 
 @Composable
 fun RowScope.BottomNavigationBarItem(

@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.search.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -27,7 +27,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
 
 @Composable
-fun SearchUserRow(
+fun User(
     user: Pair<User, Uri>,
     onSelect: (User) -> Unit,
     modifier: Modifier = Modifier

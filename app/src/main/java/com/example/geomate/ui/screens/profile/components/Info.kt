@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.profile.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun ProfileInfo(
+fun Info(
     user: User,
     modifier: Modifier = Modifier
 ) {

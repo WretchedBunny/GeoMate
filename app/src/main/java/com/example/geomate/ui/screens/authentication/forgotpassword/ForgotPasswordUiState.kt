@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.forgotpassword
+package com.example.geomate.ui.screens.authentication.forgotpassword
 
 data class ForgotPasswordUiState(
     val email: String = "",

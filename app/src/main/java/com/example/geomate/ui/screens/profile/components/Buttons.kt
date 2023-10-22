@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.geomate.R
 import com.example.geomate.statemachine.FriendshipState
+import com.example.geomate.ui.components.ButtonType
+import com.example.geomate.ui.components.GeoMateButtonWithIcon
 import com.example.geomate.ui.theme.spacing
 
 @Composable
-fun ProfileButtonsRow(
+fun Buttons(
     friendshipState: FriendshipState,
     modifier: Modifier = Modifier
 ) {

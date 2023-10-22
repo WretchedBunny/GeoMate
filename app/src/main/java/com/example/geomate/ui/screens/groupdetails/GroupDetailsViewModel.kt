@@ -19,9 +19,9 @@ class GroupDetailsViewModel(
     val uiState: StateFlow<GroupDetailsUiState> = _uiState.asStateFlow()
 
     fun fetchGroup(groupId: String) = viewModelScope.launch {
-        groupsRepository.get(groupId).collect { groupOrNull ->
+        groupsRepository.getSingleAsFlow(groupId).collect { groupOrNull ->
             groupOrNull?.let { group ->
-                usersRepository.getAll(group.users).collect { users ->
+                usersRepository.getAllAsFlow(group.users).collect { users ->
                     _uiState.update { it.copy(
                         name = group.name,
                         users = users.associateWith { Uri.EMPTY }.toMutableMap()

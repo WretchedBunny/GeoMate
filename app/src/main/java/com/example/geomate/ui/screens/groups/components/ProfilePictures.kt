@@ -1,4 +1,4 @@
-package com.example.geomate.ui.components
+package com.example.geomate.ui.screens.groups.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -25,7 +25,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.fresco.FrescoImage
 
 @Composable
-fun ProfilePicturesRow(
+fun ProfilePictures(
     uris: List<Uri?>,
     modifier: Modifier = Modifier,
 ) {

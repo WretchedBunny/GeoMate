@@ -71,6 +71,7 @@
 
     <!--Notifications screen-->
     <string name="notifications_title">Notifications</string>
+    <string name="notifications_friendship_request">sent you a friend request</string>
 
     <!--Profile screen-->
     <string name="profile_title">Profile</string>

@@ -1,7 +1,9 @@
 package com.example.geomate.data.datasources
 
-import com.example.geomate.data.models.Notification
+import com.example.geomate.data.models.FriendshipRequest
+
 
 interface NotificationsDataSource {
-    suspend fun getFriendshipRequests(userId: String): List<Notification.FriendshipRequest>
+    // TODO: Rewrite using Flow
+    suspend fun getFriendshipRequests(userId: String): List<FriendshipRequest>
 }
