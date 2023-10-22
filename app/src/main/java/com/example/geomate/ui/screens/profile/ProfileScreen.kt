@@ -262,6 +262,8 @@ fun ProfileScreen(
 
                 // TODO: Get friendship status from a bunch of requests
                 if (Firebase.auth.uid != userId) {
+                    // val friendShip
+                    viewModel.createFriendshipState(userId)
                     ProfileButtonsRow(friendshipState = FriendshipState.AcceptedWithoutNotifications)
                 }
 

@@ -1,11 +1,20 @@
 package com.example.geomate.ui.screens.profile
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.geomate.data.models.FriendshipStatus.AcceptedWithNotifications
+import com.example.geomate.data.models.FriendshipStatus.AcceptedWithoutNotifications
+import com.example.geomate.data.models.FriendshipStatus.None
+import com.example.geomate.data.models.FriendshipStatus.SentByMe
+import com.example.geomate.data.models.FriendshipStatus.SentByUser
+import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.statemachine.FriendshipState
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +23,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val usersRepository: UsersRepository,
+    private val friendshipRepository: FriendshipRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -58,6 +68,20 @@ class ProfileViewModel(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    fun createFriendshipState(userId: String) {
+        val friendshipState = viewModelScope.async {
+            val friendship = friendshipRepository.get(userId)
+            Log.d("ProfileViewModel", friendship.toString())
+            when (friendship.status) {
+                None -> FriendshipState.None
+                SentByMe -> FriendshipState.SentByMe
+                SentByUser -> FriendshipState.SentByUser
+                AcceptedWithNotifications -> FriendshipState.AcceptedWithNotifications
+                AcceptedWithoutNotifications -> FriendshipState.AcceptedWithoutNotifications
+            }
         }
     }
 }
