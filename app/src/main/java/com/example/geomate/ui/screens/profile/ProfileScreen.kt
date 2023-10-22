@@ -262,7 +262,7 @@ fun ProfileScreen(
 
                 // TODO: Get friendship status from a bunch of requests
                 if (Firebase.auth.uid != userId) {
-                    Buttons(friendshipState = FriendshipState.AcceptedWithoutNotifications)
+                    ProfileButtonsRow(friendshipState = FriendshipState.AcceptedWithoutNotifications)
                 }
 
                 Info(uiState.user)
