@@ -41,6 +41,7 @@ class GoogleAuthentication(
         }?.pendingIntent?.intentSender
     }
 
+    // TODO: Replace with auth() method
     override suspend fun signIn(): FirebaseUser? = try {
         val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
         val result = auth.signInWithCredential(googleCredential).await()
