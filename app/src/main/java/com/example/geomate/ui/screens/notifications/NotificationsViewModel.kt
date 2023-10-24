@@ -21,11 +21,13 @@ class NotificationsViewModel(
 
     fun fetchNotifications(userId: String) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        val notifications = notificationsRepository.getFriendshipRequests(userId).map {
-            val sender = usersRepository.getSingle(it.senderId) ?: User()
-            val senderProfilePicture = usersRepository.getProfilePicture(it.senderId)
-            Notification.FriendshipRequest(sender, senderProfilePicture, it.createdAt)
+        notificationsRepository.getFriendshipRequestsFlow(userId).collect {
+            val notifications = it.map { notification ->
+                val sender = usersRepository.getSingle(notification.senderId) ?: User()
+                val senderProfilePicture = usersRepository.getProfilePicture(notification.senderId)
+                Notification.FriendshipRequest(sender, senderProfilePicture, notification.createdAt)
+            }
+            _uiState.update { it.copy(notifications = notifications, isLoading = false) }
         }
-        _uiState.update { it.copy(notifications = notifications, isLoading = false) }
     }
 }

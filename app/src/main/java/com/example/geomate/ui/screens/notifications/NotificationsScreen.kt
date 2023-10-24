@@ -93,7 +93,7 @@ fun NotificationsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(it)
             ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
