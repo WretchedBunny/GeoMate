@@ -115,6 +115,7 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchProfilePicture(userId)
         viewModel.fetchUser(userId)
+        viewModel.fetchFriendship(userId)
     }
 
     Scaffold(
@@ -262,7 +263,10 @@ fun ProfileScreen(
 
                 // TODO: Get friendship status from a bunch of requests
                 if (Firebase.auth.uid != userId) {
-                    ProfileButtonsRow(friendshipState = FriendshipState.AcceptedWithoutNotifications)
+                    ProfileButtonsRow(
+                        userId = userId,
+                        friendshipState = viewModel.createFriendshipState()
+                    )
                 }
 
                 Info(uiState.user)
