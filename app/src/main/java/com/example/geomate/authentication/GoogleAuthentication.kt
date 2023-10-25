@@ -41,8 +41,7 @@ class GoogleAuthentication(
         }?.pendingIntent?.intentSender
     }
 
-    // TODO: Replace with auth() method
-    override suspend fun signIn(): FirebaseUser? = try {
+    private suspend fun auth(): FirebaseUser? = try {
         val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
         val result = auth.signInWithCredential(googleCredential).await()
         val isNewUser = result.additionalUserInfo?.isNewUser ?: false
@@ -58,19 +57,6 @@ class GoogleAuthentication(
         null
     }
 
-    override suspend fun signUp(): FirebaseUser? = try {
-        val googleCredential = GoogleAuthProvider.getCredential(authCredential.googleIdToken, null)
-        val result = auth.signInWithCredential(googleCredential).await()
-        val isNewUser = result.additionalUserInfo?.isNewUser ?: false
-        val user = result.user
-        if (user != null && isNewUser) {
-            usersRepository.add(createUser(user))
-            authCredential.profilePictureUri?.let { profilePictureUri ->
-                usersRepository.addProfilePicture(user.uid, profilePictureUri)
-            }
-        }
-        user
-    } catch (e: Exception) {
-        null
-    }
+    override suspend fun signIn(): FirebaseUser? = auth()
+    override suspend fun signUp(): FirebaseUser? = auth()
 }
