@@ -1,6 +1,5 @@
 package com.example.geomate.ui.screens.search
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.repositories.UsersRepository
@@ -42,7 +41,11 @@ class SearchViewModel(
                     (byFirstName union byLastName union byUsername).toList()
                 }
                 _uiState.update {
-                    it.copy(users = users.associateWith { Uri.EMPTY })
+                    it.copy(
+                        users = users.associateWith { user ->
+                            usersRepository.getProfilePicture(user.uid)
+                        }
+                    )
                 }
 
                 displayIndicator.cancel()
