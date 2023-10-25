@@ -1,5 +1,6 @@
 package com.example.geomate.authentication
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.core.content.IntentCompat
 import com.example.geomate.data.repositories.UsersRepository
@@ -19,6 +20,7 @@ class FacebookAuthentication(
     companion object {
         private const val resultKey = "com.facebook.LoginFragment:Result"
 
+        @SuppressLint("RestrictedApi")
         fun getTokenFromIntent(intent: Intent?): AccessToken? = intent?.let {
             IntentCompat.getParcelableExtra(it, resultKey, LoginClient.Result::class.java)?.token
         }

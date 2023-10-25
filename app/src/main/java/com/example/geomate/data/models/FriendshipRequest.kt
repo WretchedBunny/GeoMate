@@ -1,18 +1,15 @@
 package com.example.geomate.data.models
 
-import com.google.firebase.Timestamp
+import java.util.Date
 
 enum class FriendshipStatus {
     None,
-    SentByMe,
-    SentByUser,
-    AcceptedWithNotifications,
-    AcceptedWithoutNotifications
-
+    Sent,
+    Accepted,
 }
 
-data class Friendship(
-    val createdAt: Timestamp = Timestamp.now(),
+data class FriendshipRequest(
+    val createdAt: Date = Date(),
     val senderHasNotifications: Boolean = false,
     val recipientHasNotifications: Boolean = false,
     val senderId: String = "",
