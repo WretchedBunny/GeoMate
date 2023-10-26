@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
-class FriendshipRemoteDataSource(private val fireStore: FirebaseFirestore) : FriendshipDataSource {
+class FriendshipRemoteRequestDataSource(private val fireStore: FirebaseFirestore) :
+    FriendshipRequestDataSource {
     private fun documentSearchFilter(userId: String): Filter {
         return Filter.and(
             Filter.or(
@@ -25,9 +26,14 @@ class FriendshipRemoteDataSource(private val fireStore: FirebaseFirestore) : Fri
         )
     }
 
-    override suspend fun get(userId: String): Flow<FriendshipRequest?> {
+    override suspend fun getFlow(userId: String): Flow<FriendshipRequest?> {
         return fireStore.collection("friendshipRequests").where(documentSearchFilter(userId))
             .snapshotFlow().map { it.toObjects(FriendshipRequest::class.java).firstOrNull() }
+    }
+
+    override suspend fun get(userId: String): FriendshipRequest? {
+        return fireStore.collection("friendshipRequests").where(documentSearchFilter(userId)).get()
+            .await().documents.map { it.toObject(FriendshipRequest::class.java) }.firstOrNull()
     }
 
     override suspend fun add(friendshipRequest: FriendshipRequest) {
@@ -36,20 +42,23 @@ class FriendshipRemoteDataSource(private val fireStore: FirebaseFirestore) : Fri
 
     override suspend fun remove(userId: String) {
         fireStore.collection("friendshipRequests").where(documentSearchFilter(userId))
-            .get().await().documents.first().reference.delete()
+            .get().await().documents.firstOrNull()?.reference?.delete()
     }
 
     override suspend fun updateStatus(userId: String, status: FriendshipStatus) {
         fireStore.collection("friendshipRequests").where(documentSearchFilter(userId))
-            .get().await().documents.first().reference.update("status", FriendshipStatus.Accepted)
+            .get().await().documents.firstOrNull()?.reference?.update(
+                "status",
+                FriendshipStatus.Accepted
+            )
     }
 
     override suspend fun updateNotifications(userId: String, isSender: Boolean, value: Boolean) {
         val notificationsField =
             if (isSender) "senderHasNotifications" else "recipientHasNotifications"
-        
+
         fireStore.collection("friendshipRequests").where(documentSearchFilter(userId))
-            .get().await().documents.first().reference.update(notificationsField, value)
+            .get().await().documents.firstOrNull()?.reference?.update(notificationsField, value)
 
     }
 }

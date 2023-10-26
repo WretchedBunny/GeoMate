@@ -4,8 +4,9 @@ import com.example.geomate.data.models.FriendshipRequest
 import com.example.geomate.data.models.FriendshipStatus
 import kotlinx.coroutines.flow.Flow
 
-interface FriendshipDataSource {
-    suspend fun get(userId: String): Flow<FriendshipRequest?>
+interface FriendshipRequestDataSource {
+    suspend fun getFlow(userId: String): Flow<FriendshipRequest?>
+    suspend fun get(userId: String): FriendshipRequest?
     suspend fun add(friendshipRequest: FriendshipRequest)
     suspend fun remove(userId: String)
     suspend fun updateStatus(userId: String, status: FriendshipStatus)

@@ -3,7 +3,6 @@ package com.example.geomate.data.models
 import java.util.Date
 
 enum class FriendshipStatus {
-    None,
     Sent,
     Accepted,
 }
@@ -14,5 +13,5 @@ data class FriendshipRequest(
     val recipientHasNotifications: Boolean = false,
     val senderId: String = "",
     val recipientId: String = "",
-    val status: FriendshipStatus = FriendshipStatus.None,
+    val status: FriendshipStatus = FriendshipStatus.Sent,
 )

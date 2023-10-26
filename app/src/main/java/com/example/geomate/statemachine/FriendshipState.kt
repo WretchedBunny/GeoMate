@@ -5,19 +5,14 @@ import com.example.geomate.data.models.FriendshipStatus
 import com.example.geomate.data.repositories.FriendshipRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import java.util.Date
 
 sealed class FriendshipState {
     class None(private val friendshipRepository: FriendshipRepository) : FriendshipState() {
         suspend fun send(friendId: String) {
             friendshipRepository.add(
                 FriendshipRequest(
-                    createdAt = Date(),
-                    senderHasNotifications = true,
-                    recipientHasNotifications = true,
                     senderId = Firebase.auth.uid.toString(),
                     recipientId = friendId,
-                    status = FriendshipStatus.Sent,
                 )
             )
         }
@@ -37,25 +32,23 @@ sealed class FriendshipState {
             friendshipRepository.remove(friendId)
     }
 
-    interface Accepted {
-        suspend fun remove(userId: String)
-    }
-
-    class AcceptedWithNotifications(private val friendshipRepository: FriendshipRepository) :
-        FriendshipState(), Accepted {
+    class AcceptedWithNotifications(
+        private val friendshipRepository: FriendshipRepository,
+    ) : FriendshipState() {
         suspend fun turnOffNotifications(userId: String) {
             friendshipRepository.updateCurrentUserNotifications(userId, false)
         }
 
-        override suspend fun remove(userId: String) = friendshipRepository.remove(userId)
+        suspend fun remove(userId: String) = friendshipRepository.remove(userId)
     }
 
-    class AcceptedWithoutNotifications(private val friendshipRepository: FriendshipRepository) :
-        FriendshipState(), Accepted {
+    class AcceptedWithoutNotifications(
+        private val friendshipRepository: FriendshipRepository,
+    ) : FriendshipState() {
         suspend fun turnOnNotifications(userId: String) {
             friendshipRepository.updateCurrentUserNotifications(userId, true)
         }
 
-        override suspend fun remove(userId: String) = friendshipRepository.remove(userId)
+        suspend fun remove(userId: String) = friendshipRepository.remove(userId)
     }
 }
