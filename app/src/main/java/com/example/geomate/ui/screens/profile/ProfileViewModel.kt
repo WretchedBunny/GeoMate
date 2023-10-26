@@ -39,7 +39,7 @@ class ProfileViewModel(
     }
 
     fun fetchFriendship(userId: String) = viewModelScope.launch {
-        friendshipRepository.get(userId).collect { friendshipOrNull ->
+        friendshipRepository.getFlow(userId).collect { friendshipOrNull ->
             _uiState.update {
                 it.copy(friendshipRequest = friendshipOrNull)
             }
