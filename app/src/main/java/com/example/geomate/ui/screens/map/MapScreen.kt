@@ -42,6 +42,7 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.friends.navigateToFriends
 import com.example.geomate.ui.screens.groups.navigateToGroups
 import com.example.geomate.ui.screens.map.components.Chips
 import com.example.geomate.ui.screens.notifications.navigateToNotifications
@@ -153,7 +154,7 @@ fun Map(
                 currentRoute = Destinations.MAP_ROUTE,
                 navigateToMap = { },
                 navigateToGroups = navController::navigateToGroups,
-                navigateToSocial = { /* navController::navigateToSocial */ },
+                navigateToSocial = navController::navigateToFriends,
             )
         },
         modifier = modifier
