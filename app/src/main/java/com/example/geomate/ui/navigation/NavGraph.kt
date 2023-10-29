@@ -26,7 +26,7 @@ import com.example.geomate.ui.screens.editprofile.editProfile
 import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.forgotpassword.forgotPassword
 import com.example.geomate.ui.screens.friends.FriendsViewModel
-import com.example.geomate.ui.screens.friends.friends
+import com.example.geomate.ui.screens.friends.friendsList
 import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
 import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModel
@@ -39,6 +39,12 @@ import com.example.geomate.ui.screens.profile.ProfileViewModel
 import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
+import com.example.geomate.ui.screens.selectfriend.SelectFriendViewModel
+import com.example.geomate.ui.screens.selectfriend.selectFriend
+import com.example.geomate.ui.screens.signin.SignInViewModel
+import com.example.geomate.ui.screens.signin.signIn
+import com.example.geomate.ui.screens.signup.SignUpViewModel
+import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -75,6 +81,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
+    val selectFriendViewModel = SelectFriendViewModel(usersRepository, groupsRepository)
     val friendsViewModel = FriendsViewModel(usersRepository)
     val profileViewModel = ProfileViewModel(usersRepository, friendshipRepository)
     val editProfileViewModel = EditProfileViewModel(usersRepository)
@@ -105,7 +112,8 @@ fun NavGraph(application: Application, navController: NavHostController) {
             search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
-            friends(friendsViewModel, navController)
+            selectFriend(selectFriendViewModel, navController)
+            friendsList(friendsViewModel, navController)
             profile(profileViewModel, navController)
             editProfile(editProfileViewModel, navController)
         }

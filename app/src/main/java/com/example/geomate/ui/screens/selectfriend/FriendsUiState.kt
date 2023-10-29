@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.friends
+package com.example.geomate.ui.screens.selectfriend
 
 import android.net.Uri
 import com.example.geomate.data.models.Group

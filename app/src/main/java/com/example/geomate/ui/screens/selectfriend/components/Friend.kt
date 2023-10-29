@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.friends.components
+package com.example.geomate.ui.screens.selectfriend.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -38,7 +38,7 @@ fun Friend(
     friend: User,
     profilePicture: Uri,
     onSelect: (User) -> Unit,
-    onRemove: (User) -> Unit,
+    onAdd: (User) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -83,7 +83,7 @@ fun Friend(
         Spacer(modifier = Modifier.weight(1f))
 
         IconButton(
-            onClick = { onRemove(friend) },
+            onClick = { onAdd(friend) },
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.secondary
             )
