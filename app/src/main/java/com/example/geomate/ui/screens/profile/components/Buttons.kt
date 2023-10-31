@@ -53,7 +53,6 @@ fun Buttons(
                     type = ButtonType.Secondary,
                 )
             }
-
             is FriendshipState.SentByUser -> {
                 GeoMateButtonWithIcon(
                     text = stringResource(id = R.string.button_accept),
