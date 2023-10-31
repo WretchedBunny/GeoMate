@@ -69,6 +69,10 @@
     <string name="map_all">All</string>
     <string name="map_new">New</string>
 
+    <!--Notifications screen-->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_friendship_request">sent you a friend request</string>
+
     <!--Profile screen-->
     <string name="profile_title">Profile</string>
     <string name="profile_username">Username</string>

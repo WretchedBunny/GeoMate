@@ -15,17 +15,22 @@ class UsersRemoteDataSource(
     private val fireStore: FirebaseFirestore,
     private val fireBucket: FirebaseStorage,
 ) : UsersDataSource {
-    override suspend fun get(userId: String): Flow<User?> = fireStore
+    override suspend fun getSingleAsFlow(userId: String): Flow<User?> = fireStore
         .collection("users")
         .whereEqualTo("uid", userId)
         .snapshotFlow()
         .map { it.toObjects(User::class.java).firstOrNull() }
 
-    override suspend fun getAll(usersIds: List<String>): Flow<List<User>> = fireStore
+    override suspend fun getAllAsFlow(usersIds: List<String>): Flow<List<User>> = fireStore
         .collection("users")
         .whereIn("uid", usersIds)
         .snapshotFlow()
         .map { it.toObjects(User::class.java) }
+
+    override suspend fun getSingle(userId: String): User? = fireStore
+        .collection("users")
+        .whereEqualTo("uid", userId)
+        .get().await().toObjects(User::class.java).firstOrNull()
 
     override suspend fun matchFirstName(searchQuery: String): List<User> = fireStore
         .collection("users")

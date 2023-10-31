@@ -11,13 +11,13 @@ import kotlinx.coroutines.tasks.await
 // Question: What does Firebase deserializer wants: DocumentReference or String???
 
 class GroupsRemoteDataSource(private val fireStore: FirebaseFirestore) : GroupsDataSource {
-    override suspend fun getAll(ownerId: String): Flow<List<Group>> = fireStore
+    override suspend fun getAllAsFlow(ownerId: String): Flow<List<Group>> = fireStore
         .collection("groups")
         .whereEqualTo("owner", ownerId)
         .snapshotFlow()
         .map { it.toObjects(Group::class.java) }
 
-    override suspend fun get(groupId: String): Flow<Group?> = fireStore
+    override suspend fun getSingleAsFlow(groupId: String): Flow<Group?> = fireStore
         .collection("groups")
         .whereEqualTo("uid", groupId)
         .get().await()

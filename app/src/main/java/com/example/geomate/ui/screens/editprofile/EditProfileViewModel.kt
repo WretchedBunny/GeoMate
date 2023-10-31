@@ -16,7 +16,7 @@ class EditProfileViewModel(
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
 
     fun fetchUser(userId: String) = viewModelScope.launch {
-        usersRepository.get(userId).collect { userOrNull ->
+        usersRepository.getSingleAsFlow(userId).collect { userOrNull ->
             userOrNull?.let { user ->
                 _uiState.update {
                     it.copy(

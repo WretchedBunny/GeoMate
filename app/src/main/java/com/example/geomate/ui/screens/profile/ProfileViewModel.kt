@@ -24,7 +24,7 @@ class ProfileViewModel(
 
     fun fetchUser(userId: String) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        usersRepository.get(userId).collect { userOrNull ->
+        usersRepository.getSingleAsFlow(userId).collect { userOrNull ->
             userOrNull?.let { user ->
                 _uiState.update {
                     it.copy(user = user, isLoading = false)
@@ -50,7 +50,7 @@ class ProfileViewModel(
         }
     }
 
-    fun onChangePictureClick() = viewModelScope.launch {
+    private fun onChangePictureClick() = viewModelScope.launch {
         val uid = Firebase.auth.uid.toString()
         try {
             uiState.value.profilePictureUri?.let {

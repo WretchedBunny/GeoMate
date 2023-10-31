@@ -31,10 +31,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.SearchUserRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.profile.navigateToProfile
+import com.example.geomate.ui.screens.search.components.User
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.search(
@@ -120,7 +120,7 @@ fun SearchScreen(
             } else {
                 LazyColumn {
                     itemsIndexed(uiState.users.keys.toList()) { index, user ->
-                        SearchUserRow(
+                        User(
                             user = Pair(user, uiState.users[user] ?: Uri.EMPTY),
                             onSelect = { navController.navigateToProfile(it.uid) }
                         )

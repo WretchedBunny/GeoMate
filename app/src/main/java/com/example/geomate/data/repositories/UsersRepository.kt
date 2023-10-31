@@ -10,21 +10,23 @@ class UsersRepository(private val usersDataSource: UsersDataSource) {
     private val allUsersFlows: MutableMap<List<String>, Flow<List<User>>> = mutableMapOf()
     private val profilePictures: MutableMap<String, Uri> = mutableMapOf()
 
-    suspend fun get(userId: String): Flow<User?> {
+    suspend fun getAllAsFlow(usersIds: List<String>): Flow<List<User>> {
+        return allUsersFlows[usersIds] ?: run {
+            val users = usersDataSource.getAllAsFlow(usersIds)
+            allUsersFlows[usersIds] = users
+            return users
+        }
+    }
+
+    suspend fun getSingleAsFlow(userId: String): Flow<User?> {
         return userFlows[userId] ?: run {
-            val user = usersDataSource.get(userId)
+            val user = usersDataSource.getSingleAsFlow(userId)
             userFlows[userId] = user
             return user
         }
     }
 
-    suspend fun getAll(usersIds: List<String>): Flow<List<User>> {
-        return allUsersFlows[usersIds] ?: run {
-            val users = usersDataSource.getAll(usersIds)
-            allUsersFlows[usersIds] = users
-            return users
-        }
-    }
+    suspend fun getSingle(userId: String): User? = usersDataSource.getSingle(userId)
 
     suspend fun matchFirstName(searchQuery: String): List<User> =
         usersDataSource.matchFirstName(searchQuery)
@@ -36,10 +38,12 @@ class UsersRepository(private val usersDataSource: UsersDataSource) {
         usersDataSource.matchUsername(searchQuery)
 
     suspend fun add(user: User) = usersDataSource.add(user)
+
     suspend fun update(userId: String, updates: Map<String, Any>) =
         usersDataSource.update(userId, updates)
 
     suspend fun remove(user: User) = usersDataSource.remove(user)
+
     suspend fun getProfilePicture(userId: String): Uri {
         return profilePictures[userId] ?: run {
             val profilePicture = usersDataSource.getProfilePicture(userId)

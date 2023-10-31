@@ -22,13 +22,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.ui.components.BottomNavigationBar
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.GroupRow
 import com.example.geomate.ui.components.TextFieldIcon
+import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groupdetails.navigateToGroupDetails
+import com.example.geomate.ui.screens.groups.components.Group
 import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.theme.spacing
 import com.google.firebase.auth.ktx.auth
@@ -107,7 +107,7 @@ fun GroupsScreen(
                 false -> viewModel.matchGroups.value.keys.toList()
             }
             itemsIndexed(groups) { index, group ->
-                GroupRow(
+                Group(
                     group = group to (uiState.groups[group] ?: listOf()),
                     onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
                     onRemove = { viewModel.removeGroup(it) },

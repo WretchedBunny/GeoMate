@@ -23,7 +23,7 @@ class GroupsViewModel(
         MutableStateFlow(mutableMapOf())
     val matchGroups: StateFlow<MutableMap<Group, List<Uri>>> = _matchGroups.asStateFlow()
     fun fetchGroups(userId: String) = viewModelScope.launch {
-        groupsRepository.getAll(userId).collect { groups ->
+        groupsRepository.getAllAsFlow(userId).collect { groups ->
             _uiState.update {
                 it.copy(
                     groups = groups.associateWith { group ->
@@ -45,7 +45,7 @@ class GroupsViewModel(
         )
     }
 
-    fun updateMatchGroups(matchGroups: MutableMap<Group, List<Uri>>) {
+    private fun updateMatchGroups(matchGroups: MutableMap<Group, List<Uri>>) {
         _matchGroups.update { matchGroups }
     }
 

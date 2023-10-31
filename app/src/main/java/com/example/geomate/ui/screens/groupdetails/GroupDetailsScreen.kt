@@ -31,9 +31,9 @@ import androidx.navigation.navArgument
 import com.example.geomate.R
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
-import com.example.geomate.ui.components.GroupUserRow
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.groupdetails.components.GroupUser
 import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
 
@@ -111,7 +111,7 @@ fun GroupDetailsScreen(
     ) {
         LazyColumn(modifier = Modifier.padding(it)) {
             itemsIndexed(uiState.users.keys.toList()) { index, user ->
-                GroupUserRow(
+                GroupUser(
                     user = user to (uiState.users[user] ?: Uri.EMPTY),
                     onSelect = { navController.navigateToProfile(it.uid) },
                     onRemove = { viewModel.removeUser(groupId, it.uid) }

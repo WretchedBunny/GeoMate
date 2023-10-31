@@ -36,14 +36,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.ui.components.BottomNavigationBar
-import com.example.geomate.ui.components.ChipsRow
 import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
+import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.map.components.Chips
+import com.example.geomate.ui.screens.notifications.navigateToNotifications
 import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.screens.search.navigateToSearch
 import com.example.geomate.ui.theme.spacing
@@ -211,9 +212,7 @@ fun Map(
                         }
                     ),
                     trailingIcons = listOf(
-                        TextFieldIcon(
-                            onClick = { /* TODO: Navigate to the notification screen */ }
-                        ) {
+                        TextFieldIcon(navController::navigateToNotifications) {
                             IconWithNotification(
                                 icon = Icons.Outlined.Notifications,
                                 notificationsCount = 4,
@@ -257,7 +256,7 @@ fun Map(
                             if (it.hasFocus) navController.navigateToSearch()
                         }
                 )
-                ChipsRow(
+                Chips(
                     chips = uiState.groups,
                     isAllSelected = uiState.isAllSelected,
                     toggleGroup = viewModel::toggleGroup,

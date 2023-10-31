@@ -9,27 +9,31 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
+import com.example.geomate.data.datasources.NotificationsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
 import com.example.geomate.data.repositories.GroupsRepository
+import com.example.geomate.data.repositories.NotificationsRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.ui.screens.authentication.forgotpassword.ForgotPasswordViewModel
+import com.example.geomate.ui.screens.authentication.forgotpassword.forgotPassword
+import com.example.geomate.ui.screens.authentication.signin.SignInViewModel
+import com.example.geomate.ui.screens.authentication.signin.signIn
+import com.example.geomate.ui.screens.authentication.signup.SignUpViewModel
+import com.example.geomate.ui.screens.authentication.signup.signUp
 import com.example.geomate.ui.screens.editprofile.EditProfileViewModel
 import com.example.geomate.ui.screens.editprofile.editProfile
-import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
-import com.example.geomate.ui.screens.forgotpassword.forgotPassword
 import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
 import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModel
 import com.example.geomate.ui.screens.groups.groups
 import com.example.geomate.ui.screens.map.MapViewModel
 import com.example.geomate.ui.screens.map.map
+import com.example.geomate.ui.screens.notifications.NotificationsViewModel
+import com.example.geomate.ui.screens.notifications.notifications
 import com.example.geomate.ui.screens.profile.ProfileViewModel
 import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
-import com.example.geomate.ui.screens.signin.SignInViewModel
-import com.example.geomate.ui.screens.signin.signIn
-import com.example.geomate.ui.screens.signup.SignUpViewModel
-import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -43,10 +47,12 @@ fun NavGraph(application: Application, navController: NavHostController) {
         FirebaseAuth.getInstance(), FirebaseFirestore.getInstance(), FirebaseStorage.getInstance()
     )
     val groupsDataSource = GroupsRemoteDataSource(FirebaseFirestore.getInstance())
+    val notificationsDataSource = NotificationsRemoteDataSource(FirebaseFirestore.getInstance())
 
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
+    val notificationsRepository = NotificationsRepository(notificationsDataSource)
 
     // ViewModels and UiStates
     val forgotPasswordViewModel = ForgotPasswordViewModel(usersRepository)
@@ -58,6 +64,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         usersRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
+    val notificationsViewModel = NotificationsViewModel(usersRepository, notificationsRepository)
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
@@ -86,6 +93,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             signIn(signInViewModel, navController)
             signUp(signUpViewModel, navController)
             map(mapViewModel, navController)
+            notifications(notificationsViewModel, navController)
             search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)

@@ -57,11 +57,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.geomate.R
 import com.example.geomate.statemachine.FriendshipState
-import com.example.geomate.ui.components.ProfileButtonsRow
-import com.example.geomate.ui.components.ProfileInfo
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.authentication.signin.navigateToSignIn
 import com.example.geomate.ui.screens.editprofile.navigateToEditProfile
-import com.example.geomate.ui.screens.signin.navigateToSignIn
+import com.example.geomate.ui.screens.profile.components.Buttons
+import com.example.geomate.ui.screens.profile.components.Info
 import com.example.geomate.ui.theme.spacing
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -262,10 +262,10 @@ fun ProfileScreen(
 
                 // TODO: Get friendship status from a bunch of requests
                 if (Firebase.auth.uid != userId) {
-                    ProfileButtonsRow(friendshipState = FriendshipState.AcceptedWithoutNotifications)
+                    Buttons(friendshipState = FriendshipState.AcceptedWithoutNotifications)
                 }
 
-                ProfileInfo(uiState.user)
+                Info(uiState.user)
             }
         }
     }

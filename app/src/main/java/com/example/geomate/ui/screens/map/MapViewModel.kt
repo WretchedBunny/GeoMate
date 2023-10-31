@@ -34,7 +34,7 @@ class MapViewModel(
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
 
     fun fetchGroups(userId: String) = viewModelScope.launch {
-        groupsRepository.getAll(userId).collect { groups ->
+        groupsRepository.getAllAsFlow(userId).collect { groups ->
             _uiState.update { it.copy(groups = groups.associateWith { true }.toMutableMap()) }
         }
     }
