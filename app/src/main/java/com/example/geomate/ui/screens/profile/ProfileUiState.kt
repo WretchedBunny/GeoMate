@@ -7,7 +7,7 @@ import com.example.geomate.data.models.User
 data class ProfileUiState(
     val profilePictureUri: Uri? = null,
     val user: User = User(),
-    val friendshipRequest: FriendshipRequest? = FriendshipRequest(),
+    val friendshipRequest: FriendshipRequest? = null,
     val isMenuVisible: Boolean = false,
     val isLoading: Boolean = true,
 )

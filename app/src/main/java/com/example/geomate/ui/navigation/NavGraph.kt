@@ -8,7 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.geomate.data.datasources.FriendshipRemoteRequestDataSource
+import com.example.geomate.data.datasources.FriendshipRequestRemoteDataSource
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.NotificationsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
@@ -50,7 +50,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     )
     val groupsDataSource = GroupsRemoteDataSource(FirebaseFirestore.getInstance())
     val notificationsDataSource = NotificationsRemoteDataSource(FirebaseFirestore.getInstance())
-    val friendshipDataSource = FriendshipRemoteRequestDataSource(FirebaseFirestore.getInstance())
+    val friendshipDataSource = FriendshipRequestRemoteDataSource(FirebaseFirestore.getInstance())
 
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
