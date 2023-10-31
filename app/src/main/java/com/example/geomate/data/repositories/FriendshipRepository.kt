@@ -1,13 +1,13 @@
 package com.example.geomate.data.repositories
 
-import com.example.geomate.data.datasources.FriendshipRemoteRequestDataSource
+import com.example.geomate.data.datasources.FriendshipRequestRemoteDataSource
 import com.example.geomate.data.models.FriendshipRequest
 import com.example.geomate.data.models.FriendshipStatus
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 
-class FriendshipRepository(private val friendshipDataSource: FriendshipRemoteRequestDataSource) {
+class FriendshipRepository(private val friendshipDataSource: FriendshipRequestRemoteDataSource) {
     private val friendshipRequestFlows: MutableMap<String, Flow<FriendshipRequest?>> =
         mutableMapOf()
     private val friendshipRequests: MutableMap<String, FriendshipRequest?> = mutableMapOf()

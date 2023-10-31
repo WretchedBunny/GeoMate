@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
-class FriendshipRemoteRequestDataSource(private val fireStore: FirebaseFirestore) :
+class FriendshipRequestRemoteDataSource(private val fireStore: FirebaseFirestore) :
     FriendshipRequestDataSource {
     private fun documentSearchFilter(userId: String): Filter {
         return Filter.and(
