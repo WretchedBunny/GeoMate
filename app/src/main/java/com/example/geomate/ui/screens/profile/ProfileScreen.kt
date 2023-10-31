@@ -56,7 +56,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.geomate.R
-import com.example.geomate.statemachine.FriendshipState
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.authentication.signin.navigateToSignIn
 import com.example.geomate.ui.screens.editprofile.navigateToEditProfile
@@ -263,7 +262,7 @@ fun ProfileScreen(
 
                 // TODO: Get friendship status from a bunch of requests
                 if (Firebase.auth.uid != userId) {
-                    ProfileButtonsRow(
+                    Buttons(
                         userId = userId,
                         friendshipState = viewModel.createFriendshipState()
                     )
