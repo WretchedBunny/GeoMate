@@ -8,9 +8,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.geomate.data.datasources.FriendshipRequestRemoteDataSource
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.NotificationsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
+import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.NotificationsRepository
 import com.example.geomate.data.repositories.UsersRepository
@@ -34,6 +36,10 @@ import com.example.geomate.ui.screens.profile.ProfileViewModel
 import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
+import com.example.geomate.ui.screens.signin.SignInViewModel
+import com.example.geomate.ui.screens.signin.signIn
+import com.example.geomate.ui.screens.signup.SignUpViewModel
+import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -48,11 +54,13 @@ fun NavGraph(application: Application, navController: NavHostController) {
     )
     val groupsDataSource = GroupsRemoteDataSource(FirebaseFirestore.getInstance())
     val notificationsDataSource = NotificationsRemoteDataSource(FirebaseFirestore.getInstance())
+    val friendshipDataSource = FriendshipRequestRemoteDataSource(FirebaseFirestore.getInstance())
 
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
     val notificationsRepository = NotificationsRepository(notificationsDataSource)
+    val friendshipRepository = FriendshipRepository(friendshipDataSource)
 
     // ViewModels and UiStates
     val forgotPasswordViewModel = ForgotPasswordViewModel(usersRepository)
@@ -68,7 +76,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
-    val profileViewModel = ProfileViewModel(usersRepository)
+    val profileViewModel = ProfileViewModel(usersRepository, friendshipRepository)
     val editProfileViewModel = EditProfileViewModel(usersRepository)
 
     val startDestination = when (FirebaseAuth.getInstance().currentUser) {
