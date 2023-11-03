@@ -6,6 +6,7 @@ import com.example.geomate.ext.snapshotFlow
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -35,6 +36,15 @@ class FriendshipRequestRemoteDataSource(private val fireStore: FirebaseFirestore
         return fireStore.collection("friendshipRequests").where(documentSearchFilter(userId)).get()
             .await().documents.map { it.toObject(FriendshipRequest::class.java) }.firstOrNull()
     }
+
+    override suspend fun getSentListFlow(userId: String): Flow<List<FriendshipRequest>> =
+        fireStore
+            .collection("friendshipRequests")
+            .whereEqualTo("recipientId", userId)
+            .whereEqualTo("status", "Sent")
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .snapshotFlow()
+            .map { it.toObjects(FriendshipRequest::class.java) }
 
     override suspend fun add(friendshipRequest: FriendshipRequest) {
         fireStore.collection("friendshipRequests").add(friendshipRequest).await()

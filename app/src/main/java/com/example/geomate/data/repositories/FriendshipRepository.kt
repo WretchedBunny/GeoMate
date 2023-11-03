@@ -28,6 +28,9 @@ class FriendshipRepository(private val friendshipDataSource: FriendshipRequestRe
         }
     }
 
+    suspend fun getSentListFlow(userId: String): Flow<List<FriendshipRequest>> =
+        friendshipDataSource.getSentListFlow(userId)
+
     suspend fun add(friendshipRequest: FriendshipRequest) =
         friendshipDataSource.add(friendshipRequest)
 

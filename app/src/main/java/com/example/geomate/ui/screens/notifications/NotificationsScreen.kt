@@ -99,9 +99,11 @@ fun NotificationsScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(it)) {
-                itemsIndexed(uiState.notifications) {index, notification ->
-                    Notification(notification, navController)
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(it)) {
+                itemsIndexed(uiState.notifications) { index, notification ->
+                    Notification(notification, viewModel, navController)
                     if (index < uiState.notifications.lastIndex) {
                         Divider(color = MaterialTheme.colorScheme.secondary)
                     }

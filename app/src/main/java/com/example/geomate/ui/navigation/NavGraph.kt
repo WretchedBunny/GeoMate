@@ -10,11 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.geomate.data.datasources.FriendshipRequestRemoteDataSource
 import com.example.geomate.data.datasources.GroupsRemoteDataSource
-import com.example.geomate.data.datasources.NotificationsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
 import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.GroupsRepository
-import com.example.geomate.data.repositories.NotificationsRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.example.geomate.ui.screens.authentication.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.authentication.forgotpassword.forgotPassword
@@ -53,13 +51,11 @@ fun NavGraph(application: Application, navController: NavHostController) {
         FirebaseAuth.getInstance(), FirebaseFirestore.getInstance(), FirebaseStorage.getInstance()
     )
     val groupsDataSource = GroupsRemoteDataSource(FirebaseFirestore.getInstance())
-    val notificationsDataSource = NotificationsRemoteDataSource(FirebaseFirestore.getInstance())
     val friendshipDataSource = FriendshipRequestRemoteDataSource(FirebaseFirestore.getInstance())
 
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
-    val notificationsRepository = NotificationsRepository(notificationsDataSource)
     val friendshipRepository = FriendshipRepository(friendshipDataSource)
 
     // ViewModels and UiStates
@@ -72,7 +68,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         usersRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
-    val notificationsViewModel = NotificationsViewModel(usersRepository, notificationsRepository)
+    val notificationsViewModel = NotificationsViewModel(usersRepository, friendshipRepository)
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)

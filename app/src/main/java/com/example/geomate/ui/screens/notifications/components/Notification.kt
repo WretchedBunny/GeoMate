@@ -18,6 +18,10 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,9 +33,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.geomate.R
 import com.example.geomate.data.models.Notification
+import com.example.geomate.ui.components.GeomateAlertDialog
+import com.example.geomate.ui.screens.notifications.NotificationsViewModel
 import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
 import com.skydoves.landscapist.ImageOptions
@@ -40,19 +47,26 @@ import com.skydoves.landscapist.fresco.FrescoImage
 @Composable
 fun Notification(
     notification: Notification,
+    viewModel: ViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-   when (notification) {
-       is Notification.FriendshipRequest -> FriendshipRequest(notification, navController, modifier)
-   }
+    when (notification) {
+        is Notification.FriendshipRequest -> FriendshipRequest(
+            notification,
+            viewModel as NotificationsViewModel,
+            navController,
+            modifier
+        )
+    }
 }
 
 @Composable
 private fun FriendshipRequest(
     notification: Notification.FriendshipRequest,
+    viewModel: NotificationsViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // TODO: Proper friendship request notification view
     Row(
@@ -66,6 +80,7 @@ private fun FriendshipRequest(
         val drawableId =
             if (isSystemInDarkTheme()) R.drawable.profile_picture_placeholder_dark
             else R.drawable.profile_picture_placeholder_light
+        var isAlertDialogVisible by remember { mutableStateOf(false) }
 
         FrescoImage(
             imageUrl = notification.senderProfilePicture.toString(), // TODO: Get sender profile picture's uri
@@ -94,7 +109,7 @@ private fun FriendshipRequest(
 
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             IconButton(
-                onClick = { /* TODO: Accept friend request */ },
+                onClick = { viewModel.acceptRequest(notification) },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
@@ -105,7 +120,9 @@ private fun FriendshipRequest(
                 )
             }
             IconButton(
-                onClick = { /* TODO: Decline friend request */ },
+                onClick = {
+                    isAlertDialogVisible = true
+                },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
@@ -115,6 +132,21 @@ private fun FriendshipRequest(
                     contentDescription = null
                 )
             }
+        }
+        if (isAlertDialogVisible) {
+            GeomateAlertDialog(
+                onDismissRequest = {
+
+                    isAlertDialogVisible = false
+                },
+                onConfirmation = {
+                    // Handle confirmation action
+                    isAlertDialogVisible = false
+                    viewModel.declineRequest(notification)
+                },
+                dialogTitle = "Confirmation Dialog",
+                dialogText = "Are you sure you want to proceed?"
+            )
         }
     }
 }
