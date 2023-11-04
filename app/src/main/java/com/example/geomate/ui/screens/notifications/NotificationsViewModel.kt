@@ -20,9 +20,9 @@ class NotificationsViewModel(
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
 
-    fun fetchNotifications(userId: String) = viewModelScope.launch {
+    fun fetchNotifications() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        friendshipRepository.getSentListFlow(userId).collect {
+        friendshipRepository.getUserSentRequestsAsFlow().collect {
             val notifications = it.map { notification ->
                 val sender = usersRepository.getSingle(notification.senderId) ?: User()
                 val senderProfilePicture = usersRepository.getProfilePicture(notification.senderId)
