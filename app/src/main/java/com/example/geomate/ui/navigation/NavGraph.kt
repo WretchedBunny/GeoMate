@@ -36,10 +36,6 @@ import com.example.geomate.ui.screens.profile.ProfileViewModel
 import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
-import com.example.geomate.ui.screens.signin.SignInViewModel
-import com.example.geomate.ui.screens.signin.signIn
-import com.example.geomate.ui.screens.signup.SignUpViewModel
-import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
