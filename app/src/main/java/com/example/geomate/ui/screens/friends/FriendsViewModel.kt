@@ -21,14 +21,12 @@ class FriendsViewModel(
     val uiState: StateFlow<FriendsUiState> = _uiState.asStateFlow()
 
     fun fetchFriends() {
-        Log.d("asdqwe", "fetchFriends: Fetching all friends")
-
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // TODO:
             //  1. Replace this call with query for "friendsRequests" collection
             //  2. Make the call to return a List<User> instead of Flow<List<User>>
-            usersRepository.getAll(
+            usersRepository.getAllAsFlow(
                 listOf(
                     "JZzebDr8JUQlkWaHBSp9hzC3qMO2",
                     "ItkRKNiOOzXzvJoYrsT8x6DtZxp2",

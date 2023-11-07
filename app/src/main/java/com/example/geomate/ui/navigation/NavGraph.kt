@@ -23,8 +23,6 @@ import com.example.geomate.ui.screens.authentication.signup.SignUpViewModel
 import com.example.geomate.ui.screens.authentication.signup.signUp
 import com.example.geomate.ui.screens.editprofile.EditProfileViewModel
 import com.example.geomate.ui.screens.editprofile.editProfile
-import com.example.geomate.ui.screens.forgotpassword.ForgotPasswordViewModel
-import com.example.geomate.ui.screens.forgotpassword.forgotPassword
 import com.example.geomate.ui.screens.friends.FriendsViewModel
 import com.example.geomate.ui.screens.friends.friendsList
 import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
@@ -41,10 +39,6 @@ import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
 import com.example.geomate.ui.screens.selectfriend.SelectFriendViewModel
 import com.example.geomate.ui.screens.selectfriend.selectFriend
-import com.example.geomate.ui.screens.signin.SignInViewModel
-import com.example.geomate.ui.screens.signin.signIn
-import com.example.geomate.ui.screens.signup.SignUpViewModel
-import com.example.geomate.ui.screens.signup.signUp
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
