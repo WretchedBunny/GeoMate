@@ -13,6 +13,7 @@ import com.example.geomate.data.datasources.GroupsRemoteDataSource
 import com.example.geomate.data.datasources.UsersRemoteDataSource
 import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.GroupsRepository
+import com.example.geomate.data.repositories.NotificationRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.example.geomate.ui.screens.authentication.forgotpassword.ForgotPasswordViewModel
 import com.example.geomate.ui.screens.authentication.forgotpassword.forgotPassword
@@ -53,6 +54,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
     val friendshipRepository = FriendshipRepository(friendshipDataSource, usersDataSource)
+    val notificationRepository = NotificationRepository(friendshipDataSource)
 
     // ViewModels and UiStates
     val forgotPasswordViewModel = ForgotPasswordViewModel(usersRepository)
@@ -64,7 +66,8 @@ fun NavGraph(application: Application, navController: NavHostController) {
         usersRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
-    val notificationsViewModel = NotificationsViewModel(usersRepository, friendshipRepository)
+    val notificationsViewModel =
+        NotificationsViewModel(usersRepository, friendshipRepository, notificationRepository)
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)

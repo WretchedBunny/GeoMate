@@ -35,28 +35,17 @@ fun GeomateAlertDialog(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
                 modifier = Modifier
             )
         },
-        onDismissRequest = {
-            onDismissRequest()
-        },
+        onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                },
-            ) {
+            TextButton(onClick = onConfirmation) {
                 Text("Confirm")
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
+            TextButton(onClick = onDismissRequest) {
                 Text("Dismiss")
             }
         },

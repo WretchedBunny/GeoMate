@@ -36,7 +36,7 @@ class FriendshipRequestRemoteDataSource(private val fireStore: FirebaseFirestore
             .await().documents.map { it.toObject(FriendshipRequest::class.java) }.firstOrNull()
     }
 
-    override suspend fun getSentSingleAsFlow(): Flow<List<FriendshipRequest>> =
+    override suspend fun getSentAsFlow(): Flow<List<FriendshipRequest>> =
         fireStore
             .collection("friendshipRequests")
             .whereEqualTo("recipientId", Firebase.auth.uid)
@@ -53,7 +53,6 @@ class FriendshipRequestRemoteDataSource(private val fireStore: FirebaseFirestore
             )
         ).whereEqualTo("status", FriendshipStatus.Accepted).get()
             .await().documents.mapNotNull { it.toObject(FriendshipRequest::class.java) }
-            .toList()
 
 
     override suspend fun add(friendshipRequest: FriendshipRequest) {

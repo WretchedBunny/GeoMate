@@ -54,7 +54,8 @@ fun Notification(
     when (notification) {
         is Notification.FriendshipRequest -> FriendshipRequest(
             notification,
-            viewModel as NotificationsViewModel,
+            { (viewModel as NotificationsViewModel).acceptRequest(notification.sender.uid) },
+            { (viewModel as NotificationsViewModel).declineRequest(notification.sender.uid) },
             navController,
             modifier
         )
@@ -64,7 +65,8 @@ fun Notification(
 @Composable
 private fun FriendshipRequest(
     notification: Notification.FriendshipRequest,
-    viewModel: NotificationsViewModel,
+    acceptRequest: () -> Unit,
+    declineRequest: () -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
@@ -109,7 +111,7 @@ private fun FriendshipRequest(
 
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
             IconButton(
-                onClick = { viewModel.acceptRequest(notification) },
+                onClick = { acceptRequest() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
@@ -136,16 +138,15 @@ private fun FriendshipRequest(
         if (isAlertDialogVisible) {
             GeomateAlertDialog(
                 onDismissRequest = {
-
                     isAlertDialogVisible = false
                 },
                 onConfirmation = {
                     // Handle confirmation action
                     isAlertDialogVisible = false
-                    viewModel.declineRequest(notification)
+                    declineRequest()
                 },
-                dialogTitle = "Confirmation Dialog",
-                dialogText = "Are you sure you want to proceed?"
+                dialogTitle = stringResource(id = R.string.alert_dialog_confirmation_title),
+                dialogText = stringResource(id = R.string.alert_dialog_confirmation_body)
             )
         }
     }

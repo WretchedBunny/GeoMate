@@ -1,6 +1,6 @@
 package com.example.geomate.data.repositories
 
-import com.example.geomate.data.datasources.FriendshipRequestRemoteDataSource
+import com.example.geomate.data.datasources.FriendshipRequestDataSource
 import com.example.geomate.data.datasources.UsersDataSource
 import com.example.geomate.data.models.FriendshipRequest
 import com.example.geomate.data.models.FriendshipStatus
@@ -10,31 +10,42 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 
 class FriendshipRepository(
-    private val friendshipDataSource: FriendshipRequestRemoteDataSource,
+    private val friendshipDataSource: FriendshipRequestDataSource,
     private val usersDataSource: UsersDataSource,
 ) {
     private val friendshipRequestFlows: MutableMap<String, Flow<FriendshipRequest?>> =
         mutableMapOf()
     private val friendshipRequests: MutableMap<String, FriendshipRequest?> = mutableMapOf()
 
-    suspend fun getFlow(userId: String): Flow<FriendshipRequest?> {
+    suspend fun getAsFlow(userId: String): Flow<FriendshipRequest?> {
         return friendshipRequestFlows[userId] ?: run {
-            val friendship = friendshipDataSource.getFlow(userId)
+            val friendship = friendshipDataSource.getSingleAsFlow(userId)
             friendshipRequestFlows[userId] = friendship
             return friendship
         }
     }
 
-    suspend fun get(userId: String): FriendshipRequest? {
+    suspend fun getSingle(userId: String): FriendshipRequest? {
         return friendshipRequests[userId] ?: run {
-            val friendshipRequest = friendshipDataSource.get(userId)
+            val friendshipRequest = friendshipDataSource.getSingle(userId)
             friendshipRequests[userId] = friendshipRequest
             return friendshipRequest
         }
     }
 
-    suspend fun getSentListFlow(userId: String): Flow<List<FriendshipRequest>> =
-        friendshipDataSource.getSentListFlow(userId)
+    suspend fun getFriendsAsFlow(): Flow<List<User>> =
+        friendshipDataSource.getAllAccepted()
+            .map {
+                if (it.senderId != Firebase.auth.uid) it.senderId else it.recipientId
+            }
+            .run { usersDataSource.getAllAsFlow(this) }
+
+    suspend fun getFriends(): List<User> =
+        friendshipDataSource.getAllAccepted()
+            .map {
+                if (it.senderId != Firebase.auth.uid) it.senderId else it.recipientId
+            }
+            .run { usersDataSource.getAll(this) }
 
     suspend fun add(friendshipRequest: FriendshipRequest) =
         friendshipDataSource.add(friendshipRequest)
@@ -45,7 +56,7 @@ class FriendshipRepository(
         friendshipDataSource.updateStatus(userId, status)
 
     suspend fun updateCurrentUserNotifications(userId: String, value: Boolean) {
-        get(userId).let { request ->
+        getSingle(userId).let { request ->
             (request?.senderId == Firebase.auth.currentUser?.uid).also { isSender ->
                 friendshipDataSource.updateNotifications(userId, isSender, value)
             }
