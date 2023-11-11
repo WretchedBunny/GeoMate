@@ -8,6 +8,9 @@ import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.example.geomate.localsearch.Contains
+import com.example.geomate.localsearch.Abbreviation
+import com.example.geomate.localsearch.Rule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +23,8 @@ class GroupsViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupsUiState())
     val uiState: StateFlow<GroupsUiState> = _uiState.asStateFlow()
+
+    private val searchRules: List<Rule> = listOf(Contains, Abbreviation)
 
     fun fetchGroups() = Firebase.auth.uid?.let { userId ->
         _uiState.update { it.copy(isLoading = true) }
@@ -48,7 +53,7 @@ class GroupsViewModel(
 
     fun updateSearchQuery(searchQuery: String) {
         val groups = uiState.value.groups.filterKeys { group ->
-            group.name.contains(searchQuery, true)
+            searchRules.any { it.match(group.name, searchQuery) }
         }.keys.toList()
         _uiState.update { it.copy(searchQuery = searchQuery, matchedGroups = groups) }
     }
