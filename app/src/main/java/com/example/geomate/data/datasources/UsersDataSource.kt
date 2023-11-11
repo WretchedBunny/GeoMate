@@ -9,6 +9,7 @@ interface UsersDataSource {
     suspend fun getAllAsFlow(usersIds: List<String>): Flow<List<User>>
 
     suspend fun getSingle(userId: String): User?
+    suspend fun getAll(usersIds: List<String>): List<User>
     suspend fun matchFirstName(searchQuery: String): List<User>
     suspend fun matchLastName(searchQuery: String): List<User>
     suspend fun matchUsername(searchQuery: String): List<User>

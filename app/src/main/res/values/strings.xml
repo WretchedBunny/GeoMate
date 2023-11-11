@@ -88,4 +88,7 @@
 
     <!--Edit profile screen-->
     <string name="edit_profile_title">Edit profile</string>
+    <!--Alert dialog-->
+    <string name="alert_dialog_confirmation_title">Confirmation Dialog</string>
+    <string name="alert_dialog_confirmation_body">Are you sure you want to proceed?</string>
 </resources>

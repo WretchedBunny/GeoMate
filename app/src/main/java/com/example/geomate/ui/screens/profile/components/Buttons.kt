@@ -11,13 +11,18 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Undo
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.geomate.R
 import com.example.geomate.statemachine.FriendshipState
 import com.example.geomate.ui.components.ButtonType
 import com.example.geomate.ui.components.GeoMateButtonWithIcon
+import com.example.geomate.ui.components.GeomateAlertDialog
 import com.example.geomate.ui.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -27,6 +32,7 @@ fun Buttons(
     friendshipState: FriendshipState,
     modifier: Modifier = Modifier,
 ) {
+    var isAlertDialogVisible by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     Row(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
@@ -43,6 +49,7 @@ fun Buttons(
                     type = ButtonType.Primary,
                 )
             }
+
             is FriendshipState.SentByMe -> {
                 GeoMateButtonWithIcon(
                     text = stringResource(id = R.string.button_revoke_request),
@@ -53,6 +60,7 @@ fun Buttons(
                     type = ButtonType.Secondary,
                 )
             }
+
             is FriendshipState.SentByUser -> {
                 GeoMateButtonWithIcon(
                     text = stringResource(id = R.string.button_accept),
@@ -66,12 +74,13 @@ fun Buttons(
                     text = stringResource(id = R.string.button_decline),
                     icon = Icons.Outlined.Close,
                     onClick = {
-                        coroutineScope.launch { friendshipState.decline(userId) }
+                        isAlertDialogVisible = true
                     },
                     type = ButtonType.Secondary,
                 )
             }
-            is FriendshipState.AcceptedWithNotifications ->  {
+
+            is FriendshipState.AcceptedWithNotifications -> {
                 GeoMateButtonWithIcon(
                     text = stringResource(id = R.string.button_turn_off_notifications),
                     icon = Icons.Outlined.LocationOff,
@@ -89,6 +98,7 @@ fun Buttons(
                     type = ButtonType.Secondary,
                 )
             }
+
             is FriendshipState.AcceptedWithoutNotifications -> {
                 GeoMateButtonWithIcon(
                     text = stringResource(id = R.string.button_turn_on_notifications),
@@ -107,6 +117,21 @@ fun Buttons(
                     type = ButtonType.Secondary,
                 )
             }
+        }
+        if (isAlertDialogVisible) {
+            GeomateAlertDialog(
+                onDismissRequest = {
+                    isAlertDialogVisible = false
+                },
+                onConfirmation = {
+                    isAlertDialogVisible = false
+                    coroutineScope.launch {
+                        (friendshipState as FriendshipState.SentByUser).decline(userId)
+                    }
+                },
+                dialogTitle = stringResource(R.string.alert_dialog_confirmation_title),
+                dialogText = stringResource(R.string.alert_dialog_confirmation_body)
+            )
         }
     }
 }
