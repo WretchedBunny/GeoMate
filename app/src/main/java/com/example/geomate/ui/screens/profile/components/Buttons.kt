@@ -125,8 +125,20 @@ fun Buttons(
                 },
                 onConfirmation = {
                     isAlertDialogVisible = false
-                    coroutineScope.launch {
-                        (friendshipState as FriendshipState.SentByUser).decline(userId)
+                    when (friendshipState) {
+                        is FriendshipState.AcceptedWithNotifications -> {
+                            coroutineScope.launch { friendshipState.remove(userId) }
+                        }
+
+                        is FriendshipState.AcceptedWithoutNotifications -> {
+                            coroutineScope.launch { friendshipState.remove(userId) }
+                        }
+
+                        is FriendshipState.SentByUser -> {
+                            coroutineScope.launch { friendshipState.decline(userId) }
+                        }
+
+                        else -> {}
                     }
                 },
                 dialogTitle = stringResource(R.string.alert_dialog_confirmation_title),
