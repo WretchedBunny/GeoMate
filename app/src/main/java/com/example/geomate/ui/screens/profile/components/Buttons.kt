@@ -112,7 +112,7 @@ fun Buttons(
                     text = stringResource(id = R.string.button_remove),
                     icon = Icons.Outlined.Close,
                     onClick = {
-                        coroutineScope.launch { friendshipState.remove(userId) }
+                        isAlertDialogVisible = true
                     },
                     type = ButtonType.Secondary,
                 )
