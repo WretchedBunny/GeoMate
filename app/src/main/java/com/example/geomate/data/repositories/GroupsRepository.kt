@@ -24,9 +24,11 @@ class GroupsRepository(private val groupsDataSource: GroupsDataSource) {
         }
     }
 
+    suspend fun update(groupId: String, name: String, users: List<String>) {
+        groupsDataSource.update(groupId, name, users)
+    }
+
     suspend fun remove(group: Group) = groupsDataSource.remove(group)
 
     suspend fun add(group: Group) = groupsDataSource.add(group)
-
-    suspend fun removeUser(groupId: String, userId: String) = groupsDataSource.removeUser(groupId, userId)
 }

@@ -8,6 +8,6 @@ interface GroupsDataSource {
     suspend fun getSingleAsFlow(groupId: String): Flow<Group?>
 
     suspend fun add(group: Group)
+    suspend fun update(groupId: String, name: String, users: List<String>)
     suspend fun remove(group: Group)
-    suspend fun removeUser(groupId: String, userId: String)
 }

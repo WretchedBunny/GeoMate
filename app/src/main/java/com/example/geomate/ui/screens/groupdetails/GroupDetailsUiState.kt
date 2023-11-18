@@ -5,6 +5,8 @@ import com.example.geomate.data.models.User
 
 
 data class GroupDetailsUiState(
+    val groupId: String = "",
     val name: String = "",
-    val users: MutableMap<User, Uri> = mutableMapOf()
+    val users: Map<User, Uri> = emptyMap(),
+    val isLoading: Boolean = true,
 )
