@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 class SelectFriendViewModel(
     private val usersRepository: UsersRepository,
-    private val groupsRepository: GroupsRepository,
     private val friendshipRepository: FriendshipRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FriendsUiState())

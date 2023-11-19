@@ -31,8 +31,6 @@ class GroupsRemoteDataSource(private val fireStore: FirebaseFirestore) : GroupsD
         .get().await()
         .toObjects(Group::class.java).first().users
 
-
-
     override suspend fun add(group: Group) {
         fireStore.collection("groups")
             .add(group).await()
