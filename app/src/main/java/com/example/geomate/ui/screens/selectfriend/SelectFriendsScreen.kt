@@ -32,8 +32,8 @@ import com.example.geomate.R
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
-import com.example.geomate.ui.screens.selectfriend.components.Friend
 import com.example.geomate.ui.screens.profile.navigateToProfile
+import com.example.geomate.ui.screens.selectfriend.components.Friend
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.selectFriend(
@@ -41,8 +41,11 @@ fun NavGraphBuilder.selectFriend(
     navController: NavController
 ) {
     composable(
-        "${Destinations.GROUP_SELECT_FRIEND_ROUTE}/{groupId}",
-        arguments = listOf(navArgument("groupId") { type = NavType.StringType })
+        "${Destinations.GROUP_SELECT_FRIEND_ROUTE}?groupId={groupId}",
+        arguments = listOf(navArgument("groupId") {
+            type = NavType.StringType
+            defaultValue = ""
+        })
     ) { backStackEntry ->
         val uiState by viewModel.uiState.collectAsState()
         SelectFriendsScreen(
@@ -55,7 +58,11 @@ fun NavGraphBuilder.selectFriend(
 }
 
 fun NavController.navigateToSelectFriend(groupId: String) {
-    navigate("${Destinations.GROUP_SELECT_FRIEND_ROUTE}/${groupId}") {
+    val route = when(groupId.isEmpty()) {
+        true -> Destinations.GROUP_SELECT_FRIEND_ROUTE
+        false -> "${Destinations.GROUP_SELECT_FRIEND_ROUTE}?groupId=$groupId"
+    }
+    navigate(route) {
         launchSingleTop = true
     }
 }
@@ -108,7 +115,7 @@ fun SelectFriendsScreen(
                 }
             } else {
                 LazyColumn {
-                    itemsIndexed(uiState.matchedFriends.keys.toList()) { index, friend ->
+                    itemsIndexed(uiState.matchedFriends) { index, friend ->
                         Friend(
                             friend = friend,
                             profilePicture = uiState.friends[friend] ?: Uri.EMPTY,

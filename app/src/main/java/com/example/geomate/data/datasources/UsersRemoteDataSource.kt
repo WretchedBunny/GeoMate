@@ -32,10 +32,14 @@ class UsersRemoteDataSource(
         .whereEqualTo("uid", userId)
         .get().await().toObjects(User::class.java).firstOrNull()
 
-    override suspend fun getAll(usersIds: List<String>): List<User> = fireStore
-        .collection("users")
-        .whereIn("uid", usersIds)
-        .get().await().toObjects(User::class.java)
+    override suspend fun getAll(usersIds: List<String>): List<User> {
+        if (usersIds.isEmpty()) {
+            return emptyList()
+        }
+        return fireStore.collection("users")
+            .whereIn("uid", usersIds)
+            .get().await().toObjects(User::class.java)
+    }
 
     override suspend fun matchFirstName(searchQuery: String): List<User> = fireStore
         .collection("users")

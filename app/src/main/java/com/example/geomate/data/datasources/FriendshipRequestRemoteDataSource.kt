@@ -26,33 +26,45 @@ class FriendshipRequestRemoteDataSource(private val fireStore: FirebaseFirestore
             )
         )
 
-    override suspend fun getSingleAsFlow(userId: String): Flow<FriendshipRequest?> {
-        return fireStore.collection("friendshipRequests").where(documentSearchFilter(userId))
-            .snapshotFlow().map { it.toObjects(FriendshipRequest::class.java).firstOrNull() }
-    }
+    override suspend fun getSingleAsFlow(userId: String): Flow<FriendshipRequest?> = fireStore
+        .collection("friendshipRequests")
+        .where(documentSearchFilter(userId))
+        .snapshotFlow().map { it.toObjects(FriendshipRequest::class.java).firstOrNull() }
 
-    override suspend fun getSingle(userId: String): FriendshipRequest? {
-        return fireStore.collection("friendshipRequests").where(documentSearchFilter(userId)).get()
-            .await().documents.map { it.toObject(FriendshipRequest::class.java) }.firstOrNull()
-    }
+    override suspend fun getSingle(userId: String): FriendshipRequest? = fireStore
+        .collection("friendshipRequests")
+        .where(documentSearchFilter(userId))
+        .get().await()
+        .documents.map { it.toObject(FriendshipRequest::class.java) }.firstOrNull()
 
-    override suspend fun getSentAsFlow(): Flow<List<FriendshipRequest>> =
-        fireStore
+    override suspend fun getSentAsFlow(): Flow<List<FriendshipRequest>> = fireStore
             .collection("friendshipRequests")
             .whereEqualTo("recipientId", Firebase.auth.uid)
             .whereEqualTo("status", "Sent")
             .orderBy("createdAt", Query.Direction.DESCENDING)
-            .snapshotFlow()
-            .map { it.toObjects(FriendshipRequest::class.java) }
+            .snapshotFlow().map { it.toObjects(FriendshipRequest::class.java) }
 
-    override suspend fun getAllAccepted(): List<FriendshipRequest> =
-        fireStore.collection("friendshipRequests").where(
+    override suspend fun getAllAccepted(): List<FriendshipRequest> = fireStore
+        .collection("friendshipRequests")
+        .where(
             Filter.or(
                 Filter.equalTo("recipientId", Firebase.auth.currentUser?.uid),
                 Filter.equalTo("senderId", Firebase.auth.currentUser?.uid),
             )
-        ).whereEqualTo("status", FriendshipStatus.Accepted).get()
-            .await().documents.mapNotNull { it.toObject(FriendshipRequest::class.java) }
+        )
+        .whereEqualTo("status", FriendshipStatus.Accepted)
+        .get().await()
+        .documents.mapNotNull { it.toObject(FriendshipRequest::class.java) }
+
+    override suspend fun getAllAcceptedAsFlow(): Flow<List<FriendshipRequest>> = fireStore
+        .collection("friendshipRequests").where(
+            Filter.or(
+                Filter.equalTo("recipientId", Firebase.auth.currentUser?.uid),
+                Filter.equalTo("senderId", Firebase.auth.currentUser?.uid),
+            )
+        )
+        .whereEqualTo("status", FriendshipStatus.Accepted)
+        .snapshotFlow().map { it.toObjects(FriendshipRequest::class.java) }
 
 
     override suspend fun add(friendshipRequest: FriendshipRequest) {

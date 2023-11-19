@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens.notifications
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.FriendshipStatus
@@ -22,15 +23,23 @@ class NotificationsViewModel(
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
 
-    fun fetchNotifications() = viewModelScope.launch {
+    fun fetchNotifications() {
         _uiState.update { it.copy(isLoading = true) }
-        notificationRepository.getUserSentAsFlow().collect {
-            val notifications = it.map { notification ->
-                val sender = usersRepository.getSingle(notification.senderId) ?: User()
-                val senderProfilePicture = usersRepository.getProfilePicture(notification.senderId)
-                Notification.FriendshipRequest(sender, senderProfilePicture, notification.createdAt)
+
+        viewModelScope.launch {
+            notificationRepository.getUserSentAsFlow().collect { value ->
+                var requests = value.map { request ->
+                    val sender = usersRepository.getSingle(request.senderId) ?: User()
+                    Notification.FriendshipRequest(sender, Uri.EMPTY, request.createdAt)
+                }
+                _uiState.update { it.copy(notifications = requests, isLoading = false) }
+
+                requests = requests.map { request ->
+                    val picture = usersRepository.getProfilePicture(request.sender.uid)
+                    request.copy(senderProfilePicture = picture)
+                }
+                _uiState.update { it.copy(notifications = requests) }
             }
-            _uiState.update { it.copy(notifications = notifications, isLoading = false) }
         }
     }
 

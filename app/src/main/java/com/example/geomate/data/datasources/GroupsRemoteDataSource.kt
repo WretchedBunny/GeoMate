@@ -25,6 +25,14 @@ class GroupsRemoteDataSource(private val fireStore: FirebaseFirestore) : GroupsD
         .reference.snapshotFlow()
         .map { it.toObject(Group::class.java) }
 
+    override suspend fun getUsersIds(groupId: String): List<String> = fireStore
+        .collection("groups")
+        .whereEqualTo("uid", groupId)
+        .get().await()
+        .toObjects(Group::class.java).first().users
+
+
+
     override suspend fun add(group: Group) {
         fireStore.collection("groups")
             .add(group).await()

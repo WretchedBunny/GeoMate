@@ -57,7 +57,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
-    val friendshipRepository = FriendshipRepository(friendshipDataSource, usersDataSource)
+    val friendshipRepository = FriendshipRepository(friendshipDataSource, groupsDataSource,usersDataSource)
     val notificationRepository = NotificationRepository(friendshipDataSource)
 
     // ViewModels and UiStates
@@ -75,8 +75,8 @@ fun NavGraph(application: Application, navController: NavHostController) {
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
     val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
-    val selectFriendViewModel = SelectFriendViewModel(usersRepository, groupsRepository)
-    val friendsViewModel = FriendsViewModel(usersRepository)
+    val selectFriendViewModel = SelectFriendViewModel(usersRepository, groupsRepository, friendshipRepository)
+    val friendsViewModel = FriendsViewModel(usersRepository, friendshipRepository)
     val profileViewModel = ProfileViewModel(usersRepository, friendshipRepository)
     val editProfileViewModel = EditProfileViewModel(usersRepository)
 

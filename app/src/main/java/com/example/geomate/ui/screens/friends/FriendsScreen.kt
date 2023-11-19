@@ -99,18 +99,19 @@ fun FriendsScreen(
                 ) {
                     CircularProgressIndicator()
                 }
-            } else {
-                LazyColumn {
-                    itemsIndexed(uiState.matchedFriends.keys.toList()) { index, friend ->
-                        Friend(
-                            friend = friend,
-                            profilePicture = uiState.friends[friend] ?: Uri.EMPTY,
-                            onSelect = { navController.navigateToProfile(friend.uid) },
-                            onRemove = viewModel::removeFriend
-                        )
-                        if (index < uiState.friends.size - 1) {
-                            Divider(color = MaterialTheme.colorScheme.secondary)
-                        }
+                return
+            }
+
+            LazyColumn {
+                itemsIndexed(uiState.matchedFriends) { index, friend ->
+                    Friend(
+                        friend = friend,
+                        profilePicture = uiState.friends[friend] ?: Uri.EMPTY,
+                        onSelect = { navController.navigateToProfile(friend.uid) },
+                        onRemove = viewModel::removeFriend
+                    )
+                    if (index < uiState.friends.size - 1) {
+                        Divider(color = MaterialTheme.colorScheme.secondary)
                     }
                 }
             }

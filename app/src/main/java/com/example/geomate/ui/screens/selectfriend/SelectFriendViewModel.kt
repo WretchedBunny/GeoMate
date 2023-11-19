@@ -1,12 +1,11 @@
 package com.example.geomate.ui.screens.selectfriend
 
+import android.net.Uri
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.User
+import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,23 +17,40 @@ import kotlinx.coroutines.launch
 class SelectFriendViewModel(
     private val usersRepository: UsersRepository,
     private val groupsRepository: GroupsRepository,
+    private val friendshipRepository: FriendshipRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FriendsUiState())
     val uiState: StateFlow<FriendsUiState> = _uiState.asStateFlow()
 
     fun fetchFriends(groupId: String) {
         _uiState.update { it.copy(isLoading = true) }
-        // TODO: Fetch all friends that are not already in the group (from uiState)
-        Log.d("asdqwe", "fetchFriends: Fetching friends that are not in the group")
-        _uiState.update { it.copy(isLoading = false) }
+
+        viewModelScope.launch {
+            friendshipRepository.getFriendsNotFromGroupAsFlow(groupId).collect { friends ->
+                _uiState.update {
+                    it.copy(
+                        friends = friends.associateWith { Uri.EMPTY },
+                        matchedFriends = friends,
+                        isLoading = false
+                    )
+                }
+                _uiState.update {
+                    it.copy(
+                        friends = friends.associateWith { user ->
+                            usersRepository.getProfilePicture(user.uid)
+                        }
+                    )
+                }
+            }
+        }
     }
 
     fun updateSearchQuery(searchQuery: String) {
         _uiState.update {
             it.copy(
                 searchQuery = searchQuery,
-                matchedFriends = uiState.value.friends.filter { pair ->
-                    filter(pair.key, searchQuery)
+                matchedFriends = uiState.value.friends.keys.filter { friend ->
+                    filter(friend, searchQuery)
                 }
             )
         }
