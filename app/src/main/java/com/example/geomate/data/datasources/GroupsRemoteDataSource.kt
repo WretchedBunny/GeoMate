@@ -4,6 +4,7 @@ import com.example.geomate.data.models.Group
 import com.example.geomate.ext.snapshotFlow
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
@@ -16,9 +17,8 @@ class GroupsRemoteDataSource(private val fireStore: FirebaseFirestore) : GroupsD
 
     override suspend fun getSingleAsFlow(groupId: String): Flow<Group?> = fireStore
         .collection("groups")
-        .document(groupId).get().await()
-        .reference.snapshotFlow()
-        .map { it.toObject(Group::class.java) }
+        .whereEqualTo("uid", groupId)
+        .snapshotFlow().map { it.toObjects(Group::class.java).first() }
 
     override suspend fun add(group: Group) {
         fireStore.collection("groups")

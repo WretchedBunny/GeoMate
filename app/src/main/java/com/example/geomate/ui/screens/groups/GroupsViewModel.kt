@@ -44,8 +44,6 @@ class GroupsViewModel(
                 }
             }
         }
-
-        _uiState.update { it.copy(isLoading = false) }
     }
 
     fun updateSearchQuery(searchQuery: String) {
