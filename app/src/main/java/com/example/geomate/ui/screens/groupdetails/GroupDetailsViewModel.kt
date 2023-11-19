@@ -1,5 +1,6 @@
 package com.example.geomate.ui.screens.groupdetails
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.Group
@@ -33,16 +34,25 @@ class GroupDetailsViewModel(
                     return@collect
                 }
 
-                usersRepository.getAllAsFlow(group.users).collect { value ->
-                    val users = value.associateWith { user ->
-                        usersRepository.getProfilePicture(user.uid)
+                usersRepository.getAllAsFlow(group.users).collect { users ->
+                    _uiState.update {
+                        it.copy(
+                            groupId = groupId,
+                            name = group.name,
+                            users = users.associateWith { Uri.EMPTY },
+                            isLoading = false,
+                        )
                     }
-                    _uiState.update { it.copy(groupId = groupId, name = group.name, users = users) }
+                    _uiState.update {
+                        it.copy(
+                            users = users.associateWith { user ->
+                                usersRepository.getProfilePicture(user.uid)
+                            }
+                        )
+                    }
                 }
             }
         }
-
-        _uiState.update { it.copy(isLoading = false) }
     }
 
     fun updateName(name: String) {

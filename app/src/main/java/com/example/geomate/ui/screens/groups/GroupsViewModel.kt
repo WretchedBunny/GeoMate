@@ -25,20 +25,23 @@ class GroupsViewModel(
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            groupsRepository.getAllAsFlow(userId).collect { value ->
-                // Fetching groups without profile pictures
-                var groups = value.associateWith { group ->
-                    List(group.users.size) { Uri.EMPTY }
+            groupsRepository.getAllAsFlow(userId).collect { groups ->
+                _uiState.update {
+                    it.copy(
+                        groups = groups.associateWith { group ->
+                            List(group.users.size) { Uri.EMPTY }
+                        },
+                        matchedGroups = groups,
+                        isLoading = false,
+                    )
                 }
-                _uiState.update { it.copy(groups = groups, matchedGroups = groups.keys.toList()) }
-
-                // Fetching profile pictures
-                groups = value.associateWith { group ->
-                    group.users.map { groupUserId ->
-                        usersRepository.getProfilePicture(groupUserId)
-                    }
+                _uiState.update {
+                    it.copy(
+                        groups = groups.associateWith { group ->
+                            group.users.map { usersRepository.getProfilePicture(it) }
+                        },
+                    )
                 }
-                _uiState.update { it.copy(groups = groups, matchedGroups = groups.keys.toList()) }
             }
         }
 
