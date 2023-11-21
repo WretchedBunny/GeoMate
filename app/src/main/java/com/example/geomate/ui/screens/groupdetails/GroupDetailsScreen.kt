@@ -35,6 +35,7 @@ import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groupdetails.components.GroupUser
 import com.example.geomate.ui.screens.profile.navigateToProfile
+import com.example.geomate.ui.screens.selectfriend.navigateToSelectFriend
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.groupDetails(
@@ -97,7 +98,7 @@ fun GroupDetailsScreen(
                     icon = Icons.Outlined.Add,
                     containerColor = MaterialTheme.colorScheme.secondary,
                     elevation = 2.dp
-                ) { /* TODO: Navigate to "select user" screen */ }
+                ) { navController.navigateToSelectFriend(groupId) }
                 AnimatedVisibility (uiState.users.isNotEmpty() && uiState.name.isNotBlank()) {
                     GeoMateFAB(
                         icon = Icons.Outlined.Check,
