@@ -115,7 +115,7 @@ fun MapScreen(
                 multiplePermissionsState.launchMultiplePermissionRequest()
             }
 
-            // TODO: Display upsy daisy map
+            // TODO: Display oopsy daisy map
         },
         permissionsNotAvailableContent = { /* ... */ }
     ) {

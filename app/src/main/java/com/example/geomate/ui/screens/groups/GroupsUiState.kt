@@ -5,5 +5,7 @@ import com.example.geomate.data.models.Group
 
 data class GroupsUiState(
     val searchQuery: String = "",
-    val groups: MutableMap<Group, List<Uri>> = mutableMapOf(),
+    val groups: Map<Group, List<Uri>> = emptyMap(),
+    val matchedGroups: List<Group> = emptyList(),
+    val isLoading: Boolean = true,
 )

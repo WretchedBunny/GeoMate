@@ -1,12 +1,15 @@
 package com.example.geomate.ui.screens.groups
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -64,7 +68,7 @@ fun GroupsScreen(
     modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(Firebase.auth.uid) {
-        Firebase.auth.uid?.let { viewModel.fetchGroups(it) }
+        viewModel.fetchGroups()
     }
 
     Scaffold(
@@ -90,7 +94,7 @@ fun GroupsScreen(
                 icon = Icons.Outlined.Add,
                 containerColor = MaterialTheme.colorScheme.secondary,
                 elevation = 2.dp
-            ) { /* TODO: Navigate to group's details screen */ }
+            ) { navController.navigateToGroupDetails("") }
         },
         bottomBar = {
             BottomNavigationBar(
@@ -102,16 +106,22 @@ fun GroupsScreen(
         },
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
-        LazyColumn(modifier = Modifier.padding(it)) {
-            val groups = when (uiState.searchQuery.isBlank()) {
-                true -> uiState.groups.keys.toList()
-                false -> viewModel.matchGroups.value.keys.toList()
+        if (uiState.isLoading) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator()
             }
-            itemsIndexed(groups) { index, group ->
+            return@Scaffold
+        }
+
+        LazyColumn(modifier = Modifier.padding(it)) {
+            itemsIndexed(uiState.matchedGroups) { index, group ->
                 Group(
                     group = group to (uiState.groups[group] ?: listOf()),
                     onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
-                    onRemove = { viewModel.removeGroup(it) },
+                    onRemove = { g -> viewModel.removeGroup(g) },
                 )
                 if (index < uiState.groups.size - 1) {
                     Divider(color = MaterialTheme.colorScheme.secondary)
