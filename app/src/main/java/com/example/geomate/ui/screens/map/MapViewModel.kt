@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.Group
 import com.example.geomate.data.repositories.GroupsRepository
+import com.example.geomate.data.repositories.NotificationRepository
 import com.example.geomate.data.repositories.UsersRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -28,14 +29,27 @@ class MapViewModel(
     application: Application,
     private val groupsRepository: GroupsRepository,
     private val usersRepository: UsersRepository,
+    private val notificationRepository: NotificationRepository,
     private val fusedLocationClient: FusedLocationProviderClient,
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(MapUiState())
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
 
-    fun fetchGroups(userId: String) = viewModelScope.launch {
-        groupsRepository.getAllAsFlow(userId).collect { groups ->
-            _uiState.update { it.copy(groups = groups.associateWith { true }.toMutableMap()) }
+    fun fetchGroups(userId: String) {
+        viewModelScope.launch {
+            groupsRepository.getAllAsFlow(userId).collect { groups ->
+                _uiState.update { it.copy(groups = groups.associateWith { true }.toMutableMap()) }
+            }
+        }
+    }
+
+    fun fetchNumberOfNotifications() {
+        viewModelScope.launch {
+            notificationRepository.getUserSentAsFlow().collect { notifications ->
+                _uiState.update {
+                    it.copy(numberOfNotifications = notifications.size)
+                }
+            }
         }
     }
 
@@ -43,9 +57,11 @@ class MapViewModel(
         _uiState.update { it.copy(searchQuery = searchQuery) }
     }
 
-    suspend fun fetchProfilePicture(userId: String) = viewModelScope.launch {
-        val uri = usersRepository.getProfilePicture(userId)
-        _uiState.update { it.copy(profilePictureUri = uri) }
+    suspend fun fetchProfilePicture(userId: String) {
+        viewModelScope.launch {
+            val uri = usersRepository.getProfilePicture(userId)
+            _uiState.update { it.copy(profilePictureUri = uri) }
+        }
     }
 
     fun startMonitoringUserLocation() {

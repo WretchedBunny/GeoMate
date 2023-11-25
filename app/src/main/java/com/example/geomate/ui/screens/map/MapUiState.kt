@@ -8,6 +8,7 @@ import com.google.maps.android.compose.CameraPositionState
 
 data class MapUiState(
     val searchQuery: String = "",
+    val numberOfNotifications: Int = 0,
     val profilePictureUri: Uri? = null,
     val groups: MutableMap<Group, Boolean> = mutableMapOf(),
     val userMarker: LatLng = LatLng(40.772499265817345, -73.97661507692591),

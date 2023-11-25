@@ -105,6 +105,7 @@ fun MapScreen(
         Firebase.auth.uid?.let {
             viewModel.fetchProfilePicture(it)
             viewModel.fetchGroups(it)
+            viewModel.fetchNumberOfNotifications()
         }
     }
 
@@ -216,7 +217,7 @@ fun Map(
                         TextFieldIcon(navController::navigateToNotifications) {
                             IconWithNotification(
                                 icon = Icons.Outlined.Notifications,
-                                notificationsCount = 4,
+                                notificationsCount = uiState.numberOfNotifications,
                                 notificationsForegroundColor = MaterialTheme.colorScheme.onPrimary,
                                 notificationsBackgroundColor = MaterialTheme.colorScheme.primary,
                                 modifier = it,

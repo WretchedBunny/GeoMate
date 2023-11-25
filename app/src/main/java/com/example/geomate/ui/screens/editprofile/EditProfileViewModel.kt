@@ -15,36 +15,40 @@ class EditProfileViewModel(
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
 
-    fun fetchUser(userId: String) = viewModelScope.launch {
-        usersRepository.getSingleAsFlow(userId).collect { userOrNull ->
-            userOrNull?.let { user ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        firstName = user.firstName,
-                        isFirstNameValid = true,
-                        lastName = user.lastName,
-                        isLastNameValid = true,
-                        username = user.username,
-                        isUsernameValid = true,
-                        email = user.email,
-                        isEmailValid = true,
-                        bio = user.bio,
-                    )
+    fun fetchUser(userId: String) {
+        viewModelScope.launch {
+            usersRepository.getSingleAsFlow(userId).collect { userOrNull ->
+                userOrNull?.let { user ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            firstName = user.firstName,
+                            isFirstNameValid = true,
+                            lastName = user.lastName,
+                            isLastNameValid = true,
+                            username = user.username,
+                            isUsernameValid = true,
+                            email = user.email,
+                            isEmailValid = true,
+                            bio = user.bio,
+                        )
+                    }
                 }
             }
         }
     }
 
-    fun updateUser(userId: String) = viewModelScope.launch {
-        val updates = mapOf(
-            "firstName" to uiState.value.firstName,
-            "lastName" to uiState.value.lastName,
-            "username" to uiState.value.username,
-            "email" to uiState.value.email,
-            "bio" to uiState.value.bio,
-        )
-        usersRepository.update(userId, updates)
+    fun updateUser(userId: String) {
+        viewModelScope.launch {
+            val updates = mapOf(
+                "firstName" to uiState.value.firstName,
+                "lastName" to uiState.value.lastName,
+                "username" to uiState.value.username,
+                "email" to uiState.value.email,
+                "bio" to uiState.value.bio,
+            )
+            usersRepository.update(userId, updates)
+        }
     }
 
     fun updateFirstName(firstName: String) {

@@ -58,7 +58,9 @@ class GroupsViewModel(
         _uiState.update { it.copy(searchQuery = searchQuery, matchedGroups = groups) }
     }
 
-    fun removeGroup(group: Group) = viewModelScope.launch {
-        groupsRepository.remove(group)
+    fun removeGroup(group: Group) {
+        viewModelScope.launch {
+            groupsRepository.remove(group)
+        }
     }
 }

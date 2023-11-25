@@ -66,6 +66,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         application,
         groupsRepository,
         usersRepository,
+        notificationRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
     val notificationsViewModel =
