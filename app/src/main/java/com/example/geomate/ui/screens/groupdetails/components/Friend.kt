@@ -1,4 +1,4 @@
-package com.example.geomate.ui.screens.selectfriend.components
+package com.example.geomate.ui.screens.groupdetails.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image

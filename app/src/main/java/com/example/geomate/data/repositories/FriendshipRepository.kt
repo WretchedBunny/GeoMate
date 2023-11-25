@@ -43,17 +43,6 @@ class FriendshipRepository(
             emit(usersDataSource.getAll(usersIds))
         }
 
-    suspend fun getFriendsNotFromGroupAsFlow(groupId: String): Flow<List<User>> {
-        return friendshipDataSource.getAllAcceptedAsFlow().transform { requests ->
-            val friendsIds = requests.map { request ->
-                if (request.senderId != Firebase.auth.uid) request.senderId else request.recipientId
-            }.toSet()
-            val membersIds = groupsDataSource.getUsersIds(groupId).toSet()
-
-            emit(usersDataSource.getAll(friendsIds.minus(membersIds).toList()))
-        }
-    }
-
     suspend fun getFriends(): List<User> {
         val usersIds = friendshipDataSource.getAllAccepted().map {
             if (it.senderId != Firebase.auth.uid) it.senderId else it.recipientId

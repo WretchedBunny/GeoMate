@@ -1,6 +1,7 @@
-package com.example.geomate.ui.screens.selectfriend
+package com.example.geomate.ui.screens.groupdetails
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,65 +18,30 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.geomate.R
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.TextFieldIcon
-import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.groupdetails.components.Friend
 import com.example.geomate.ui.screens.profile.navigateToProfile
-import com.example.geomate.ui.screens.selectfriend.components.Friend
 import com.example.geomate.ui.theme.spacing
 
-fun NavGraphBuilder.selectFriend(
-    viewModel: SelectFriendViewModel,
-    navController: NavController
-) {
-    composable(
-        "${Destinations.GROUP_SELECT_FRIEND_ROUTE}?groupId={groupId}",
-        arguments = listOf(navArgument("groupId") {
-            type = NavType.StringType
-            defaultValue = ""
-        })
-    ) { backStackEntry ->
-        val uiState by viewModel.uiState.collectAsState()
-        SelectFriendsScreen(
-            groupId = backStackEntry.arguments?.getString("groupId") ?: "",
-            uiState = uiState,
-            viewModel = viewModel,
-            navController = navController,
-        )
-    }
-}
-
-fun NavController.navigateToSelectFriend(groupId: String) {
-    val route = when(groupId.isEmpty()) {
-        true -> Destinations.GROUP_SELECT_FRIEND_ROUTE
-        false -> "${Destinations.GROUP_SELECT_FRIEND_ROUTE}?groupId=$groupId"
-    }
-    navigate(route) {
-        launchSingleTop = true
-    }
-}
-
 @Composable
-fun SelectFriendsScreen(
-    groupId: String,
-    uiState: FriendsUiState,
-    viewModel: SelectFriendViewModel,
+internal fun SelectFriendsScreen(
+    uiState: SelectFriendUiState,
+    viewModel: GroupDetailsViewModel,
     navController: NavController,
 ) {
+    BackHandler {
+        viewModel.toggleSelectFriendVisibility()
+    }
+
     LaunchedEffect(Unit) {
-        viewModel.fetchFriends(groupId)
+        viewModel.fetchFriends()
     }
 
     Box(
@@ -93,7 +59,7 @@ fun SelectFriendsScreen(
                 value = uiState.searchQuery,
                 onValueChange = viewModel::updateSearchQuery,
                 leadingIcons = listOf(
-                    TextFieldIcon(onClick = navController::navigateUp) {
+                    TextFieldIcon(onClick = viewModel::toggleSelectFriendVisibility) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = null,
@@ -120,7 +86,10 @@ fun SelectFriendsScreen(
                             friend = friend,
                             profilePicture = uiState.friends[friend] ?: Uri.EMPTY,
                             onSelect = { navController.navigateToProfile(friend.uid) },
-                            onAdd = viewModel::addFriendToGroup
+                            onAdd = { user ->
+                                viewModel.addUser(user, uiState.friends[user] ?: Uri.EMPTY)
+                                viewModel.toggleSelectFriendVisibility()
+                            },
                         )
                         if (index < uiState.friends.size - 1) {
                             Divider(color = MaterialTheme.colorScheme.secondary)

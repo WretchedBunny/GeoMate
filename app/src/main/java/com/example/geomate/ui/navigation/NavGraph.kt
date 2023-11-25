@@ -37,8 +37,6 @@ import com.example.geomate.ui.screens.profile.ProfileViewModel
 import com.example.geomate.ui.screens.profile.profile
 import com.example.geomate.ui.screens.search.SearchViewModel
 import com.example.geomate.ui.screens.search.search
-import com.example.geomate.ui.screens.selectfriend.SelectFriendViewModel
-import com.example.geomate.ui.screens.selectfriend.selectFriend
 import com.example.geomate.ui.theme.GeoMateTheme
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -74,8 +72,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
         NotificationsViewModel(usersRepository, friendshipRepository, notificationRepository)
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
-    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
-    val selectFriendViewModel = SelectFriendViewModel(usersRepository, friendshipRepository)
+    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository, friendshipRepository)
     val friendsViewModel = FriendsViewModel(usersRepository, friendshipRepository)
     val profileViewModel = ProfileViewModel(usersRepository, friendshipRepository)
     val editProfileViewModel = EditProfileViewModel(usersRepository)
@@ -106,7 +103,6 @@ fun NavGraph(application: Application, navController: NavHostController) {
             search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
-            selectFriend(selectFriendViewModel, navController)
             friendsList(friendsViewModel, navController)
             profile(profileViewModel, navController)
             editProfile(editProfileViewModel, navController)

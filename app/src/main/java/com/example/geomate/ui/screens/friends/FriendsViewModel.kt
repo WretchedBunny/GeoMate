@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.User
 import com.example.geomate.data.repositories.FriendshipRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.localsearch.Abbreviation
+import com.example.geomate.localsearch.Contains
+import com.example.geomate.localsearch.Rule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +21,8 @@ class FriendsViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FriendsUiState())
     val uiState: StateFlow<FriendsUiState> = _uiState.asStateFlow()
+
+    private val searchRules: List<Rule> = listOf(Contains, Abbreviation)
 
     fun fetchFriends() {
         _uiState.update { it.copy(isLoading = true) }
@@ -40,24 +45,19 @@ class FriendsViewModel(
                 }
             }
         }
-
     }
 
     fun updateSearchQuery(searchQuery: String) {
         val friends = uiState.value.friends.filter { pair ->
-            filter(pair.key, searchQuery)
+            listOf("${pair.key.firstName} ${pair.key.lastName}", pair.key.username).any { userInfo ->
+                searchRules.any { rule -> rule.match(userInfo, searchQuery) }
+            }
         }
         _uiState.update {
             it.copy(
                 searchQuery = searchQuery,
                 matchedFriends = friends.keys.toList(),
             )
-        }
-    }
-
-    private fun filter(friend: User, searchQuery: String): Boolean {
-        return listOf(friend.firstName, friend.lastName, friend.username).any {
-            it.contains(searchQuery)
         }
     }
 

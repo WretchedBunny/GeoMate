@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.Group
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.localsearch.Abbreviation
+import com.example.geomate.localsearch.Contains
+import com.example.geomate.localsearch.Rule
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.example.geomate.localsearch.Contains
-import com.example.geomate.localsearch.Abbreviation
-import com.example.geomate.localsearch.Rule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

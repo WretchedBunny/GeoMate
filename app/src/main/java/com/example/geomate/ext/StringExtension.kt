@@ -1,8 +1,6 @@
 package com.example.geomate.ext
 
 import android.util.Patterns
-import androidx.compose.ui.text.capitalize
-import java.util.Locale
 
 private const val REGEX_STRONG_PASSWORD =
     "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$"

@@ -2,19 +2,19 @@ package com.example.geomate.ui.screens.friends
 
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,14 +23,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
+import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.TextFieldIcon
+import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.friends.components.Friend
+import com.example.geomate.ui.screens.groupdetails.navigateToGroupDetails
+import com.example.geomate.ui.screens.groups.navigateToGroups
+import com.example.geomate.ui.screens.map.navigateToMap
 import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
 
@@ -59,29 +65,21 @@ fun FriendsScreen(
     uiState: FriendsUiState,
     viewModel: FriendsViewModel,
     navController: NavController,
+    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(Unit) {
         viewModel.fetchFriends()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(vertical = MaterialTheme.spacing.medium)
-        ) {
+    Scaffold(
+        topBar = {
             GeoMateTextField(
                 value = uiState.searchQuery,
                 onValueChange = viewModel::updateSearchQuery,
                 leadingIcons = listOf(
-                    TextFieldIcon(onClick = navController::navigateUp) {
+                    TextFieldIcon {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.Outlined.Search,
                             contentDescription = null,
                             modifier = it,
                         )
@@ -89,9 +87,32 @@ fun FriendsScreen(
                 ),
                 placeholder = stringResource(id = R.string.friends_search_placeholder),
                 imeAction = ImeAction.Search,
-                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
+                modifier = Modifier.padding(MaterialTheme.spacing.medium)
             )
-
+        },
+        floatingActionButton = {
+            GeoMateFAB(
+                icon = Icons.Outlined.Add,
+                containerColor = MaterialTheme.colorScheme.secondary,
+                elevation = 2.dp
+            ) { navController.navigateToGroupDetails("") }
+        },
+        bottomBar = {
+            BottomNavigationBar(
+                currentRoute = Destinations.SOCIAL_ROUTE,
+                navigateToMap = navController::navigateToMap,
+                navigateToGroups = navController::navigateToGroups,
+                navigateToSocial = { },
+            )
+        },
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues)
+        ) {
             if (uiState.isLoading) {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -99,7 +120,7 @@ fun FriendsScreen(
                 ) {
                     CircularProgressIndicator()
                 }
-                return
+                return@Scaffold
             }
 
             LazyColumn {

@@ -39,7 +39,6 @@ import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.navigation.Destinations
 import com.example.geomate.ui.screens.groupdetails.components.GroupUser
 import com.example.geomate.ui.screens.profile.navigateToProfile
-import com.example.geomate.ui.screens.selectfriend.navigateToSelectFriend
 import com.example.geomate.ui.theme.spacing
 
 fun NavGraphBuilder.groupDetails(
@@ -53,10 +52,26 @@ fun NavGraphBuilder.groupDetails(
             defaultValue = ""
         })
     ) { backStackEntry ->
-        val uiState by viewModel.uiState.collectAsState()
+        val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+
+        val groupDetailsUiState by viewModel.groupDetailsUiState.collectAsState()
+        val selectFriendUiState by viewModel.selectFriendUiState.collectAsState()
+
+        LaunchedEffect(Unit) {
+            viewModel.fetchGroup(groupId)
+        }
+
+        if (selectFriendUiState.visible) {
+            SelectFriendsScreen(
+                uiState = selectFriendUiState,
+                viewModel = viewModel,
+                navController = navController,
+            )
+            return@composable
+        }
+
         GroupDetailsScreen(
-            groupId = backStackEntry.arguments?.getString("groupId") ?: "",
-            uiState = uiState,
+            uiState = groupDetailsUiState,
             viewModel = viewModel,
             navController = navController
         )
@@ -66,7 +81,7 @@ fun NavGraphBuilder.groupDetails(
 fun NavController.navigateToGroupDetails(groupId: String) {
     val route = when (groupId.isEmpty()) {
         true -> Destinations.GROUP_DETAILS_ROUTE
-        false -> "${Destinations.GROUP_DETAILS_ROUTE}/$groupId"
+        false -> "${Destinations.GROUP_DETAILS_ROUTE}?groupId=$groupId"
     }
     navigate(route) {
         launchSingleTop = true
@@ -75,16 +90,11 @@ fun NavController.navigateToGroupDetails(groupId: String) {
 
 @Composable
 fun GroupDetailsScreen(
-    groupId: String,
     uiState: GroupDetailsUiState,
     viewModel: GroupDetailsViewModel,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(groupId) {
-        viewModel.fetchGroup(groupId)
-    }
-
     Scaffold(
         topBar = {
             GeoMateTextField(
@@ -109,7 +119,7 @@ fun GroupDetailsScreen(
                     icon = Icons.Outlined.Add,
                     containerColor = MaterialTheme.colorScheme.secondary,
                     elevation = 2.dp
-                ) { navController.navigateToSelectFriend(groupId) }
+                ) { viewModel.toggleSelectFriendVisibility() }
                 AnimatedVisibility (uiState.users.isNotEmpty() && uiState.name.isNotBlank()) {
                     GeoMateFAB(
                         icon = Icons.Outlined.Check,
@@ -126,7 +136,7 @@ fun GroupDetailsScreen(
             }
         },
         modifier = modifier.background(MaterialTheme.colorScheme.background),
-    ) {
+    ) { paddingValues ->
         if (uiState.isLoading) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -137,12 +147,12 @@ fun GroupDetailsScreen(
             return@Scaffold
         }
 
-        LazyColumn(modifier = Modifier.padding(it)) {
+        LazyColumn(modifier = Modifier.padding(paddingValues)) {
             itemsIndexed(uiState.users.keys.toList()) { index, user ->
                 GroupUser(
                     user = user to (uiState.users[user] ?: Uri.EMPTY),
                     onSelect = { navController.navigateToProfile(it.uid) },
-                    onRemove = { viewModel.removeUser(it.uid) }
+                    onRemove = { viewModel.removeUser(it) }
                 )
                 if (index < uiState.users.size - 1) {
                     Divider(color = MaterialTheme.colorScheme.secondary)
