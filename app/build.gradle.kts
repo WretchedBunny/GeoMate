@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.nio.file.Paths
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -14,6 +18,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = ::googleMapsApiKey.invoke() ?: ""
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -62,7 +68,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.7.1")
 
     // Testing and tooling
     testImplementation("junit:junit:4.13.2")
@@ -73,22 +80,42 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
     // Authentication
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
-    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
+
+    //Facebook
+    implementation("com.facebook.android:facebook-login:latest.release")
 
     // Add the dependency for the Firebase Authentication library
     implementation("com.google.firebase:firebase-auth-ktx")
 
-    // Declare the dependency for the Cloud Firestore library
-    implementation("com.google.firebase:firebase-firestore-ktx")
-
     // Icons
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
     // Status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
-    // Jetpack Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0-beta02")
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:2.7.2")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Image loader
+    implementation("com.github.skydoves:landscapist-fresco:2.2.6")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.23.1")
+}
+
+fun googleMapsApiKey(): Any? {
+    val secrets = Paths.get(projectDir.path, "secrets.properties").toFile()
+    val props = Properties()
+    val fis = FileInputStream(secrets)
+    props.load(fis)
+    return props["GOOGLE_MAPS_API_KEY"]
 }

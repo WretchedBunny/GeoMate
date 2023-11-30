@@ -27,3 +27,5 @@ fun String.isLastNameValid(): Boolean {
 fun String.isUsernameValid(): Boolean {
     return REGEX_USERNAME.toRegex().matches(this)
 }
+
+fun String.capitalize(): String = this.replaceFirstChar { it.uppercase() }

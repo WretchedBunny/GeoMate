@@ -13,7 +13,7 @@ private val lightColorScheme = GeoMateLightColorScheme
 @Composable
 fun GeoMateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         darkTheme -> darkColorScheme
@@ -22,8 +22,8 @@ fun GeoMateTheme(
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setSystemBarsColor(color = colorScheme.backgroundLight)
-        systemUiController.setStatusBarColor(color = colorScheme.backgroundLight)
+        systemUiController.setSystemBarsColor(color = colorScheme.background)
+        systemUiController.setStatusBarColor(color = colorScheme.background)
     }
 
     CompositionLocalProvider(LocalSpacing provides Spacing()) {

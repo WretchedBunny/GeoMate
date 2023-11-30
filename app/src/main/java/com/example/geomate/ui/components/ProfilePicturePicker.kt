@@ -1,6 +1,5 @@
 package com.example.geomate.ui.components
 
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -22,10 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.geomate.R
-import com.example.geomate.ui.theme.GeoMateTheme
 
 @Composable
 fun ProfilePicturePicker(
@@ -88,25 +85,5 @@ fun ProfilePicturePicker(
                 )
             }
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFF7F0
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    backgroundColor = 0xFF2A2A2A
-)
-@Composable
-private fun ProfilePicturePickerPreview() {
-    GeoMateTheme {
-        ProfilePicturePicker(
-            bitmap = null,
-            openPhotoPicker = { },
-            clearProfilePicture = { }
-        )
     }
 }
