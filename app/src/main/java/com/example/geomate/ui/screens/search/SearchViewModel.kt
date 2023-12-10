@@ -3,6 +3,7 @@ package com.example.geomate.ui.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.ext.capitalize
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,8 +36,8 @@ class SearchViewModel(
                 }
 
                 val users = if (query.isBlank()) listOf() else {
-                    val byFirstName = usersRepository.matchFirstName(query.uppercase()).toSet()
-                    val byLastName = usersRepository.matchLastName(query.uppercase()).toSet()
+                    val byFirstName = usersRepository.matchFirstName(query.capitalize()).toSet()
+                    val byLastName = usersRepository.matchLastName(query.capitalize()).toSet()
                     val byUsername = usersRepository.matchUsername(query).toSet()
                     (byFirstName union byLastName union byUsername).toList()
                 }

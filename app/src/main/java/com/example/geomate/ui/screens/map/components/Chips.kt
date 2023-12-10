@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.geomate.R
 import com.example.geomate.data.models.Group
+import com.example.geomate.ui.screens.groupdetails.navigateToGroupDetails
 import com.example.geomate.ui.theme.spacing
 
 @Composable
@@ -49,7 +50,7 @@ fun Chips(
                 icon = Icons.Outlined.Add,
                 text = stringResource(id = R.string.map_new),
                 isSelected = false,
-                onClick = { /* TODO: Navigate to "add new group" screen */ }
+                onClick = { navController.navigateToGroupDetails("") }
             )
         }
         item { Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium - MaterialTheme.spacing.small)) }

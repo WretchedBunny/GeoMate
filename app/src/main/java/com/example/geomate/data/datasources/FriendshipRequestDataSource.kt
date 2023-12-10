@@ -9,6 +9,7 @@ interface FriendshipRequestDataSource {
     suspend fun getSingle(userId: String): FriendshipRequest?
     suspend fun getSentAsFlow(): Flow<List<FriendshipRequest>>
     suspend fun getAllAccepted(): List<FriendshipRequest>
+    suspend fun getAllAcceptedAsFlow(): Flow<List<FriendshipRequest>>
 
     suspend fun add(friendshipRequest: FriendshipRequest)
     suspend fun remove(userId: String)

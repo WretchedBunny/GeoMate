@@ -70,7 +70,6 @@ private fun FriendshipRequest(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: Proper friendship request notification view
     Row(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
@@ -85,7 +84,7 @@ private fun FriendshipRequest(
         var isAlertDialogVisible by remember { mutableStateOf(false) }
 
         FrescoImage(
-            imageUrl = notification.senderProfilePicture.toString(), // TODO: Get sender profile picture's uri
+            imageUrl = notification.senderProfilePicture.toString(),
             failure = {
                 Image(painter = painterResource(id = drawableId), contentDescription = null)
             },

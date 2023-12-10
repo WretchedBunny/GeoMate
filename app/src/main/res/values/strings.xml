@@ -9,6 +9,12 @@
     <!--Texts-->
     <string name="or_continue_with">Or continue with</string>
 
+    <!--Alert dialog-->
+    <string name="alert_dialog_confirmation_title">Confirmation Dialog</string>
+    <string name="alert_dialog_confirmation_body">Are you sure you want to proceed?</string>
+    <string name="alert_dialog_confirmation_dismiss">Dismiss</string>
+    <string name="alert_dialog_confirmation_confirm">Confirm</string>
+
     <!--Bottom navigation bar-->
     <string name="navigation_item_map">Map</string>
     <string name="navigation_item_groups">Groups</string>
@@ -24,6 +30,7 @@
     <string name="users_search_placeholder">Search for other users</string>
     <string name="groups_search_placeholder">Search for group of friends</string>
     <string name="group_details_name_placeholder">Name your group</string>
+    <string name="friends_search_placeholder">Search for a friend</string>
 
     <!--Supporting texts-->
     <string name="optional">Optional</string>
@@ -88,7 +95,4 @@
 
     <!--Edit profile screen-->
     <string name="edit_profile_title">Edit profile</string>
-    <!--Alert dialog-->
-    <string name="alert_dialog_confirmation_title">Confirmation Dialog</string>
-    <string name="alert_dialog_confirmation_body">Are you sure you want to proceed?</string>
 </resources>

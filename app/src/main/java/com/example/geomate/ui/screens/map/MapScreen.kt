@@ -42,6 +42,7 @@ import com.example.geomate.ui.components.IconWithNotification
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
+import com.example.geomate.ui.screens.friends.navigateToFriends
 import com.example.geomate.ui.screens.groups.navigateToGroups
 import com.example.geomate.ui.screens.map.components.Chips
 import com.example.geomate.ui.screens.notifications.navigateToNotifications
@@ -104,6 +105,7 @@ fun MapScreen(
         Firebase.auth.uid?.let {
             viewModel.fetchProfilePicture(it)
             viewModel.fetchGroups(it)
+            viewModel.fetchNumberOfNotifications()
         }
     }
 
@@ -114,7 +116,7 @@ fun MapScreen(
                 multiplePermissionsState.launchMultiplePermissionRequest()
             }
 
-            // TODO: Display upsy daisy map
+            // TODO: Display oopsy daisy map
         },
         permissionsNotAvailableContent = { /* ... */ }
     ) {
@@ -153,7 +155,7 @@ fun Map(
                 currentRoute = Destinations.MAP_ROUTE,
                 navigateToMap = { },
                 navigateToGroups = navController::navigateToGroups,
-                navigateToSocial = { /* navController::navigateToSocial */ },
+                navigateToSocial = navController::navigateToFriends,
             )
         },
         modifier = modifier
@@ -215,7 +217,7 @@ fun Map(
                         TextFieldIcon(navController::navigateToNotifications) {
                             IconWithNotification(
                                 icon = Icons.Outlined.Notifications,
-                                notificationsCount = 4,
+                                notificationsCount = uiState.numberOfNotifications,
                                 notificationsForegroundColor = MaterialTheme.colorScheme.onPrimary,
                                 notificationsBackgroundColor = MaterialTheme.colorScheme.primary,
                                 modifier = it,

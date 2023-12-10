@@ -23,11 +23,11 @@ class ForgotPasswordViewModel(
         _uiState.update { it.copy(isEmailValid = isEmailValid) }
     }
 
-    fun onResetClick() = viewModelScope.launch {
-        try {
-            usersRepository.sendRecoveryEmail(uiState.value.email)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    fun onResetClick() {
+        viewModelScope.launch {
+            try {
+                usersRepository.sendRecoveryEmail(uiState.value.email)
+            } catch (ignored: Exception) {}
         }
     }
 }

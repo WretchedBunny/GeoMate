@@ -6,6 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.geomate.data.models.Group
 import com.example.geomate.data.repositories.GroupsRepository
 import com.example.geomate.data.repositories.UsersRepository
+import com.example.geomate.localsearch.Abbreviation
+import com.example.geomate.localsearch.Contains
+import com.example.geomate.localsearch.Rule
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,41 +24,43 @@ class GroupsViewModel(
     private val _uiState = MutableStateFlow(GroupsUiState())
     val uiState: StateFlow<GroupsUiState> = _uiState.asStateFlow()
 
-    private val _matchGroups: MutableStateFlow<MutableMap<Group, List<Uri>>> =
-        MutableStateFlow(mutableMapOf())
-    val matchGroups: StateFlow<MutableMap<Group, List<Uri>>> = _matchGroups.asStateFlow()
-    fun fetchGroups(userId: String) = viewModelScope.launch {
-        groupsRepository.getAllAsFlow(userId).collect { groups ->
-            _uiState.update {
-                it.copy(
-                    groups = groups.associateWith { group ->
-                        List(group.users.size) {
-                            Uri.EMPTY
-                        }
-                    }.toMutableMap()
-                )
+    private val searchRules: List<Rule> = listOf(Contains, Abbreviation)
+
+    fun fetchGroups() = Firebase.auth.uid?.let { userId ->
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            groupsRepository.getAllAsFlow(userId).collect { groups ->
+                _uiState.update {
+                    it.copy(
+                        groups = groups.associateWith { group ->
+                            List(group.users.size) { Uri.EMPTY }
+                        },
+                        matchedGroups = groups,
+                        isLoading = false,
+                    )
+                }
+                _uiState.update {
+                    it.copy(
+                        groups = groups.associateWith { group ->
+                            group.users.map { usersRepository.getProfilePicture(it) }
+                        },
+                    )
+                }
             }
         }
     }
 
     fun updateSearchQuery(searchQuery: String) {
-        _uiState.update { it.copy(searchQuery = searchQuery) }
-        updateMatchGroups(
-            uiState.value.groups.filterKeys {
-                it.name.contains(searchQuery, true)
-            }.toMutableMap(),
-        )
+        val groups = uiState.value.groups.filterKeys { group ->
+            searchRules.any { it.match(group.name, searchQuery) }
+        }.keys.toList()
+        _uiState.update { it.copy(searchQuery = searchQuery, matchedGroups = groups) }
     }
 
-    private fun updateMatchGroups(matchGroups: MutableMap<Group, List<Uri>>) {
-        _matchGroups.update { matchGroups }
-    }
-
-    suspend fun fetchProfilePictures() {
-        // TODO: Implement
-    }
-
-    fun removeGroup(group: Group) = viewModelScope.launch {
-        groupsRepository.remove(group)
+    fun removeGroup(group: Group) {
+        viewModelScope.launch {
+            groupsRepository.remove(group)
+        }
     }
 }

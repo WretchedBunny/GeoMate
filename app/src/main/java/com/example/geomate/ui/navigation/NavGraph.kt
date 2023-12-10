@@ -23,6 +23,8 @@ import com.example.geomate.ui.screens.authentication.signup.SignUpViewModel
 import com.example.geomate.ui.screens.authentication.signup.signUp
 import com.example.geomate.ui.screens.editprofile.EditProfileViewModel
 import com.example.geomate.ui.screens.editprofile.editProfile
+import com.example.geomate.ui.screens.friends.FriendsViewModel
+import com.example.geomate.ui.screens.friends.friendsList
 import com.example.geomate.ui.screens.groupdetails.GroupDetailsViewModel
 import com.example.geomate.ui.screens.groupdetails.groupDetails
 import com.example.geomate.ui.screens.groups.GroupsViewModel
@@ -53,7 +55,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
     // Repositories
     val usersRepository = UsersRepository(usersDataSource)
     val groupsRepository = GroupsRepository(groupsDataSource)
-    val friendshipRepository = FriendshipRepository(friendshipDataSource, usersDataSource)
+    val friendshipRepository = FriendshipRepository(friendshipDataSource, groupsDataSource,usersDataSource)
     val notificationRepository = NotificationRepository(friendshipDataSource)
 
     // ViewModels and UiStates
@@ -64,13 +66,15 @@ fun NavGraph(application: Application, navController: NavHostController) {
         application,
         groupsRepository,
         usersRepository,
+        notificationRepository,
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
     )
     val notificationsViewModel =
         NotificationsViewModel(usersRepository, friendshipRepository, notificationRepository)
     val searchViewModel = SearchViewModel(usersRepository)
     val groupViewModel = GroupsViewModel(usersRepository, groupsRepository)
-    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository)
+    val groupDetailsViewModel = GroupDetailsViewModel(usersRepository, groupsRepository, friendshipRepository)
+    val friendsViewModel = FriendsViewModel(usersRepository, friendshipRepository)
     val profileViewModel = ProfileViewModel(usersRepository, friendshipRepository)
     val editProfileViewModel = EditProfileViewModel(usersRepository)
 
@@ -100,6 +104,7 @@ fun NavGraph(application: Application, navController: NavHostController) {
             search(searchViewModel, navController)
             groups(groupViewModel, navController)
             groupDetails(groupDetailsViewModel, navController)
+            friendsList(friendsViewModel, navController)
             profile(profileViewModel, navController)
             editProfile(editProfileViewModel, navController)
         }

@@ -1,5 +1,6 @@
-package com.example.geomate.ui.screens.groups
+package com.example.geomate.ui.screens.friends
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -21,31 +21,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.ImeAction
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.geomate.R
-import com.example.geomate.ui.components.GeoMateFAB
 import com.example.geomate.ui.components.GeoMateTextField
 import com.example.geomate.ui.components.TextFieldIcon
 import com.example.geomate.ui.components.bottomnavbar.BottomNavigationBar
 import com.example.geomate.ui.navigation.Destinations
-import com.example.geomate.ui.screens.friends.navigateToFriends
-import com.example.geomate.ui.screens.groupdetails.navigateToGroupDetails
-import com.example.geomate.ui.screens.groups.components.Group
+import com.example.geomate.ui.screens.friends.components.Friend
+import com.example.geomate.ui.screens.groups.navigateToGroups
 import com.example.geomate.ui.screens.map.navigateToMap
+import com.example.geomate.ui.screens.profile.navigateToProfile
 import com.example.geomate.ui.theme.spacing
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
-fun NavGraphBuilder.groups(
-    viewModel: GroupsViewModel,
+fun NavGraphBuilder.friendsList(
+    viewModel: FriendsViewModel,
     navController: NavController,
 ) {
-    composable(Destinations.GROUPS_ROUTE) {
+    composable(Destinations.SOCIAL_ROUTE) {
         val uiState by viewModel.uiState.collectAsState()
-        GroupsScreen(
+        FriendsScreen(
             uiState = uiState,
             viewModel = viewModel,
             navController = navController,
@@ -53,22 +50,21 @@ fun NavGraphBuilder.groups(
     }
 }
 
-fun NavController.navigateToGroups() {
-    popBackStack()
-    navigate(Destinations.GROUPS_ROUTE) {
+fun NavController.navigateToFriends() {
+    navigate(Destinations.SOCIAL_ROUTE) {
         launchSingleTop = true
     }
 }
 
 @Composable
-fun GroupsScreen(
-    uiState: GroupsUiState,
-    viewModel: GroupsViewModel,
+fun FriendsScreen(
+    uiState: FriendsUiState,
+    viewModel: FriendsViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(Firebase.auth.uid) {
-        viewModel.fetchGroups()
+    LaunchedEffect(Unit) {
+        viewModel.fetchFriends()
     }
 
     Scaffold(
@@ -85,46 +81,48 @@ fun GroupsScreen(
                         )
                     }
                 ),
-                placeholder = stringResource(id = R.string.groups_search_placeholder),
+                placeholder = stringResource(id = R.string.friends_search_placeholder),
+                imeAction = ImeAction.Search,
                 modifier = Modifier.padding(MaterialTheme.spacing.medium)
             )
         },
-        floatingActionButton = {
-            GeoMateFAB(
-                icon = Icons.Outlined.Add,
-                containerColor = MaterialTheme.colorScheme.secondary,
-                elevation = 2.dp
-            ) { navController.navigateToGroupDetails("") }
-        },
         bottomBar = {
             BottomNavigationBar(
-                currentRoute = Destinations.GROUPS_ROUTE,
+                currentRoute = Destinations.SOCIAL_ROUTE,
                 navigateToMap = navController::navigateToMap,
-                navigateToGroups = { },
-                navigateToSocial = navController::navigateToFriends,
+                navigateToGroups = navController::navigateToGroups,
+                navigateToSocial = { },
             )
         },
         modifier = modifier.background(MaterialTheme.colorScheme.background),
-    ) {
-        if (uiState.isLoading) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                CircularProgressIndicator()
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues)
+        ) {
+            if (uiState.isLoading) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
+                }
+                return@Scaffold
             }
-            return@Scaffold
-        }
 
-        LazyColumn(modifier = Modifier.padding(it)) {
-            itemsIndexed(uiState.matchedGroups) { index, group ->
-                Group(
-                    group = group to (uiState.groups[group] ?: listOf()),
-                    onSelect = { g -> navController.navigateToGroupDetails(g.uid) },
-                    onRemove = { g -> viewModel.removeGroup(g) },
-                )
-                if (index < uiState.groups.size - 1) {
-                    Divider(color = MaterialTheme.colorScheme.secondary)
+            LazyColumn {
+                itemsIndexed(uiState.matchedFriends) { index, friend ->
+                    Friend(
+                        friend = friend,
+                        profilePicture = uiState.friends[friend] ?: Uri.EMPTY,
+                        onSelect = { navController.navigateToProfile(friend.uid) },
+                        onRemove = viewModel::removeFriend
+                    )
+                    if (index < uiState.friends.size - 1) {
+                        Divider(color = MaterialTheme.colorScheme.secondary)
+                    }
                 }
             }
         }
