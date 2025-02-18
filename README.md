@@ -23,4 +23,4 @@ This project is licensed under the **MIT License**.
 ## Authors
 - **[Serhii Cherepiuk](https://github.com/scherepiuk)**
 - **Daniil Bortsov**
-Supervisor: **[Dr. Eng. Grzegorz Kozieł](https://cs.pollub.pl/staff/grzes/)**
+- Supervisor: **[Dr. Eng. Grzegorz Kozieł](https://cs.pollub.pl/staff/grzes/)**
