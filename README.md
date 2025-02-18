@@ -1,5 +1,5 @@
 # Friends' Location Tracking System
-
+Full BSc thesis can be found in the root directory of the repo.
 ## Overview
 
 The **Friends' Location Tracking System** is a mobile application designed to enhance social interactions by allowing users to track and locate their friends in real time. The project was developed as part of an engineering thesis to address the growing issue of social isolation among young people.
